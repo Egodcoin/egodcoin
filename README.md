@@ -1,27 +1,27 @@
-Welcome to Yerbas 
+Welcome to Egodcoin 
 ===========================
 
  
 Introduction
 ------------
 
-WARNING! Yerbas is a work in progress...Use at your own risk!
+WARNING! Egodcoin is a work in progress...Use at your own risk!
 
-Yerbas is a community driven, developmental, grassroots, digital currency that enables instant payments to anyone, anywhere in the world. The Yerbas Coin uses peer-to-peer technology to operate with no central authority: managing transactions and issuing money are carried out collectively by the network. Yerbas is a code fork of Bitcoin/Dash/Ravencoin/Raptoreum and inherits current and optionally future features such as chain locks, oracles etc. The inspiration for the name Yerbas is derived from the Latin(herba) and Español(hierba) words for herb, grass, or weeds.
+Egodcoin is a community driven, developmental, grassroots, digital currency that enables instant payments to anyone, anywhere in the world. The Egodcoin Coin uses peer-to-peer technology to operate with no central authority: managing transactions and issuing money are carried out collectively by the network. Egodcoin is a code fork of Bitcoin/Dash/Ravencoin/Raptoreum and inherits current and optionally future features such as chain locks, oracles etc. The inspiration for the name Egodcoin is derived from the Latin(herba) and Español(hierba) words for herb, grass, or weeds.
 
 
 License
 -------
 
-Yerbas Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
+Egodcoin Core is released under the terms of the MIT license. See [COPYING](COPYING) for more
 information or see https://opensource.org/licenses/MIT.
 
 Development Process
 -------------------
 
 The `master` branch is meant to be stable. Development is done in separate branches.
-[Tags](https://github.com/The-Yerbas-Endeavor/yerbas/tags) are created to indicate new official,
-stable release versions of Yerbas Core.
+[Tags](https://github.com/Egodcoin/egodcoin/tags) are created to indicate new official,
+stable release versions of Egodcoin Core.
 
 The contribution workflow is described in [CONTRIBUTING.md](CONTRIBUTING.md).
 

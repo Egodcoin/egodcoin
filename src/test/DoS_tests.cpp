@@ -14,7 +14,7 @@
 #include "util.h"
 #include "validation.h"
 
-#include "test/test_yerbas.h"
+#include "test/test_egodcoin.h"
 
 #include <stdint.h>
 

@@ -9,7 +9,7 @@
 #include "uint256.h"
 #include "arith_uint256.h"
 #include "version.h"
-#include "test/test_yerbas.h"
+#include "test/test_egodcoin.h"
 
 #include <vector>
 

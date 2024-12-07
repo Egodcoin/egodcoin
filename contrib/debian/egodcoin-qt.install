@@ -1,0 +1,6 @@
+usr/local/bin/egodcoin-qt usr/bin
+share/pixmaps/egodcoin32.xpm usr/share/pixmaps
+share/pixmaps/egodcoin16.xpm usr/share/pixmaps
+share/pixmaps/egodcoin128.png usr/share/pixmaps
+debian/egodcoin-qt.desktop usr/share/applications
+debian/egodcoin-qt.protocol usr/share/kde4/services/

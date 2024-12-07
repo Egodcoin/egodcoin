@@ -1001,7 +1001,7 @@ bool EvalScript(std::vector<std::vector<unsigned char> >& stack, const CScript& 
                 }
                 break;
 
-                case OP_YERB_ASSET:
+                case OP_EGOD_ASSET:
                     break;
 
                 default:

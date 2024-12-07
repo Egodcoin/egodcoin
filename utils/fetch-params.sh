@@ -6,9 +6,9 @@ set -eu
 uname_S=$(uname -s 2>/dev/null || echo not)
 
 if [ "$uname_S" = "Darwin" ]; then
-    PARAMS_DIR="$HOME/Library/Application Support/YerbasParams"
+    PARAMS_DIR="$HOME/Library/Application Support/EgodcoinParams"
 else
-    PARAMS_DIR="$HOME/.yerbas-params"
+    PARAMS_DIR="$HOME/.egodcoin-params"
 fi
 
 # Commented out because these are unused; see below.
@@ -27,15 +27,15 @@ WGETCMD="$(command -v wget || echo '')"
 IPFSCMD="$(command -v ipfs || echo '')"
 CURLCMD="$(command -v curl || echo '')"
 
-# fetch methods can be disabled with YERB_DISABLE_SOMETHING=1
-YERB_DISABLE_WGET="${YERB_DISABLE_WGET:-}"
-#YERB_DISABLE_IPFS="${YERB_DISABLE_IPFS:-}"
-YERB_DISABLE_CURL="${YERB_DISABLE_CURL:-}"
+# fetch methods can be disabled with EGOD_DISABLE_SOMETHING=1
+EGOD_DISABLE_WGET="${EGOD_DISABLE_WGET:-}"
+#EGOD_DISABLE_IPFS="${EGOD_DISABLE_IPFS:-}"
+EGOD_DISABLE_CURL="${EGOD_DISABLE_CURL:-}"
 
 LOCKFILE=/tmp/fetch_params.lock
 
 fetch_wget() {
-    if [ -z "$WGETCMD" ] || ! [ -z "$YERB_DISABLE_WGET" ]; then
+    if [ -z "$WGETCMD" ] || ! [ -z "$EGOD_DISABLE_WGET" ]; then
         return 1
     fi
 
@@ -53,7 +53,7 @@ EOF
 }
 
 #fetch_ipfs() {
-#    if [ -z "$IPFSCMD" ] || ! [ -z "$YERB_DISABLE_IPFS" ]; then
+#    if [ -z "$IPFSCMD" ] || ! [ -z "$EGOD_DISABLE_IPFS" ]; then
 #        return 1
 #    fi
 
@@ -66,7 +66,7 @@ EOF
 #}
 
 fetch_curl() {
-    if [ -z "$CURLCMD" ] || ! [ -z "$YERB_DISABLE_CURL" ]; then
+    if [ -z "$CURLCMD" ] || ! [ -z "$EGOD_DISABLE_CURL" ]; then
         return 1
     fi
 
@@ -85,7 +85,7 @@ EOF
 fetch_failure() {
     cat >&2 <<EOF
 
-Failed to fetch the Yerbas parameters!
+Failed to fetch the Egodcoin parameters!
 Try installing one of the following programs and make sure you're online:
 
 # * ipfs
@@ -176,9 +176,9 @@ main() {
     || exit_locked_error
 
     cat <<EOF
-YERB - fetch-params.sh
+EGOD - fetch-params.sh
 
-This script will fetch the Yerbas SNARK parameters and verify their
+This script will fetch the Egodcoin SNARK parameters and verify their
 integrity with sha256sum.
 
 If they already exist locally, it will exit now and do nothing else.
@@ -190,7 +190,7 @@ EOF
         mkdir -p "$PARAMS_DIR"
         README_PATH="$PARAMS_DIR/README"
         cat >> "$README_PATH" <<EOF
-This directory stores common Yerbas SNARK parameters. Note that it is
+This directory stores common Egodcoin SNARK parameters. Note that it is
 distinct from the daemon's -datadir argument because the parameters are
 large and may be shared across multiple distinct -datadir's such as when
 setting up test networks.

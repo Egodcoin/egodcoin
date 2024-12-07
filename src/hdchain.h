@@ -1,8 +1,10 @@
 // Copyright (c) 2014-2019 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
-#ifndef YERBAS_HDCHAIN_H
-#define YERBAS_HDCHAIN_H
+#ifndef EGODCOIN_HDCHAIN_H
+#define EGODCOIN_HDCHAIN_H
 
 #include "key.h"
 #include "sync.h"
@@ -148,4 +150,4 @@ public:
     std::string GetKeyPath() const;
 };
 
-#endif // YERBAS_HDCHAIN_H
+#endif // EGODCOIN_HDCHAIN_H

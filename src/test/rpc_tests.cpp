@@ -9,7 +9,7 @@
 #include "core_io.h"
 #include "netbase.h"
 
-#include "test/test_yerbas.h"
+#include "test/test_egodcoin.h"
 
 #include <boost/algorithm/string.hpp>
 #include <boost/test/unit_test.hpp>

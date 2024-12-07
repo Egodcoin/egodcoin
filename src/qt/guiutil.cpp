@@ -1,6 +1,8 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
 // Copyright (c) 2014-2020 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -81,7 +83,7 @@ extern double NSAppKitVersionNumber;
 namespace GUIUtil {
 
 // The theme to set by default if settings are missing or incorrect
-static const QString defaultTheme = "Dark";
+static const QString defaultTheme = "Light";
 // The prefix a theme name should have if we want to apply dark colors and styles to it
 static const QString darkThemePrefix = "Dark";
 
@@ -187,7 +189,7 @@ void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent)
 #if QT_VERSION >= 0x040700
     // We don't want translators to use own addresses in translations
     // and this is the only place, where this address is supplied.
-    widget->setPlaceholderText(QObject::tr("Enter a Yerbas address (e.g. %1)").arg(
+    widget->setPlaceholderText(QObject::tr("Enter an Egodcoin address (e.g. %1)").arg(
         QString::fromStdString(DummyAddress(Params()))));
 #endif
     widget->setValidator(new BitcoinAddressEntryValidator(parent));
@@ -205,8 +207,8 @@ void setupAmountWidget(QLineEdit *widget, QWidget *parent)
 
 bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 {
-    // return if URI is not valid or is no yerbas: URI
-    if(!uri.isValid() || uri.scheme() != QString("yerbas"))
+    // return if URI is not valid or is no egodcoin: URI
+    if(!uri.isValid() || uri.scheme() != QString("egodcoin"))
         return false;
 
     SendCoinsRecipient rv;
@@ -252,7 +254,7 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
         {
             if(!i->second.isEmpty())
             {
-                if(!BitcoinUnits::parse(BitcoinUnits::YERB, i->second, &rv.amount))
+                if(!BitcoinUnits::parse(BitcoinUnits::EGOD, i->second, &rv.amount))
                 {
                     return false;
                 }
@@ -272,13 +274,13 @@ bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out)
 
 bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 {
-    // Convert yerbas:// to yerbas:
+    // Convert egodcoin:// to egodcoin:
     //
-    //    Cannot handle this later, because yerbas:// will cause Qt to see the part after // as host,
+    //    Cannot handle this later, because egodcoin:// will cause Qt to see the part after // as host,
     //    which will lower-case it (and thus invalidate the address).
-    if(uri.startsWith("yerbas://", Qt::CaseInsensitive))
+    if(uri.startsWith("egodcoin://", Qt::CaseInsensitive))
     {
-        uri.replace(0, 7, "yerbas:");
+        uri.replace(0, 7, "egodcoin:");
     }
     QUrl uriInstance(uri);
     return parseBitcoinURI(uriInstance, out);
@@ -286,12 +288,12 @@ bool parseBitcoinURI(QString uri, SendCoinsRecipient *out)
 
 QString formatBitcoinURI(const SendCoinsRecipient &info)
 {
-    QString ret = QString("yerbas:%1").arg(info.address);
+    QString ret = QString("egodcoin:%1").arg(info.address);
     int paramCount = 0;
 
     if (info.amount)
     {
-        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::YERB, info.amount, false, BitcoinUnits::separatorNever));
+        ret += QString("?amount=%1").arg(BitcoinUnits::format(BitcoinUnits::EGOD, info.amount, false, BitcoinUnits::separatorNever));
         paramCount++;
     }
 
@@ -486,7 +488,7 @@ void openConfigfile()
 {
     fs::path pathConfig = GetConfigFile(gArgs.GetArg("-conf", BITCOIN_CONF_FILENAME));
 
-    /* Open yerbas.conf with the associated application */
+    /* Open egodcoin.conf with the associated application */
     if (fs::exists(pathConfig))
         QDesktopServices::openUrl(QUrl::fromLocalFile(boostPathToQString(pathConfig)));
 }
@@ -687,15 +689,15 @@ fs::path static StartupShortcutPath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "Yerbas Core.lnk";
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "Egodcoin Core.lnk";
     if (chain == CBaseChainParams::TESTNET) // Remove this special case when CBaseChainParams::TESTNET = "testnet4"
-        return GetSpecialFolderPath(CSIDL_STARTUP) / "Yerbas Core (testnet).lnk";
-    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("Yerbas Core (%s).lnk", chain);
+        return GetSpecialFolderPath(CSIDL_STARTUP) / "Egodcoin Core (testnet).lnk";
+    return GetSpecialFolderPath(CSIDL_STARTUP) / strprintf("Egodcoin Core (%s).lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
 {
-    // check for "Yerbas Core*.lnk"
+    // check for "Egodcoin Core*.lnk"
     return fs::exists(StartupShortcutPath());
 }
 
@@ -785,8 +787,8 @@ fs::path static GetAutostartFilePath()
 {
     std::string chain = ChainNameFromCommandLine();
     if (chain == CBaseChainParams::MAIN)
-        return GetAutostartDir() / "yerbascore.desktop";
-    return GetAutostartDir() / strprintf("yerbascore-%s.lnk", chain);
+        return GetAutostartDir() / "egodcoincore.desktop";
+    return GetAutostartDir() / strprintf("egodcoincore-%s.lnk", chain);
 }
 
 bool GetStartOnSystemStartup()
@@ -825,13 +827,13 @@ bool SetStartOnSystemStartup(bool fAutoStart)
         if (!optionFile.good())
             return false;
         std::string chain = ChainNameFromCommandLine();
-        // Write a yerbascore.desktop file to the autostart directory:
+        // Write a egodcoincdcore.desktop file to the autostart directory:
         optionFile << "[Desktop Entry]\n";
         optionFile << "Type=Application\n";
         if (chain == CBaseChainParams::MAIN)
-            optionFile << "Name=Yerbas Core\n";
+            optionFile << "Name=Egodcoin Core\n";
         else
-            optionFile << strprintf("Name=Yerbas Core (%s)\n", chain);
+            optionFile << strprintf("Name=Egodcoin Core (%s)\n", chain);
         optionFile << "Exec=" << pszExePath << strprintf(" -min -testnet=%d -regtest=%d\n", gArgs.GetBoolArg("-testnet", false), gArgs.GetBoolArg("-regtest", false));
         optionFile << "Terminal=false\n";
         optionFile << "Hidden=false\n";
@@ -852,7 +854,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl);
 LSSharedFileListItemRef findStartupItemInList(LSSharedFileListRef list, CFURLRef findUrl)
 {
-    // loop through the list of startup items and try to find the Yerbas Core app
+    // loop through the list of startup items and try to find the Egodcoin Core app
     CFArrayRef listSnapshot = LSSharedFileListCopySnapshot(list, nullptr);
     for(int i = 0; i < CFArrayGetCount(listSnapshot); i++) {
         LSSharedFileListItemRef item = (LSSharedFileListItemRef)CFArrayGetValueAtIndex(listSnapshot, i);
@@ -897,7 +899,7 @@ bool SetStartOnSystemStartup(bool fAutoStart)
     LSSharedFileListItemRef foundItem = findStartupItemInList(loginItems, bitcoinAppUrl);
 
     if(fAutoStart && !foundItem) {
-        // add Yerbas Core app to startup item list
+        // add Egodcoin Core app to startup item list
         LSSharedFileListInsertItemURL(loginItems, kLSSharedFileListItemBeforeFirst, nullptr, nullptr, bitcoinAppUrl, nullptr, nullptr);
     }
     else if(!fAutoStart && foundItem) {

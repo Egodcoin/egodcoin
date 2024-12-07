@@ -1,6 +1,6 @@
 FROM debian:stretch
-LABEL maintainer="Yerbas Developers <yerbascore@gmail.com>"
-LABEL description="Dockerised YerbasCore, built from Travis"
+LABEL maintainer="Egodcoin Developers <dev@egodcoin.org>"
+LABEL description="Dockerised EgodcoinCore, built from Travis"
 
 RUN apt-get update && apt-get -y upgrade && apt-get clean && rm -fr /var/cache/apt/*
 

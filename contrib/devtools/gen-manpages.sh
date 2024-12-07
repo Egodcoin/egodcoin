@@ -7,10 +7,10 @@ BUILDDIR=${BUILDDIR:-$TOPDIR}
 BINDIR=${BINDIR:-$BUILDDIR/src}
 MANDIR=${MANDIR:-$TOPDIR/doc/man}
 
-BITCOIND=${BITCOIND:-$SRCDIR/yerbasd}
-BITCOINCLI=${BITCOINCLI:-$SRCDIR/yerbas-cli}
-BITCOINTX=${BITCOINTX:-$SRCDIR/yerbas-tx}
-BITCOINQT=${BITCOINQT:-$SRCDIR/qt/yerbas-qt}
+BITCOIND=${BITCOIND:-$SRCDIR/egodcoind}
+BITCOINCLI=${BITCOINCLI:-$SRCDIR/egodcoin-cli}
+BITCOINTX=${BITCOINTX:-$SRCDIR/egodcoin-tx}
+BITCOINQT=${BITCOINQT:-$SRCDIR/qt/egodcoin-qt}
 
 [ ! -x $BITCOIND ] && echo "$BITCOIND not found or not executable." && exit 1
 
@@ -18,8 +18,8 @@ BITCOINQT=${BITCOINQT:-$SRCDIR/qt/yerbas-qt}
 BTCVER=($($BITCOINCLI --version | head -n1 | awk -F'[ -]' '{ print $6, $7 }'))
 
 # Create a footer file with copyright content.
-# This gets autodetected fine for yerbasd if --version-string is not set,
-# but has different outcomes for yerbas-qt and yerbas-cli.
+# This gets autodetected fine for egodcoind if --version-string is not set,
+# but has different outcomes for egodcoin-qt and egodcoin-cli.
 echo "[COPYRIGHT]" > footer.h2m
 $BITCOIND --version | sed -n '1!p' >> footer.h2m
 

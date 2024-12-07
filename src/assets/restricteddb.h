@@ -1,10 +1,12 @@
 // Copyright (c) 2019 The Yerbas Core developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 
-#ifndef YERBAS_RESTRICTEDDB_H
-#define YERBAS_RESTRICTEDDB_H
+#ifndef EGODCOIN_RESTRICTEDDB_H
+#define EGODCOIN_RESTRICTEDDB_H
 
 #include <dbwrapper.h>
 
@@ -56,4 +58,4 @@ public:
 };
 
 
-#endif //YERBAS_RESTRICTEDDB_H
+#endif // EGODCOIN_RESTRICTEDDB_H

@@ -80,7 +80,7 @@ public:
         StatusRole,
         /** Unprocessed icon */
         RawDecorationRole,
-        /** YERB or name of an asset */
+        /** EGOD or name of an asset */
         AssetNameRole,
     };
 

@@ -38,7 +38,7 @@ QToolBar / QToolButton
 
 QToolBar QLabel#lblToolbarLogo {
     padding: 12px;
-    image: url(':/images/yerbas_logo_toolbar');
+    image: url(':/images/egodcoin_logo_toolbar');
     height: 2.5em;
 }
 
@@ -146,7 +146,7 @@ ModalOverlay
 QWidget#bgWidget { /* The frame overlaying the overview-page */
     padding-left: 10px;
     padding-right: 10px;
-    background-color: #ccfafafa;
+    background: #fafafa;
 }
 
 QWidget#contentWidget { /* The actual content with the text/buttons/etc... */

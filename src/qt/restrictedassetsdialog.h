@@ -31,7 +31,7 @@ QT_BEGIN_NAMESPACE
 class QUrl;
 QT_END_NAMESPACE
 
-/** Dialog for sending yerbas */
+/** Dialog for sending egodcoin */
 class RestrictedAssetsDialog : public QDialog
 {
     Q_OBJECT

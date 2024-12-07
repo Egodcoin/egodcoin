@@ -7,7 +7,7 @@
 export LC_ALL=C
 set -exu -o pipefail
 
-YERBAS_TAG_RGX='^v[0-9]+.[0-9]+.[0-9]+.z[0-9]+'
+COIN_TAG_RGX='^v[0-9]+.[0-9]+.[0-9]+.z[0-9]+'
 MAXJOBS=7
 
 i=0
@@ -16,7 +16,7 @@ for nonzctag in $(git ls-remote origin \
                          | grep refs/tags/ \
                          | grep -v '\^{}$' \
                          | sed 's,^.*refs/tags/,,' \
-                         | grep -Ev "$YERBAS_TAG_RGX"
+                         | grep -Ev "$COIN_TAG_RGX"
                  )
 do
     git push origin ":refs/tags/${nonzctag}" &

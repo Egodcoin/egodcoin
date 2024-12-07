@@ -2,6 +2,8 @@
 // Copyright (c) 2009-2015 The Bitcoin Core developers
 // Copyright (c) 2014-2020 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -66,7 +68,7 @@
 #include <boost/thread.hpp>
 
 #if defined(NDEBUG)
-# error "Yerbas Core cannot be compiled without assertions."
+# error "Egodcoin Core cannot be compiled without assertions."
 #endif
 
 /**
@@ -226,7 +228,7 @@ CCoinsViewDB *pcoinsdbview = nullptr;
 CCoinsViewCache *pcoinsTip = nullptr;
 CBlockTreeDB *pblocktree = nullptr;
 
-/* YERB ASSETS START */
+/* EGOD ASSETS START */
 CAssetsDB *passetsdb = nullptr;
 CAssetsCache *passets = nullptr;
 CLRUCache<std::string, CDatabasedAssetData> *passetsCache = nullptr;
@@ -245,7 +247,7 @@ CLRUCache<std::string, int8_t> *passetsQualifierCache = nullptr;
 CLRUCache<std::string, int8_t> *passetsRestrictionCache = nullptr;
 CLRUCache<std::string, int8_t> *passetsGlobalRestrictionCache = nullptr;
 CRestrictedDB *prestricteddb = nullptr;
-/* YERB ASSETS END*/
+/* EGOD ASSETS END */
 
 enum FlushStateMode {
     FLUSH_STATE_NONE,
@@ -629,7 +631,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
         {
             const CTransaction *ptxConflicting = itConflicting->second;
 
-            // Transaction conflicts with mempool and RBF doesn't exist in Yerbas
+            // Transaction conflicts with mempool and RBF doesn't exist in Egodcoin
             return state.Invalid(false, REJECT_DUPLICATE, "txn-mempool-conflict");
         }
     }
@@ -688,7 +690,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
             return error("%s: Consensus::CheckTxInputs: %s, %s", __func__, tx.GetHash().ToString(), FormatStateMessage(state));
         }
 
-        /** YERB START START */
+        /** EGOD START START */
             if (!isAssetsactive) {
                 for (auto out : tx.vout)
                     if (out.scriptPubKey.IsAssetScript())
@@ -700,7 +702,7 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
                                  FormatStateMessage(state));
                 }
             }
-        /** YERB ASSETS END */
+        /** EGOD ASSETS END */
 
         // Check for non-standard pay-to-script-hash in inputs
         if (fRequireStandard && !AreInputsStandard(tx, view))
@@ -1312,7 +1314,7 @@ void UpdateCoins(const CTransaction& tx, CCoinsViewCache& inputs, CTxUndo &txund
         }
     }
     // add outputs
-    AddCoins(inputs, tx, nHeight, blockHash, false, assetCache, undoAssetData); /** YERB START */ /* Pass assetCache into function */ /** YERB END */
+    AddCoins(inputs, tx, nHeight, blockHash, false, assetCache, undoAssetData); /** EGOD START */ /* Pass assetCache into function */ /** EGOD END */
 }
 
 void UpdateCoins(const CTransaction& tx, CCoinsViewCache& inputs, CTxUndo &txundo, int nHeight)
@@ -1644,7 +1646,7 @@ static DisconnectResult DisconnectBlock(const CBlock& block, const CBlockIndex* 
                     addressIndex.push_back(std::make_pair(CAddressIndexKey(1, hashBytes, pindex->nHeight, i, hash, k, false), out.nValue));
                     addressUnspentIndex.push_back(std::make_pair(CAddressUnspentKey(1, hashBytes, hash, k), CAddressUnspentValue()));
                 } else {
-                  /** YERB ASSETS START */
+                  /** EGOD ASSETS START */
                     if (isAssetsactive) {
                         std::string assetName;
                         CAmount assetAmount;
@@ -1667,7 +1669,7 @@ static DisconnectResult DisconnectBlock(const CBlock& block, const CBlockIndex* 
                             continue;
                         }
                     }
-                    /** YERB ASSETS END */
+                    /** EGOD ASSETS END */
                 }
             }
 
@@ -1684,7 +1686,7 @@ static DisconnectResult DisconnectBlock(const CBlock& block, const CBlockIndex* 
                 if (!is_spent || tx.vout[o] != coin.out || pindex->nHeight != coin.nHeight || is_coinbase != coin.fCoinBase) {
                     fClean = false; // transaction output mismatch
                 }
-                /** YERB ASSETS START */
+                /** EGOD ASSETS START */
                 if (isAssetsactive) {
                     if (assetsCache) {
                         if (IsScriptTransferAsset(tx.vout[o].scriptPubKey))
@@ -1705,7 +1707,7 @@ static DisconnectResult DisconnectBlock(const CBlock& block, const CBlockIndex* 
                 }
             }
         }
-        /** YERB START */
+        /** EGOD START */
         if (isAssetsactive) {
             if (assetsCache) {
                 if (tx.IsNewAsset()) {
@@ -1920,7 +1922,7 @@ static DisconnectResult DisconnectBlock(const CBlock& block, const CBlockIndex* 
                 }  
             }
         }
-        /** YERB END */
+        /** EGOD END */
 
         // restore inputs
         if (i > 0) { // not coinbases
@@ -1970,7 +1972,7 @@ static DisconnectResult DisconnectBlock(const CBlock& block, const CBlockIndex* 
                         addressIndex.push_back(std::make_pair(CAddressIndexKey(1, hashBytes, pindex->nHeight, i, hash, j, false), prevout.nValue));
                         addressUnspentIndex.push_back(std::make_pair(CAddressUnspentKey(1, hashBytes, hash, j), CAddressUnspentValue()));
                     } else  {
-                        /** YERB ASSETS START */
+                        /** EGOD ASSETS START */
                         if (isAssetsactive) {
                             std::string assetName;
                             CAmount assetAmount;
@@ -1994,7 +1996,7 @@ static DisconnectResult DisconnectBlock(const CBlock& block, const CBlockIndex* 
                                 continue;
                             }
                         }
-                        /** YERB ASSETS END */
+                        /** EGOD ASSETS END */
                     }
                 }
 
@@ -2057,7 +2059,7 @@ static bool FindUndoPos(CValidationState &state, int nFile, CDiskBlockPos &pos, 
 static CCheckQueue<CScriptCheck> scriptcheckqueue(128);
 
 void ThreadScriptCheck() {
-    RenameThread("yerbas-scriptch");
+    RenameThread("egod-scriptch");
     scriptcheckqueue.Thread();
 }
 
@@ -2163,7 +2165,7 @@ static int64_t nTimeSubsidy = 0;
 static int64_t nTimeValueValid = 0;
 static int64_t nTimePayeeValid = 0;
 static int64_t nTimeProcessSpecial = 0;
-static int64_t nTimeYerbasSpecific = 0;
+static int64_t nTimeEgodcoinSpecific = 0;
 static int64_t nTimeConnect = 0;
 static int64_t nTimeIndex = 0;
 static int64_t nTimeCallbacks = 0;
@@ -2241,7 +2243,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     int64_t nTime1 = GetTimeMicros(); nTimeCheck += nTime1 - nTimeStart;
     LogPrint(BCLog::BENCHMARK, "    - Sanity checks: %.2fms [%.2fs]\n", 0.001 * (nTime1 - nTimeStart), nTimeCheck * 0.000001);
 
-    /// YERBAS: Check superblock start
+    /// egodcoin: Check superblock start
 
     // make sure old budget is the real one
     if (pindex->nHeight == chainparams.GetConsensus().nSuperblockStartBlock &&
@@ -2250,7 +2252,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
             return state.DoS(100, error("ConnectBlock(): invalid superblock start"),
                              REJECT_INVALID, "bad-sb-start");
 
-    /// END YERBAS
+    /// END egodcoin
 
     // Start enforcing BIP68 (sequence locks) and BIP112 (CHECKSEQUENCEVERIFY) using versionbits logic.
     int nLockTimeFlags = 0;
@@ -2314,7 +2316,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                 return state.DoS(100, error("%s: accumulated specialTxFees in the block out of range.", __func__),
                                  REJECT_INVALID, "bad-txns-accumulated-specialTxFees-outofrange");
             }
-             /** YERB START START */
+             /** EGOD START START */
             if (!isAssetsactive) {
                 for (auto out : tx.vout)
                     if (out.scriptPubKey.IsAssetScript())
@@ -2326,7 +2328,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                                  FormatStateMessage(state));
                 }
             }
-            /** YERB ASSETS END */
+            /** EGOD ASSETS END */
 
             // Check that transaction is BIP68 final
             // BIP68 lock checks (as opposed to nLockTime checks) must
@@ -2363,7 +2365,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                         hashBytes = Hash160(prevout.scriptPubKey.begin()+1, prevout.scriptPubKey.end()-1);
                         addressType = 1;
                     } else {
-                        /** YERB START */
+                        /** EGOD START */
                         if (AreAssetsDeployed()) {
                             hashBytes.SetNull();
                             addressType = 0;
@@ -2372,21 +2374,21 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                                 isAsset = true;
                             }
                         } else {
-                            /** YERB END */
+                            /** EGOD END */
                             hashBytes.SetNull();
                             addressType = 0;
                         }
                     }
 
                     if (fAddressIndex && addressType > 0) {
-                        /** YERB START */
+                        /** EGOD START */
                         if (isAsset) {
                             // record spending activity
                             addressIndex.push_back(std::make_pair(CAddressIndexKey(addressType, hashBytes, assetName, pindex->nHeight, i, txhash, j, true), assetAmount * -1));
 
                             // remove address from unspent index
                             addressUnspentIndex.push_back(std::make_pair(CAddressUnspentKey(addressType, hashBytes, assetName, input.prevout.hash, input.prevout.n), CAddressUnspentValue()));
-                        /** YERB END */
+                        /** EGOD END */
                         } else {
                             // record spending activity
                             addressIndex.push_back(std::make_pair(CAddressIndexKey(addressType, hashBytes, pindex->nHeight, i, txhash, j, true), prevout.nValue * -1));
@@ -2454,7 +2456,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                     addressIndex.push_back(std::make_pair(CAddressIndexKey(1, hashBytes, pindex->nHeight, i, txhash, k, false), out.nValue));
                     addressUnspentIndex.push_back(std::make_pair(CAddressUnspentKey(1, hashBytes, txhash, k), CAddressUnspentValue(out.nValue, out.scriptPubKey, pindex->nHeight)));
                 } else {
-                    /** YERB START */
+                    /** EGOD START */
                     if (AreAssetsDeployed()) {
                         std::string assetName;
                         CAmount assetAmount;
@@ -2475,7 +2477,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                     } else {
                         continue;
                     }
-                    /** YERB END */
+                    /** EGOD END */
                 }
 
             }
@@ -2486,11 +2488,11 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
             blockundo.vtxundo.push_back(CTxUndo());
         }
 
-        /** YERB START */
+        /** EGOD START */
         // Create the basic empty string pair for the undoblock
         std::pair<std::string, CBlockAssetUndo> undoPair = std::make_pair("", CBlockAssetUndo());
         std::pair<std::string, CBlockAssetUndo>* undoAssetData = &undoPair;
-        /** YERB END */
+        /** EGOD END */
 
         UpdateCoins(tx, view, i == 0 ? undoDummy : blockundo.vtxundo.back(), pindex->nHeight, block.GetHash(), assetsCache, undoAssetData);
 
@@ -2506,7 +2508,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     LogPrint(BCLog::BENCHMARK, "    - Verify %u txins: %.2fms (%.3fms/txin) [%.2fs]\n", nInputs - 1, 0.001 * (nTime4 - nTime2), nInputs <= 1 ? 0 : 0.001 * (nTime4 - nTime2) / (nInputs-1), nTimeVerify * 0.000001);
 
 
-    // YERBAS
+    // egodcoin
 
     // It's possible that we simply don't have enough data and this could fail
     // (i.e. block itself could be a correct one and we need to store it),
@@ -2514,7 +2516,7 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     // the peer who sent us this block is missing some data and wasn't able
     // to recognize that block is actually invalid.
 
-    // YERBAS : CHECK TRANSACTIONS FOR INSTANTSEND
+    // egodcoin : CHECK TRANSACTIONS FOR INSTANTSEND
 
     if (sporkManager.IsSporkActive(SPORK_3_INSTANTSEND_BLOCK_FILTERING)) {
         // Require other nodes to comply, send them some data in case they are missing it.
@@ -2532,18 +2534,18 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
                 // The node which relayed this should switch to correct chain.
                 // TODO: relay instantsend data/proof.
                 LOCK(cs_main);
-                return state.DoS(10, error("ConnectBlock(YERBAS): transaction %s conflicts with transaction lock %s", tx->GetHash().ToString(), conflictLock->txid.ToString()),
+                return state.DoS(10, error("ConnectBlock(egodcoin): transaction %s conflicts with transaction lock %s", tx->GetHash().ToString(), conflictLock->txid.ToString()),
                                  REJECT_INVALID, "conflict-tx-lock");
             }
         }
     } else {
-        LogPrintf("ConnectBlock(YERBAS): spork is off, skipping transaction locking checks\n");
+        LogPrintf("ConnectBlock(egodcoin): spork is off, skipping transaction locking checks\n");
     }
 
     int64_t nTime5_1 = GetTimeMicros(); nTimeISFilter += nTime5_1 - nTime4;
     LogPrint(BCLog::BENCHMARK, "      - IS filter: %.2fms [%.2fs]\n", 0.001 * (nTime5_1 - nTime4), nTimeISFilter * 0.000001);
 
-    // YERBAS : MODIFIED TO CHECK SMARTNODE PAYMENTS AND SUPERBLOCKS
+    // egodcoin : MODIFIED TO CHECK SMARTNODE PAYMENTS AND SUPERBLOCKS
 
     // TODO: resync data (both ways?) and try to reprocess this block later.
     CAmount blockReward = nFees + GetBlockSubsidy(pindex->pprev->nBits, pindex->pprev->nHeight, chainparams.GetConsensus());
@@ -2553,30 +2555,30 @@ static bool ConnectBlock(const CBlock& block, CValidationState& state, CBlockInd
     LogPrint(BCLog::BENCHMARK, "      - GetBlockSubsidy: %.2fms [%.2fs]\n", 0.001 * (nTime5_2 - nTime5_1), nTimeSubsidy * 0.000001);
 
     if (!IsBlockValueValid(block, pindex->nHeight, (blockReward + specialTxFees), strError)) {
-        return state.DoS(0, error("ConnectBlock(YERBAS): %s", strError), REJECT_INVALID, "bad-cb-amount");
+        return state.DoS(0, error("ConnectBlock(egodcoin): %s", strError), REJECT_INVALID, "bad-cb-amount");
     }
 
     int64_t nTime5_3 = GetTimeMicros(); nTimeValueValid += nTime5_3 - nTime5_2;
     LogPrint(BCLog::BENCHMARK, "      - IsBlockValueValid: %.2fms [%.2fs]\n", 0.001 * (nTime5_3 - nTime5_2), nTimeValueValid * 0.000001);
     if (!IsBlockPayeeValid(*block.vtx[0], pindex->nHeight, blockReward, specialTxFees)) {
-        return state.DoS(0, error("ConnectBlock(YERBAS): couldn't find smartnode or superblock payments"),
+        return state.DoS(0, error("ConnectBlock(egodcoin): couldn't find smartnode or superblock payments"),
                                 REJECT_INVALID, "bad-cb-payee");
     }
 
     int64_t nTime5_4 = GetTimeMicros(); nTimePayeeValid += nTime5_4 - nTime5_3;
     LogPrint(BCLog::BENCHMARK, "      - IsBlockPayeeValid: %.2fms [%.2fs]\n", 0.001 * (nTime5_4 - nTime5_3), nTimePayeeValid * 0.000001);
     if (!ProcessSpecialTxsInBlock(block, pindex, state, fJustCheck, fScriptChecks)) {
-        return error("ConnectBlock(YERBAS): ProcessSpecialTxsInBlock for block %s failed with %s",
+        return error("ConnectBlock(egodcoin): ProcessSpecialTxsInBlock for block %s failed with %s",
                      pindex->GetBlockHash().ToString(), FormatStateMessage(state));
     }
 
     int64_t nTime5_5 = GetTimeMicros(); nTimeProcessSpecial += nTime5_5 - nTime5_4;
     LogPrint(BCLog::BENCHMARK, "      - ProcessSpecialTxsInBlock: %.2fms [%.2fs]\n", 0.001 * (nTime5_5 - nTime5_4), nTimeProcessSpecial * 0.000001);
 
-    int64_t nTime5 = GetTimeMicros(); nTimeYerbasSpecific += nTime5 - nTime4;
-    LogPrint(BCLog::BENCHMARK, "    - Yerbas specific: %.2fms [%.2fs]\n", 0.001 * (nTime5 - nTime4), nTimeYerbasSpecific * 0.000001);
+    int64_t nTime5 = GetTimeMicros(); nTimeEgodcoinSpecific += nTime5 - nTime4;
+    LogPrint(BCLog::BENCHMARK, "    - Egodcoin specific: %.2fms [%.2fs]\n", 0.001 * (nTime5 - nTime4), nTimeEgodcoinSpecific * 0.000001);
 
-    // END YERBAS
+    // END egodcoin
 
     if (fJustCheck)
         return true;
@@ -2797,7 +2799,7 @@ bool static FlushStateToDisk(const CChainParams& chainparams, CValidationState &
             if (!evoDb->CommitRootTransaction()) {
                 return AbortNode(state, "Failed to commit EvoDB");
             }
-            /** YERB START */
+            /** EGOD START */
             // Flush the assetstate
             if (AreAssetsDeployed()) {
                 // Flush the assetstate
@@ -2825,7 +2827,7 @@ bool static FlushStateToDisk(const CChainParams& chainparams, CValidationState &
                         return AbortNode(state, "Failed to Flush the message channel database");
                 }
             }
-            /** YERB END */
+            /** EGOD END */
 
             nLastFlush = nNow;
         }
@@ -3075,21 +3077,21 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
     int64_t nTime3;
     LogPrint(BCLog::BENCHMARK, "  - Load block from disk: %.2fms [%.2fs]\n", (nTime2 - nTime1) * 0.001, nTimeReadFromDisk * 0.000001);
     
-    /** YERBAS ASSETS START */
+    /** egodcoin ASSETS START */
     // Initialize sets used from removing asset entries from the mempool
     ConnectedBlockAssetData assetDataFromBlock;
-    /** YERBAS ASSETS END */
+    /** egodcoin ASSETS END */
 
     {
         auto dbTx = evoDb->BeginTransaction();
 
         CCoinsViewCache view(pcoinsTip);
-        /** YERBAS ASSETS START */
+        /** egodcoin ASSETS START */
         // Create the empty asset cache, that will be sent into the connect block
         // All new data will be added to the cache, and will be flushed back into passets after a successful
         // Connect Block cycle
         CAssetsCache assetCache;
-        /** YERBAS ASSETS END */
+        /** egodcoin ASSETS END */
 
         bool rv = ConnectBlock(blockConnecting, state, pindexNew, view, chainparams, &assetCache);
         GetMainSignals().BlockChecked(blockConnecting, state);
@@ -3099,7 +3101,7 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
             return error("ConnectTip(): ConnectBlock %s failed with %s", pindexNew->GetBlockHash().ToString(), FormatStateMessage(state));
         }
         
-        /** YERBAS ASSETS START */
+        /** egodcoin ASSETS START */
         // Get the newly created assets, from the connectblock assetCache so we can remove the correct assets from the mempool
         assetDataFromBlock = {assetCache.setNewAssetsToAdd};
 
@@ -3112,16 +3114,16 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
                 mapReissuedTx.erase(txHash);
             }
         }
-        /** YERBAS ASSETS END */
+        /** egodcoin ASSETS END */
         nTime3 = GetTimeMicros(); nTimeConnectTotal += nTime3 - nTime2;
         LogPrint(BCLog::BENCHMARK, "  - Connect total: %.2fms [%.2fs]\n", (nTime3 - nTime2) * 0.001, nTimeConnectTotal * 0.000001);
         bool flushed = view.Flush();
         assert(flushed);
         dbTx->Commit();
 
-        /** YERBAS ASSETS START */
+        /** egodcoin ASSETS START */
         bool assetFlushed = assetCache.Flush();
-        /** YERBAS ASSETS END */
+        /** egodcoin ASSETS END */
     }
     int64_t nTime4 = GetTimeMicros(); nTimeFlush += nTime4 - nTime3;
     LogPrint(BCLog::BENCHMARK, "  - Flush: %.2fms [%.2fs]\n", (nTime4 - nTime3) * 0.001, nTimeFlush * 0.000001);
@@ -3142,7 +3144,7 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
 
     connectTrace.BlockConnected(pindexNew, std::move(pthisBlock));
 
-        /** YERB START */
+        /** EGOD START */
 
     //  Determine if the new block height has any pending snapshot requests,
     //      and if so, capture a snapshot of the relevant target assets.
@@ -3169,7 +3171,7 @@ bool static ConnectTip(CValidationState& state, const CChainParams& chainparams,
         CheckRewardDistributions(vpwallets[0]);
     }
 #endif
-    /** YERB END */
+    /** EGOD END */
     return true;
 }
 
@@ -4185,9 +4187,9 @@ bool TestBlockValidity(CValidationState& state, const CChainParams& chainparams,
 
     // begin tx and let it rollback
     auto dbTx = evoDb->BeginTransaction();
-    /** YERB ASSETS START */
+    /** EGOD ASSETS START */
     CAssetsCache assetCache = *GetCurrentAssetCache();
-    /** YERB ASSETS END */
+    /** EGOD ASSETS END */
     // NOTE: CheckBlockHeader is called by CheckBlock
     if (!ContextualCheckBlockHeader(block, state, chainparams, pindexPrev, GetAdjustedTime()))
         return error("%s: Consensus::ContextualCheckBlockHeader: %s", __func__, FormatStateMessage(state));
@@ -4695,7 +4697,7 @@ static bool RollforwardBlock(const CBlockIndex* pindex, CCoinsViewCache& inputs,
     // MUST process special txes before updating UTXO to ensure consistency between mempool and block processing
     CValidationState state;
     if (!ProcessSpecialTxsInBlock(block, pindex, state, false /*fJustCheck*/, false /*fScriptChecks*/)) {
-        return error("RollforwardBlock(YERB): ProcessSpecialTxsInBlock for block %s failed with %s",
+        return error("RollforwardBlock(EGOD): ProcessSpecialTxsInBlock for block %s failed with %s",
             pindex->GetBlockHash().ToString(), FormatStateMessage(state));
     }
 

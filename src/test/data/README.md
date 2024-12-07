@@ -1,7 +1,7 @@
 Description
 ------------
 
-This directory contains data-driven tests for various aspects of Yerbas.
+This directory contains data-driven tests for various aspects of Egodcoin.
 
 License
 --------

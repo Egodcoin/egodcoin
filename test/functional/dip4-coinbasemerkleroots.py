@@ -1,12 +1,14 @@
 #!/usr/bin/env python3
 # Copyright (c) 2015-2020 The Dash Core developers
 # Copyright (c) 2020 The Yerbas developers
+# Copyright (c) 2024 https://egodcoin.org
+#
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 from collections import namedtuple
 
 from test_framework.mininode import *
-from test_framework.test_framework import YerbasTestFramework
+from test_framework.test_framework import EgodcoinTestFramework
 from test_framework.util import p2p_port, assert_equal, sync_blocks, set_node_times
 
 '''
@@ -37,9 +39,9 @@ class TestNode(NodeConnCB):
         return self.last_mnlistdiff
 
 
-class LLMQCoinbaseCommitmentsTest(YerbasTestFramework):
+class LLMQCoinbaseCommitmentsTest(EgodcoinTestFramework):
     def set_test_params(self):
-        self.set_yerbas_test_params(6, 5, fast_dip3_enforcement=True)
+        self.set_egodcoin_test_params(6, 5, fast_dip3_enforcement=True)
 
     def run_test(self):
         self.test_node = TestNode()
@@ -56,7 +58,7 @@ class LLMQCoinbaseCommitmentsTest(YerbasTestFramework):
         mnList = self.test_getmnlistdiff(null_hash, self.nodes[0].getbestblockhash(), {}, [], expectedUpdated)
         expectedUpdated2 = expectedUpdated + []
 
-        # Register one more MN, but don't start it (that would fail as YerbasTestFramework doesn't support this atm)
+        # Register one more MN, but don't start it (that would fail as EgodcoinTestFramework doesn't support this atm)
         baseBlockHash = self.nodes[0].getbestblockhash()
         self.prepare_smartnode(self.mn_count)
         new_mn = self.mninfo[self.mn_count]

@@ -1,10 +1,12 @@
 // Copyright (c) 2019 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef YERBAS_MNAUTH_H
-#define YERBAS_MNAUTH_H
+#ifndef EGODCOIN_MNAUTH_H
+#define EGODCOIN_MNAUTH_H
 
 #include "bls/bls.h"
 #include "serialize.h"
@@ -56,4 +58,4 @@ public:
 };
 
 
-#endif //YERBAS_MNAUTH_H
+#endif // EGODCOIN_MNAUTH_H

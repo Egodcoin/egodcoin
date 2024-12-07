@@ -609,7 +609,7 @@ void TransactionView::showAddressQRCode()
 
     dialog->setModel(model);
     dialog->setAttribute(Qt::WA_DeleteOnClose);
-    dialog->setInfo(tr("QR code"), "yerbas:"+strAddress, "", strAddress);
+    dialog->setInfo(tr("QR code"), "egodcoin:"+strAddress, "", strAddress);
     dialog->show();
 }
 

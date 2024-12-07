@@ -1,10 +1,12 @@
 // Copyright (c) 2018-2020 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef YERBAS_QUORUMS_DKGSESSIONHANDLER_H
-#define YERBAS_QUORUMS_DKGSESSIONHANDLER_H
+#ifndef EGODCOIN_QUORUMS_DKGSESSIONHANDLER_H
+#define EGODCOIN_QUORUMS_DKGSESSIONHANDLER_H
 
 #include "llmq/quorums_dkgsession.h"
 
@@ -143,4 +145,4 @@ private:
 
 } // namespace llmq
 
-#endif //YERBAS_QUORUMS_DKGSESSIONHANDLER_H
+#endif // EGODCOIN_QUORUMS_DKGSESSIONHANDLER_H

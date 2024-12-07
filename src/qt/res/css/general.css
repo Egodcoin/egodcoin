@@ -901,7 +901,7 @@ QToolBar > QToolButton:disabled {
 
 QToolBar QLabel#lblToolbarLogo {
     padding: 12px;
-    image: url(':/images/yerbas_logo_toolbar');
+    image: url(':/images/egodcoin_logo_toolbar');
     height: 2.5em;
 }
 

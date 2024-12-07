@@ -9,7 +9,7 @@
 #include "sync.h"
 #include "utilstrencodings.h"
 #include "utilmoneystr.h"
-#include "test/test_yerbas.h"
+#include "test/test_egodcoin.h"
 
 #include <stdint.h>
 #include <vector>

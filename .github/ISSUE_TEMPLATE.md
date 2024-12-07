@@ -1,8 +1,8 @@
 <!--- Remove sections that do not apply -->
 
-This issue tracker is only for technical issues related to Yerbas Core.
+This issue tracker is only for technical issues related to Egodcoin Core.
 
-General Yerbas questions and/or support requests and are best directed to the [Yerbas Discord](https://discord.com/invite/2T8xG7e).
+General Egodcoin questions and/or support requests and are best directed to the [Egodcoin Discord](https://discord.com/invite/2T8xG7e).
 
 To report critical security issues, DM the Core or Developer Teams instead of creating Github issues.
 
@@ -23,7 +23,7 @@ Tell us what happens instead
 ### Screenshots.
 If the issue is related to the GUI, screenshots can be added to this issue via drag & drop.
 
-### What version of Yerbas Core are you using?
+### What version of Egodcoin Core are you using?
 List the version number/commit ID, and if it is an official binary, self compiled or a distribution package such as PPA.
 
 ### Machine specs:

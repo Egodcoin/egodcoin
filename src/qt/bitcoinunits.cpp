@@ -1,6 +1,8 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
 // Copyright (c) 2014-2019 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -20,10 +22,10 @@ BitcoinUnits::BitcoinUnits(QObject *parent):
 QList<BitcoinUnits::Unit> BitcoinUnits::availableUnits()
 {
     QList<BitcoinUnits::Unit> unitlist;
-    unitlist.append(YERB);
-    unitlist.append(mYERB);
-    unitlist.append(uYERB);
-    unitlist.append(weeds);
+    unitlist.append(EGOD);
+    unitlist.append(mEGOD);
+    unitlist.append(uEGOD);
+    unitlist.append(egods);
     return unitlist;
 }
 
@@ -31,10 +33,10 @@ bool BitcoinUnits::valid(int unit)
 {
     switch(unit)
     {
-    case YERB:
-    case mYERB:
-    case uYERB:
-    case weeds:
+    case EGOD:
+    case mEGOD:
+    case uEGOD:
+    case egods:
         return true;
     default:
         return false;
@@ -47,10 +49,10 @@ QString BitcoinUnits::name(int unit)
     {
         switch(unit)
         {
-            case YERB: return QString("YERB");
-            case mYERB: return QString("mYERB");
-            case uYERB: return QString::fromUtf8("μYERB");
-            case weeds: return QString("weeds");
+            case EGOD: return QString("EGOD");
+            case mEGOD: return QString("mEGOD");
+            case uEGOD: return QString::fromUtf8("μEGOD");
+            case egods: return QString("egods");
             default: return QString("???");
         }
     }
@@ -58,10 +60,10 @@ QString BitcoinUnits::name(int unit)
     {
         switch(unit)
         {
-            case YERB: return QString("tYERB");
-            case mYERB: return QString("mtYERB");
-            case uYERB: return QString::fromUtf8("μtYERB");
-            case weeds: return QString("tduffs");
+            case EGOD: return QString("tEGOD");
+            case mEGOD: return QString("mtEGOD");
+            case uEGOD: return QString::fromUtf8("μtEGOD");
+            case egods: return QString("tegods");
             default: return QString("???");
         }
     }
@@ -73,10 +75,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case YERB: return QString("Yerbas");
-            case mYERB: return QString("Milli-Yerbas (1 / 1" THIN_SP_UTF8 "000)");
-            case uYERB: return QString("Micro-Yerbas (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case weeds: return QString("Ten Nano-Yerbas (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case EGOD: return QString("Egodcoin");
+            case mEGOD: return QString("Milli-Egodcoin (1 / 1" THIN_SP_UTF8 "000)");
+            case uEGOD: return QString("Micro-Egodcoin (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case egods: return QString("Ten Nano-Egodcoin (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -84,10 +86,10 @@ QString BitcoinUnits::description(int unit)
     {
         switch(unit)
         {
-            case YERB: return QString("TestYerbass");
-            case mYERB: return QString("Milli-TestYerbas (1 / 1" THIN_SP_UTF8 "000)");
-            case uYERB: return QString("Micro-TestYerbas (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
-            case weeds: return QString("Ten Nano-TestYerbas (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case EGOD: return QString("TestEgodcoins");
+            case mEGOD: return QString("Milli-TestEgodcoin (1 / 1" THIN_SP_UTF8 "000)");
+            case uEGOD: return QString("Micro-TestEgodcoin (1 / 1" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
+            case egods: return QString("Ten Nano-TestEgodcoin (1 / 100" THIN_SP_UTF8 "000" THIN_SP_UTF8 "000)");
             default: return QString("???");
         }
     }
@@ -97,10 +99,10 @@ qint64 BitcoinUnits::factor(int unit)
 {
     switch(unit)
     {
-    case YERB:  return 100000000;
-    case mYERB: return 100000;
-    case uYERB: return 100;
-    case weeds: return 1;
+    case EGOD:  return 100000000;
+    case mEGOD: return 100000;
+    case uEGOD: return 100;
+    case egods: return 1;
     default:   return 100000000;
     }
 }
@@ -126,10 +128,10 @@ int BitcoinUnits::decimals(int unit)
 {
     switch(unit)
     {
-    case YERB: return 8;
-    case mYERB: return 5;
-    case uYERB: return 2;
-    case weeds: return 0;
+    case EGOD: return 8;
+    case mEGOD: return 5;
+    case uEGOD: return 2;
+    case egods: return 0;
     default: return 0;
     }
 }
@@ -184,7 +186,7 @@ QString BitcoinUnits::formatWithUnit(int unit, const CAmount& amount, bool pluss
 
 QString BitcoinUnits::formatWithCustomName(QString customName, const CAmount& amount, int unit, bool plussign, SeparatorStyle separators)
 {
-    return format(YERB, amount / factorAsset(MAX_ASSET_UNITS - unit), plussign, separators, unit) + QString(" ") + customName;
+    return format(EGOD, amount / factorAsset(MAX_ASSET_UNITS - unit), plussign, separators, unit) + QString(" ") + customName;
 }
 
 QString BitcoinUnits::formatHtmlWithUnit(int unit, const CAmount& amount, bool plussign, SeparatorStyle separators)

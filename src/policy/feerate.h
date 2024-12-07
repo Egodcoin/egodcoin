@@ -12,6 +12,7 @@
 #include <string>
 
 extern const std::string CURRENCY_UNIT;
+extern const std::string ASSET_UNIT;
 
 /**
  * Fee rate in satoshis per kilobyte: CAmount / kB

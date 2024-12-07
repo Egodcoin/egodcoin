@@ -1,9 +1,11 @@
 // Copyright (c) 2019 The Yerbas Core developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef YERBAS_NEWASSET_H
-#define YERBAS_NEWASSET_H
+#ifndef EGODCOIN_NEWASSET_H
+#define EGODCOIN_NEWASSET_H
 
 #include <string>
 #include <sstream>
@@ -652,4 +654,4 @@ private:
     size_t maxSize;
 };
 
-#endif //YERBAS_NEWASSET_H
+#endif // EGODCOIN_NEWASSET_H

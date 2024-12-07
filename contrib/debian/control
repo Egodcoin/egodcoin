@@ -1,4 +1,4 @@
-Source: yerbas
+Source: egodcoin
 Section: utils
 Priority: optional
 Maintainer: Holger Schinzel <holger@yerbas.org>
@@ -26,45 +26,45 @@ Build-Depends: debhelper,
  python,
  libzmq3-dev
 Standards-Version: 3.9.2
-Homepage: https://www.yerbas.org/
-Vcs-Git: git://github.com/The-Yerbas-Endeavor/yerbas.git
-Vcs-Browser: https://github.com/The-Yerbas-Endeavor/yerbas
+Homepage: https://www.egodcoin.org/
+Vcs-Git: git://github.com/Egodcoin/egodcoin.git
+Vcs-Browser: https://github.com/Egodcoin/egodcoin
 
-Package: yerbasd
+Package: egodcoind
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - daemon
- Yerbas is an experimental new digital currency that enables instant, private
- payments to anyone, anywhere in the world. Yerbas uses peer-to-peer
+Egodcoin is an experimental new digital currency that enables instant, private
+ payments to anyone, anywhere in the world. Egodcoin uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. Yerbas Core
+ and issuing money are carried out collectively by the network. Egodcoin Core
  is the name of the open source software which enables the use of this currency.
  .
- This package provides the daemon, yerbasd, and the CLI tool
- yerbas-cli to interact with the daemon.
+ This package provides the daemon, egodcoind, and the CLI tool
+ egodcoin-cli to interact with the daemon.
 
-Package: yerbas-qt
+Package: egodcoin-qt
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer network based digital currency - Qt GUI
- Yerbas is an experimental new digital currency that enables instant, private
- payments to anyone, anywhere in the world. Yerbas uses peer-to-peer
+Egodcoin is an experimental new digital currency that enables instant, private
+ payments to anyone, anywhere in the world. Egodcoin uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. Yerbas Core
+ and issuing money are carried out collectively by the network. Egodcoin Core
  is the name of the open source software which enables the use of this currency.
  .
- This package provides Yerbas-Qt, a GUI for Yerbas based on Qt.
+ This package provides Egodcoin-Qt, a GUI for Egodcoin based on Qt.
 
-Package: yerbas-tx
+Package: egodcoin-tx
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Description: peer-to-peer digital currency - standalone transaction tool
- Yerbas is an experimental new digital currency that enables instant, private
- payments to anyone, anywhere in the world. Yerbas uses peer-to-peer
+Egodcoin is an experimental new digital currency that enables instant, private
+ payments to anyone, anywhere in the world. Egodcoin uses peer-to-peer
  technology to operate with no central authority: managing transactions
- and issuing money are carried out collectively by the network. Yerbas Core
+ and issuing money are carried out collectively by the network. Egodcoin Core
  is the name of the open source software which enables the use of this currency.
  .
- This package provides yerbas-tx, a command-line transaction creation
- tool which can be used without a yerbas daemon.  Some means of
+ This package provides egodcoin-tx, a command-line transaction creation
+ tool which can be used without a egodcoin daemon.  Some means of
  exchanging minimal transaction data with peers is still required.

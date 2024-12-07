@@ -1,6 +1,8 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
 // Copyright (c) 2014-2020 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,7 +15,7 @@ static const int MODEL_UPDATE_DELAY = 250;
 /* AskPassphraseDialog -- Maximum passphrase length */
 static const int MAX_PASSPHRASE_SIZE = 1024;
 
-/* YerbasGUI -- Size of icons in status bar */
+/* EgodcoinGUI -- Size of icons in status bar */
 static const int STATUSBAR_ICONSIZE = 16;
 
 static const bool DEFAULT_SPLASHSCREEN = true;
@@ -32,11 +34,11 @@ static const int MAX_URI_LENGTH = 255;
 /* Number of frames in spinner animation */
 #define SPINNER_FRAMES 36
 
-#define QAPP_ORG_NAME "Yerbas"
-#define QAPP_ORG_DOMAIN "yerbas.org"
-#define QAPP_APP_NAME_DEFAULT "Yerbas-Qt"
-#define QAPP_APP_NAME_TESTNET "Yerbas-Qt-testnet"
-#define QAPP_APP_NAME_DEVNET "Yerbas-Qt-%s"
-#define QAPP_APP_NAME_REGTEST "Yerbas-Qt-regtest"
+#define QAPP_ORG_NAME "Egodoin"
+#define QAPP_ORG_DOMAIN "egodoin.org"
+#define QAPP_APP_NAME_DEFAULT "Egodoin-Qt"
+#define QAPP_APP_NAME_TESTNET "Egodoin-Qt-testnet"
+#define QAPP_APP_NAME_DEVNET "Egodoin-Qt-%s"
+#define QAPP_APP_NAME_REGTEST "Egodoin-Qt-regtest"
 
 #endif // BITCOIN_QT_GUICONSTANTS_H

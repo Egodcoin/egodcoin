@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 # Copyright (c) 2015-2020 The Dash Core developers
 # Copyright (c) 2020 The Yerbas developers
+# Copyright (c) 2024 https://egodcoin.org
+#
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 import time
 
 from test_framework.mininode import *
-from test_framework.test_framework import YerbasTestFramework
+from test_framework.test_framework import EgodcoinTestFramework
 from test_framework.util import *
 
 '''
@@ -17,9 +19,9 @@ Checks LLMQs signing sessions
 
 '''
 
-class LLMQSigningTest(YerbasTestFramework):
+class LLMQSigningTest(EgodcoinTestFramework):
     def set_test_params(self):
-        self.set_yerbas_test_params(6, 5, fast_dip3_enforcement=True)
+        self.set_egodcoin_test_params(6, 5, fast_dip3_enforcement=True)
 
     def run_test(self):
 

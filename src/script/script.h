@@ -182,7 +182,7 @@ enum opcodetype
     OP_NOP9 = 0xb8,
     OP_NOP10 = 0xb9,
 
-    OP_YERB_ASSET = 0xc0,
+    OP_EGOD_ASSET = 0xc0,
 
     // template matching params
     OP_SMALLINTEGER = 0xfa,
@@ -563,9 +563,9 @@ public:
             pc += nSize;
         }
 
-        // If we see an op yerbas asset, we consider all data after it has data, and not op codes
+        // If we see an op egodcoin asset, we consider all data after it has data, and not op codes
         // Move the pc to the end of the script
-        if (opcode == OP_YERB_ASSET) {
+        if (opcode == OP_EGOD_ASSET) {
             unsigned int nSize = end() - pc;
             if (pvchRet)
                 pvchRet->assign(pc, pc + nSize);
@@ -648,7 +648,7 @@ public:
 
     bool IsPayToScriptHash() const;
 
-    /* YERB ASSETS START */
+    /* EGOD ASSETS START */
     enum class txnouttype;
     bool IsAssetScript(int& nType, bool& fIsOwner, int& nStartingIndex) const;
     bool IsAssetScript(int& nType, bool& fIsOwner) const;
@@ -662,7 +662,7 @@ public:
     bool IsNullAssetTxDataScript() const;
     bool IsNullAssetVerifierTxDataScript() const;
     bool IsNullGlobalRestrictionAssetTxDataScript() const;
-    /* YERB ASSETS END */
+    /* EGOD ASSETS END */
 
     /** Used for obsolete pay-to-pubkey addresses indexing. */
     bool IsPayToPublicKey() const;

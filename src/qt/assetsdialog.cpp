@@ -121,11 +121,11 @@ AssetsDialog::AssetsDialog(const PlatformStyle *_platformStyle, QWidget *parent)
     ui->checkBoxMinimumFee->setChecked(settings.value("fPayOnlyMinFee").toBool());
     minimizeFeeSection(settings.value("fFeeSectionMinimized").toBool());
 
-    /** YERB START */
+    /** EGOD START */
     setupAssetControlFrame(platformStyle);
     setupScrollView(platformStyle);
     setupFeeControl(platformStyle);
-    /** YERB END */
+    /** EGOD END */
 }
 
 void AssetsDialog::setClientModel(ClientModel *_clientModel)
@@ -807,7 +807,7 @@ void AssetsDialog::assetControlChangeEdited(const QString& text)
         }
         else if (!IsValidDestination(dest)) // Invalid address
         {
-            ui->labelAssetControlChangeLabel->setText(tr("Warning: Invalid Yerbas address"));
+            ui->labelAssetControlChangeLabel->setText(tr("Warning: Invalid Egodcoin address"));
         }
         else // Valid address
         {
@@ -886,7 +886,7 @@ void AssetsDialog::assetControlUpdateLabels()
     }
 }
 
-/** YERB START */
+/** EGOD START */
 void AssetsDialog::assetControlUpdateSendCoinsDialog()
 {
     for(int i = 0; i < ui->entries->count(); ++i)
@@ -951,4 +951,4 @@ void AssetsDialog::handleFirstSelection()
         entry->refreshAssetList();
     }
 }
-/** YERB END */
+/** EGOD END */

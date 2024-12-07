@@ -46,10 +46,10 @@ public:
     //! Controls which types of coins are allowed to be used (default: ALL_COINS)
     CoinType nCoinType;
 
-    /** YERB START */
+    /** EGOD START */
     //! Name of the asset that is selected, used when sending assets with coincontrol
     std::string strAssetSelected;
-    /** YERB END */
+    /** EGOD END */
 
     CCoinControl()
     {
@@ -132,7 +132,7 @@ public:
         vOutpoints.assign(setAssetsSelected.begin(), setAssetsSelected.end());
     }
 
-    // Yerbas-specific helpers
+    // Egodcoin-specific helpers
 
     void UsePrivateSend(bool fUsePrivateSend)
     {

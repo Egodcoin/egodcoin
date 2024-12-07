@@ -1,9 +1,11 @@
 // Copyright (c) 2022 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef YERB_POWCACHE_H
-#define YERB_POWCACHE_H
+#ifndef EGOD_POWCACHE_H
+#define EGOD_POWCACHE_H
 
 #include <uint256.h>
 #include <sync.h>
@@ -75,4 +77,4 @@ class CPowCache : public unordered_lru_cache<uint256, uint256, std::hash<uint256
         }
 };
 
-#endif // YERB_POWCACHE_H
+#endif // EGOD_POWCACHE_H

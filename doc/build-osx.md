@@ -38,23 +38,23 @@ Next, follow the instructions in [build-generic](build-generic.md)
 Running
 -------
 
-Yerbas Core is now available at `./src/yerbasd`
+Egodcoin Core is now available at `./src/egodcoind`
 
 Before running, it's recommended you create an RPC configuration file.
 
-    echo -e "rpcuser=yerbasrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/YerbasCore/yerbas.conf"
+    echo -e "rpcuser=egodcoinrpc\nrpcpassword=$(xxd -l 16 -p /dev/urandom)" > "/Users/${USER}/Library/Application Support/EgodcoinCore/egodcoin.conf"
 
-    chmod 600 "/Users/${USER}/Library/Application Support/YerbasCore/yerbas.conf"
+    chmod 600 "/Users/${USER}/Library/Application Support/EgodcoinCore/egodcoin.conf"
 
-The first time you run yerbasd, it will start downloading the blockchain. This process could take several hours.
+The first time you run egodcoind, it will start downloading the blockchain. This process could take several hours.
 
 You can monitor the download process by looking at the debug.log file:
 
-    tail -f $HOME/Library/Application\ Support/YerbasCore/debug.log
+    tail -f $HOME/Library/Application\ Support/EgodcoinCore/debug.log
 
 Other commands:
 -------
 
-    ./src/yerbasd -daemon # Starts the yerbas daemon.
-    ./src/yerbas-cli --help # Outputs a list of command-line options.
-    ./src/yerbas-cli help # Outputs a list of RPC commands when the daemon is running.
+    ./src/egodcoind -daemon # Starts the egodcoin daemon.
+    ./src/egodcoin-cli --help # Outputs a list of command-line options.
+    ./src/egodcoin-cli help # Outputs a list of RPC commands when the daemon is running.

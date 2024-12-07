@@ -4,7 +4,7 @@
 
 #include "compressor.h"
 #include "util.h"
-#include "test/test_yerbas.h"
+#include "test/test_egodcoin.h"
 
 #include <stdint.h>
 

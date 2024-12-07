@@ -1,4 +1,6 @@
 // Copyright (c) 2017-2019 The Yerbas Core developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 

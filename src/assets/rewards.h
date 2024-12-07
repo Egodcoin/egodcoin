@@ -1,9 +1,11 @@
 // Copyright (c) 2017-2019 The Yerbas Core developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef YERBAS_REWARDS_H
-#define YERBAS_REWARDS_H
+#ifndef EGODCOIN_REWARDS_H
+#define EGODCOIN_REWARDS_H
 
 #include "amount.h"
 #include "tinyformat.h"
@@ -167,4 +169,4 @@ void CheckRewardDistributions(CWallet * p_wallet);
 
 
 
-#endif //YERBAS_REWARDS_H
+#endif // EGODCOIN_REWARDS_H

@@ -25,6 +25,8 @@
 #include <QIcon>
 #include <QList>
 
+extern const std::string ASSET_UNIT;
+
 // Amount column is right-aligned it contains numbers
 static int column_alignments[] = {
         Qt::AlignLeft|Qt::AlignVCenter, /* status */
@@ -652,7 +654,7 @@ QVariant TransactionTableModel::data(const QModelIndex &index, int role) const
         case Amount:
             return formatTxAmount(rec, true, BitcoinUnits::separatorAlways);
         case AssetName:
-            if (rec->assetName != "YERB")
+            if (rec->assetName != ASSET_UNIT)
                return QString::fromStdString(rec->assetName);
             else
                return QString(BitcoinUnits::name(walletModel->getOptionsModel()->getDisplayUnit()));
@@ -772,7 +774,7 @@ QVariant TransactionTableModel::data(const QModelIndex &index, int role) const
     case AssetNameRole:
         {
             QString assetName;
-            if (rec->assetName != "YERB")
+            if (rec->assetName != ASSET_UNIT)
                assetName.append(QString::fromStdString(rec->assetName));
             else
                assetName.append(QString(BitcoinUnits::name(walletModel->getOptionsModel()->getDisplayUnit())));
@@ -814,7 +816,7 @@ QVariant TransactionTableModel::headerData(int section, Qt::Orientation orientat
             case Amount:
                 return tr("Amount removed from or added to balance.");
             case AssetName:
-                return tr("The asset (or YERB) removed or added to balance.");
+                return tr("The asset (or EGOD) removed or added to balance.");
             }
         }
     }

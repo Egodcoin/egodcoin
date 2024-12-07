@@ -1,10 +1,12 @@
 // Copyright (c) 2018-2020 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef YERBAS_QUORUMS_BLOCKPROCESSOR_H
-#define YERBAS_QUORUMS_BLOCKPROCESSOR_H
+#ifndef EGODCOIN_QUORUMS_BLOCKPROCESSOR_H
+#define EGODCOIN_QUORUMS_BLOCKPROCESSOR_H
 
 #include "llmq/quorums_commitment.h"
 #include "llmq/quorums_utils.h"
@@ -69,4 +71,4 @@ extern CQuorumBlockProcessor* quorumBlockProcessor;
 
 } // namespace llmq
 
-#endif//YERBAS_QUORUMS_BLOCKPROCESSOR_H
+#endif // EGODCOIN_QUORUMS_BLOCKPROCESSOR_H

@@ -2,6 +2,8 @@
 // Copyright (c) 2009-2014 The Bitcoin Core developers
 // Copyright (c) 2014-2020 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -96,12 +98,6 @@ void CChainParams::UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64
             consensus.vDeployments[d].nThreshold = nThreshold;
     }
 }
-
-//void CChainParams::UpdateDIP3Parameters(int nActivationHeight, int nEnforcementHeight)
-//{
-//    consensus.DIP0003Height = nActivationHeight;
-//    consensus.DIP0003EnforcementHeight = nEnforcementHeight;
-//}
 
 void CChainParams::UpdateBudgetParameters(int nSmartnodePaymentsStartBlock, int nBudgetPaymentsStartBlock, int nSuperblockStartBlock)
 {
@@ -394,17 +390,15 @@ static Consensus::LLMQParams llmq400_85 = {
 };
 
 /**
- * Main network
- */
-/**
  * What makes a good checkpoint block?
  * + Is surrounded by blocks with reasonable timestamps
- *   (no blocks before with a timestamp after, none after with
- *    timestamp before)
+ *   (no blocks before with a timestamp after, none after with timestamp before)
  * + Contains no strange transactions
  */
 
-
+/**
+ * Main network
+ */
 class CMainParams : public CChainParams {
 public:
     CMainParams() {
@@ -432,10 +426,10 @@ public:
         consensus.DIP0001Enabled = true;
         consensus.DIP0003Enabled = true;
         consensus.DIP0008Enabled = true;
-       // consensus.DIP0003EnforcementHeight = 1047200;
+        // consensus.DIP0003EnforcementHeight = 1047200;
         consensus.powLimit = uint256S("00ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // Yerbas: 1 day
-        consensus.nPowTargetSpacing = 2 * 60; // Yerbas: 2 minutes
+        consensus.nPowTargetTimespan = 24 * 60 * 60; // Egodcoin: 1 day
+        consensus.nPowTargetSpacing = 2 * 60; // Egodcoin: 2 minutes
         consensus.fPowAllowMinDifficultyBlocks = false;
         consensus.fPowNoRetargeting = false;
         consensus.nPowDGWHeight = 60;
@@ -463,36 +457,35 @@ public:
         pchMessageStart[1] = 0x65;//e
         pchMessageStart[2] = 0x72;//r
         pchMessageStart[3] = 0x62;//b
-        nDefaultPort = 15420;
+        nDefaultPort = 15520;
         nPruneAfterHeight = 100000;
-   //   FindMainNetGenesisBlock(1652138420, 0x20001fff, "main");
+        // FindMainNetGenesisBlock(1652138420, 0x20001fff, "main");
         genesis = CreateGenesisBlock(1652138420, 3397, 0x20001fff, 4, 5000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0xeff0bbe5c1bbe1ef8da54822a18f528d6dc58232990bdb86e0a77ab2814ed12c"));
         assert(genesis.hashMerkleRoot == uint256S("0xbfe15871764bf35d6391308fc2dab8846f177ba563d256b1764271987ec99bc0"));
 
-        vSeeds.emplace_back("weednode00.yerbas.org", true);
-        vSeeds.emplace_back("weednode01.yerbas.org", true);
-        vSeeds.emplace_back("weednode02.yerbas.org", true);
-        vSeeds.emplace_back("weednode03.yerbas.org", true);
-        vSeeds.emplace_back("weednode420.yerbas.org", true);
-        vSeeds.emplace_back("weednode05.yerbas.org", true);
+        // vSeeds.emplace_back("seed0.egodcoin.org", true);
+        // vSeeds.emplace_back("seed1.egodcoin.org", true);
+        // vSeeds.emplace_back("seed2.egodcoin.org", true);
+        // vSeeds.emplace_back("seed3.egodcoin.org", true);
+        // vSeeds.emplace_back("seed4.egodcoin.org", true);
+        // vSeeds.emplace_back("seed5.egodcoin.org", true);
 
-
-        // Yerbas addresses start with 'y'
+        // Egodcoin addresses start with 'y'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
-        // Yerbas script addresses start with '8' or '9'
+        // Egodcoin script addresses start with '8' or '9'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
-        // Yerbas private keys start with 'L' or 'K'
+        // Egodcoin private keys start with 'L' or 'K'
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,128);
-        // Yerbas BIP32 pubkeys start with 'xpub' (Bitcoin defaults)
+        // Egodcoin BIP32 pubkeys start with 'xpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x88, 0xB2, 0x1E};
-        // Yerbas BIP32 prvkeys start with 'xprv' (Bitcoin defaults)
+        // Egodcoin BIP32 prvkeys start with 'xprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x88, 0xAD, 0xE4};
-        // Yerbas BIP44 coin type is '5'
+        // Egodcoin BIP44 coin type is '5'
         nExtCoinType = gArgs.GetArg("-extcoinindex", 200);
         nExtCoinType = nExtCoinType == 0 ? 200 : nExtCoinType;
-        vector<FounderRewardStructure> rewardStructures = {  {INT_MAX, 5}// 5% founder/dev fee forever
+        vector<FounderRewardStructure> rewardStructures = {  {INT_MAX, 5} // 5% founder/dev fee forever
                                         										   };
         consensus.nFounderPayment = FounderPayment(rewardStructures, 420);
         consensus.nAssetsRewardShare = Consensus::AssetsRewardShare(0.8,0.2,0.0);
@@ -508,7 +501,7 @@ public:
         );
 
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_main, pnSeed6_main + ARRAYLEN(pnSeed6_main));
-        //vFixedSeeds = std::vector<SeedSpec6>();
+        // vFixedSeeds = std::vector<SeedSpec6>();
         // long living quorum params
         consensus.llmqs[Consensus::LLMQ_50_60] = llmq3_60;
         consensus.llmqs[Consensus::LLMQ_400_60] = llmq20_60;
@@ -549,7 +542,7 @@ public:
           1677962806,   // * UNIX timestamp of last known number of transactions (Block 0)
               337325,   // * total number of transactions between genesis and that timestamp
                         //   (the tx=... number in the SetBestChain debug.log lines)
-                 0.01    // * estimated number of transactions per second after that timestamp
+                 0.01   // * estimated number of transactions per second after that timestamp
         };
     }
 };
@@ -584,10 +577,10 @@ public:
         consensus.DIP0008Enabled = true;
         consensus.BIPCSVEnabled = true;
         consensus.BIP147Enabled = true;
-     //   consensus.DIP0003EnforcementHeight = 7300;
+        // consensus.DIP0003EnforcementHeight = 7300;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 20
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // Yerbas: 1 day
-        consensus.nPowTargetSpacing = 60; // Yerbas: 1 minutes
+        consensus.nPowTargetTimespan = 24 * 60 * 60; // Egodcoin: 1 day
+        consensus.nPowTargetSpacing = 60; // Egodcoin: 1 minutes
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowDGWHeight = 60;
@@ -610,9 +603,9 @@ public:
         pchMessageStart[1] = 0x79;//y
         pchMessageStart[2] = 0x65;//e
         pchMessageStart[3] = 0x72;//r
-        nDefaultPort = 21421;
+        nDefaultPort = 15620;
         nPruneAfterHeight = 1000;
-        //FindMainNetGenesisBlock(1675905317, 0x20001fff, "test");
+        // FindMainNetGenesisBlock(1675905317, 0x20001fff, "test");
         genesis = CreateGenesisBlock(1675905317, 669, 0x20001fff, 4, 5000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
         assert(consensus.hashGenesisBlock == uint256S("0xe3a4fabed29dfc45e9aebe696453545ee2e198bae150e4c115fcc80ef3298554"));
@@ -623,21 +616,21 @@ public:
 
         vSeeds.clear();
         // nodes with support for servicebits filtering should be at the top
-       // vSeeds.emplace_back("weednode420.yerbas.org", true);
-        // vSeeds.emplace_back("weednode03.yerbas.org", true);
+        // vSeeds.emplace_back("seed1.test.egodcoin.org", true);
+        // vSeeds.emplace_back("seed2.test.egodcoin.org", true);
 
-        // Testnet Yerbas addresses start with 'r'
+        // Testnet Egodcoin addresses start with 'r'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,123);
-        // Testnet Yerbas script addresses start with '8' or '9'
+        // Testnet Egodcoin script addresses start with '8' or '9'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
         // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        // Testnet Yerbas BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+        // Testnet Egodcoin BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
-        // Testnet Yerbas BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+        // Testnet Egodcoin BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
-        // Testnet Yerbas BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet Egodcoin BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 10227;
 
         // long living quorum params
@@ -656,9 +649,8 @@ public:
 			}
 		);
 
-        vector<FounderRewardStructure> rewardStructures = {  {INT_MAX, 5}// 5% founder/dev fee forever
-                                                										   };
-		consensus.nFounderPayment = FounderPayment(rewardStructures, 200, "rbKpULX5CgTcwJ7KbzY3BTwzEqwpFYHqXd");
+        vector<FounderRewardStructure> rewardStructures = { {INT_MAX, 5} }; // 5% founder/dev fee forever
+		consensus.nFounderPayment = FounderPayment(rewardStructures, 200, "rbs4q5zojYQ87YK1h8Yv4Modi8S3J9zxWk"); // old rbKpULX5CgTcwJ7KbzY3BTwzEqwpFYHqXd
         consensus.nAssetsRewardShare = Consensus::AssetsRewardShare(0.8,0.2,0.0);
 
         fDefaultConsistencyChecks = false;
@@ -673,7 +665,7 @@ public:
         nPoolMaxParticipants = 5;
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
 
-        vSporkAddresses = {"rWToSNnngGUfA1GP578U3HNEL5itQnkGV8"};
+        vSporkAddresses = {"rjuLrk99JHQaodfSVXwdGd5NtxedHNxTFi"};
         nMinSporkKeys = 1;
         fBIP9CheckSmartnodesUpgraded = true;
 
@@ -685,11 +677,10 @@ public:
 
         chainTxData = ChainTxData{
         	1675905317, // * UNIX timestamp of last known number of transactions (Block 213054)
-            0,    // * total number of transactions between genesis and that timestamp
+            0,          // * total number of transactions between genesis and that timestamp
                         //   (the tx=... number in the SetBestChain debug.log lines)
             0.01        // * estimated number of transactions per second after that timestamp
         };
-
     }
 };
 
@@ -723,10 +714,10 @@ public:
         consensus.DIP0001Enabled = true; // DIP0001 activated immediately on devnet
         consensus.DIP0003Enabled = true; // DIP0003 activated immediately on devnet
         consensus.DIP0008Enabled = true;
-       // consensus.DIP0003EnforcementHeight = 2; // DIP0003 activated immediately on devnet
+        // consensus.DIP0003EnforcementHeight = 2; // DIP0003 activated immediately on devnet
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // Yerbas: 1 day
-        consensus.nPowTargetSpacing = 2.5 * 60; // Yerbas: 2.5 minutes
+        consensus.nPowTargetTimespan = 24 * 60 * 60; // Egodcoin: 1 day
+        consensus.nPowTargetSpacing = 2.5 * 60; // Egodcoin: 2.5 minutes
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = false;
         consensus.nPowDGWHeight = 60;
@@ -748,37 +739,36 @@ public:
         pchMessageStart[1] = 0xca;
         pchMessageStart[2] = 0xff;
         pchMessageStart[3] = 0xce;
-        nDefaultPort = 19799;
+        nDefaultPort = 15720;
         nPruneAfterHeight = 1000;
 
         genesis = CreateGenesisBlock(1417713337, 1096447, 0x207fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-///        assert(consensus.hashGenesisBlock == uint256S("0x000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e"));
-///        assert(genesis.hashMerkleRoot == uint256S("0xe0028eb9648db56b1ac77cf090b99048a8007e2bb64b68f092c03c7f56a662c7"));
+        // assert(consensus.hashGenesisBlock == uint256S("0x000008ca1832a4baf228eb1553c03d3a2c8e02399550dd6ea8d65cec3ef23d2e"));
+        // assert(genesis.hashMerkleRoot == uint256S("0xe0028eb9648db56b1ac77cf090b99048a8007e2bb64b68f092c03c7f56a662c7"));
 
         devnetGenesis = FindDevNetGenesisBlock(consensus, genesis, 50 * COIN);
         consensus.hashDevnetGenesisBlock = devnetGenesis.GetHash();
-        vector<FounderRewardStructure> rewardStructures = {  {INT_MAX, 5}// 5% founder/dev fee forever
-                                                                										   };
+        vector<FounderRewardStructure> rewardStructures = { {INT_MAX, 5} }; // 5% founder/dev fee forever
 		consensus.nFounderPayment = FounderPayment(rewardStructures, 200);
         consensus.nAssetsRewardShare = Consensus::AssetsRewardShare(0.8,0.2,0.0);
 
         vFixedSeeds.clear();
         vSeeds.clear();
-        //vSeeds.push_back(CDNSSeedData("yerbasevo.org",  "devnet-seed.yerbasevo.org"));
+        // vSeeds.push_back(CDNSSeedData("devnet-seed2.egodcoin.org", "devnet-seed2.egodcoin.org"));
 
-        // Testnet Yerbas addresses start with 'y'
+        // Testnet Egodcoin addresses start with 'y'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
-        // Testnet Yerbas script addresses start with '8' or '9'
+        // Testnet Egodcoin script addresses start with '8' or '9'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
         // Testnet private keys start with '9' or 'c' (Bitcoin defaults)
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        // Testnet Yerbas BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+        // Testnet Egodcoin BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
-        // Testnet Yerbas BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+        // Testnet Egodcoin BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
-        // Testnet Yerbas BIP44 coin type is '1' (All coin's testnet default)
+        // Testnet Egodcoin BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
 
         // long living quorum params
@@ -850,8 +840,8 @@ public:
         consensus.DIP0008Enabled = true;
        // consensus.DIP0003EnforcementHeight = 500;
         consensus.powLimit = uint256S("7fffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff"); // ~uint256(0) >> 1
-        consensus.nPowTargetTimespan = 24 * 60 * 60; // Yerbas: 1 day
-        consensus.nPowTargetSpacing = 2.5 * 60; // Yerbas: 2.5 minutes
+        consensus.nPowTargetTimespan = 24 * 60 * 60; // Egodcoin: 1 day
+        consensus.nPowTargetSpacing = 2.5 * 60; // Egodcoin: 2.5 minutes
         consensus.fPowAllowMinDifficultyBlocks = true;
         consensus.fPowNoRetargeting = true;
         consensus.nPowDGWHeight = 60;
@@ -873,13 +863,13 @@ public:
         pchMessageStart[1] = 0xc1;
         pchMessageStart[2] = 0xb7;
         pchMessageStart[3] = 0xdc;
-        nDefaultPort = 19899;
+        nDefaultPort = 15820;
         nPruneAfterHeight = 1000;
 
         genesis = CreateGenesisBlock(1417713337, 1096447, 0x207fffff, 1, 50 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-///        assert(consensus.hashGenesisBlock == uint256S("0x000000000000000000000000000000000000000000000000000000000000000"));
-///        assert(genesis.hashMerkleRoot == uint256S("0x000000000000000000000000000000000000000000000000000000000000000"));
+        // assert(consensus.hashGenesisBlock == uint256S("0x000000000000000000000000000000000000000000000000000000000000000"));
+        // assert(genesis.hashMerkleRoot == uint256S("0x000000000000000000000000000000000000000000000000000000000000000"));
 
         vFixedSeeds.clear(); //!< Regtest mode doesn't have any fixed seeds.
         vSeeds.clear();      //!< Regtest mode doesn't have any DNS seeds.
@@ -900,8 +890,7 @@ public:
         nMinSporkKeys = 1;
         // regtest usually has no smartnodes in most tests, so don't check for upgraged MNs
         fBIP9CheckSmartnodesUpgraded = false;
-        vector<FounderRewardStructure> rewardStructures = {  {INT_MAX, 5}// 5% founder/dev fee forever
-                                                        										   };
+        vector<FounderRewardStructure> rewardStructures = { {INT_MAX, 5} }; // 5% founder/dev fee forever
 		consensus.nFounderPayment = FounderPayment(rewardStructures, 200);
         consensus.nAssetsRewardShare = Consensus::AssetsRewardShare(0.8,0.2,0.0);
 
@@ -917,18 +906,18 @@ public:
             0
         };
 
-        // Regtest Yerbas addresses start with 'y'
+        // Regtest Egodcoin addresses start with 'y'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,140);
-        // Regtest Yerbas script addresses start with '8' or '9'
+        // Regtest Egodcoin script addresses start with '8' or '9'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
         // Regtest private keys start with '9' or 'c' (Bitcoin defaults)
         base58Prefixes[SECRET_KEY] =     std::vector<unsigned char>(1,239);
-        // Regtest Yerbas BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
+        // Regtest Egodcoin BIP32 pubkeys start with 'tpub' (Bitcoin defaults)
         base58Prefixes[EXT_PUBLIC_KEY] = {0x04, 0x35, 0x87, 0xCF};
-        // Regtest Yerbas BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
+        // Regtest Egodcoin BIP32 prvkeys start with 'tprv' (Bitcoin defaults)
         base58Prefixes[EXT_SECRET_KEY] = {0x04, 0x35, 0x83, 0x94};
 
-        // Regtest Yerbas BIP44 coin type is '1' (All coin's testnet default)
+        // Regtest Egodcoin BIP44 coin type is '1' (All coin's testnet default)
         nExtCoinType = 1;
 
         // long living quorum params
@@ -970,10 +959,16 @@ void UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime,
     globalChainParams->UpdateVersionBitsParameters(d, nStartTime, nTimeout, nWindowSize, nThreshold);
 }
 
-//void UpdateDIP3Parameters(int nActivationHeight, int nEnforcementHeight)
-//{
+// void CChainParams::UpdateDIP3Parameters(int nActivationHeight, int nEnforcementHeight)
+// {
+//    consensus.DIP0003Height = nActivationHeight;
+//    consensus.DIP0003EnforcementHeight = nEnforcementHeight;
+// }
+
+// void UpdateDIP3Parameters(int nActivationHeight, int nEnforcementHeight)
+// {
 //    globalChainParams->UpdateDIP3Parameters(nActivationHeight, nEnforcementHeight);
-//}
+// }
 
 void UpdateBudgetParameters(int nSmartnodePaymentsStartBlock, int nBudgetPaymentsStartBlock, int nSuperblockStartBlock)
 {
@@ -1004,7 +999,7 @@ bool IsMiningPhase(Consensus::LLMQParams params, int nHeight)
 
 bool IsLLMQsMiningPhase(int nHeight) {
 	for(auto& it : globalChainParams->GetConsensus().llmqs) {
-		if(IsMiningPhase(it.second, nHeight)) {
+		if (IsMiningPhase(it.second, nHeight)) {
 			return true;
 		}
 	}
@@ -1013,29 +1008,29 @@ bool IsLLMQsMiningPhase(int nHeight) {
 
 void CChainParams::UpdateLLMQParams(size_t totalMnCount, int height, bool lowLLMQParams) {
 	bool isNotLLMQsMiningPhase;
-    //on startup if block height % dkgInterval fall between dkgMiningWindowStart and dkgMiningWindowEnd
-    //it will not switch to the correct llmq. if lastCheckHeight is 0 then force switch to the correct llmq
-    if(lastCheckHeight < height &&
+    // on startup if block height % dkgInterval fall between dkgMiningWindowStart and dkgMiningWindowEnd
+    // it will not switch to the correct llmq. if lastCheckHeight is 0 then force switch to the correct llmq
+    if (lastCheckHeight < height &&
     		(lastCheckMnCount != totalMnCount || lastCheckedLowLLMQParams != lowLLMQParams) &&
 			((isNotLLMQsMiningPhase = !IsLLMQsMiningPhase(height)) || lastCheckHeight == 0)) {
-	    LogPrintf("---UpdateLLMQParams %d-%d-%ld-%ld-%d\n", lastCheckHeight, height, lastCheckMnCount, totalMnCount, isNotLLMQsMiningPhase);
+	    LogPrintf("--- UpdateLLMQParams %d-%d-%ld-%ld-%d\n", lastCheckHeight, height, lastCheckMnCount, totalMnCount, isNotLLMQsMiningPhase);
 		lastCheckMnCount = totalMnCount;
 		lastCheckedLowLLMQParams = lowLLMQParams;
 		lastCheckHeight = height;
-		if(totalMnCount < 5) {
+		if (totalMnCount < 5) {
 			consensus.llmqs[Consensus::LLMQ_50_60] = llmq3_60;
-			if(strcmp(Params().NetworkIDString().c_str(),"test") == 0) {
+			if (strcmp(Params().NetworkIDString().c_str(),"test") == 0) {
 				consensus.llmqs[Consensus::LLMQ_400_60] = llmq5_60;
 				consensus.llmqs[Consensus::LLMQ_400_85] = llmq5_85;
 			} else {
 				consensus.llmqs[Consensus::LLMQ_400_60] = llmq20_60;
 				consensus.llmqs[Consensus::LLMQ_400_85] = llmq20_85;
 			}
-		} else if(totalMnCount < 100) {
+		} else if (totalMnCount < 100) {
 			consensus.llmqs[Consensus::LLMQ_50_60] = llmq10_60;
 			consensus.llmqs[Consensus::LLMQ_400_60] = llmq20_60;
 			consensus.llmqs[Consensus::LLMQ_400_85] = llmq20_85;
-		}  else if(totalMnCount < 600) {
+		}  else if (totalMnCount < 600) {
 			consensus.llmqs[Consensus::LLMQ_50_60] = llmq50_60;
 			consensus.llmqs[Consensus::LLMQ_400_60] = llmq40_60;
 			consensus.llmqs[Consensus::LLMQ_400_85] = llmq40_85;
@@ -1044,26 +1039,26 @@ void CChainParams::UpdateLLMQParams(size_t totalMnCount, int height, bool lowLLM
 			consensus.llmqs[Consensus::LLMQ_400_60] = llmq400_60;
 			consensus.llmqs[Consensus::LLMQ_400_85] = llmq400_85;
 		}
-        if(strcmp(Params().NetworkIDString().c_str(),"main") == 0) {//mainnet setings
-            if(((height > 6759) && (height < 8320)) || ((height > 15908) && (height < 16401)) || (height > 22771 && height < 37650) || (height > 37650 && lowLLMQParams)){
+        if (strcmp(Params().NetworkIDString().c_str(),"main") == 0) { // mainnet setings
+            if (((height > 6759) && (height < 8320)) || ((height > 15908) && (height < 16401)) || (height > 22771 && height < 37650) || (height > 37650 && lowLLMQParams)) {
                 consensus.llmqs[Consensus::LLMQ_50_60] = llmq200_2;
             }
-        }else{
-            if(lowLLMQParams){
+        } else {
+            if (lowLLMQParams) {
                 consensus.llmqs[Consensus::LLMQ_50_60] = llmq200_2;
             }
         } 		
-	}else{
-        if(strcmp(Params().NetworkIDString().c_str(),"main") == 0) { //mainnet setings
-            if((lastCheckHeight < height)){
+	} else {
+        if (strcmp(Params().NetworkIDString().c_str(),"main") == 0) { // mainnet setings
+            if ((lastCheckHeight < height)) {
                 lastCheckHeight = height;
-                if((height == 6759) || (height == 15908)|| (height == 22771)){
+                if ((height == 6759) || (height == 15908)|| (height == 22771)) {
                     consensus.llmqs[Consensus::LLMQ_50_60] = llmq200_2;
                 }  
-                if(height == 8319 || height == 16401 || height == 37650){
-                    if(totalMnCount < 100) {
+                if (height == 8319 || height == 16401 || height == 37650) {
+                    if (totalMnCount < 100) {
                         consensus.llmqs[Consensus::LLMQ_50_60] = llmq10_60;
-                    } else if(totalMnCount < 600) {
+                    } else if (totalMnCount < 600) {
                         consensus.llmqs[Consensus::LLMQ_50_60] = llmq50_60;
                     }
                 }

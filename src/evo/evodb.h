@@ -1,10 +1,12 @@
 // Copyright (c) 2018-2020 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef YERBAS_EVODB_H
-#define YERBAS_EVODB_H
+#ifndef EGODCOIN_EVODB_H
+#define EGODCOIN_EVODB_H
 
 #include "dbwrapper.h"
 #include "sync.h"
@@ -109,4 +111,4 @@ private:
 
 extern CEvoDB* evoDb;
 
-#endif //YERBAS_EVODB_H
+#endif // EGODCOIN_EVODB_H

@@ -115,8 +115,8 @@ std::string ScriptToAsmStr(const CScript& script, const bool fAttemptSighashDeco
             str += "[error]";
             return str;
         }
-        if (opcode == OP_YERB_ASSET) {
-            // Once we hit an OP_YERB_ASSET, we know that all the next data should be considered as hex
+        if (opcode == OP_EGOD_ASSET) {
+            // Once we hit an OP_EGOD_ASSET, we know that all the next data should be considered as hex
             str += GetOpName(opcode);
             str += " ";
             str += HexStr(vch);
@@ -176,7 +176,7 @@ void ScriptPubKeyToUniv(const CScript& scriptPubKey,
     out.pushKV("reqSigs", nRequired);
     out.pushKV("type", GetTxnOutputType(type));
 
-        /** YERB ASSETS START */
+        /** EGOD ASSETS START */
      if (type == TX_NEW_ASSET || type == TX_TRANSFER_ASSET || type == TX_REISSUE_ASSET) {
         UniValue assetInfo(UniValue::VOBJ);
 
@@ -263,7 +263,7 @@ void ScriptPubKeyToUniv(const CScript& scriptPubKey,
         out.pushKV("asset_data", assetInfo);
     }
 
-     /** YERB ASSETS END */
+     /** EGOD ASSETS END */
 
     UniValue a(UniValue::VARR);
     for (const CTxDestination& addr : addresses)

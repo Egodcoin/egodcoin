@@ -1,10 +1,12 @@
 // Copyright (c) 2018-2020 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef YERBAS_DETERMINISTICMNS_H
-#define YERBAS_DETERMINISTICMNS_H
+#ifndef EGODCOIN_DETERMINISTICMNS_H
+#define EGODCOIN_DETERMINISTICMNS_H
 
 #include "arith_uint256.h"
 #include "bls/bls.h"
@@ -686,4 +688,4 @@ private:
 
 extern CDeterministicMNManager* deterministicMNManager;
 
-#endif //YERBAS_DETERMINISTICMNS_H
+#endif // EGODCOIN_DETERMINISTICMNS_H

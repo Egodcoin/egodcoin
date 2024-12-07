@@ -1,4 +1,6 @@
 // Copyright (c) 2017-2021 The Yerbas Core developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -78,7 +80,7 @@ static const std::regex QUALIFIER_INDICATOR("^[#][A-Z0-9._]{3,}$"); // Starts wi
 static const std::regex SUB_QUALIFIER_INDICATOR("^#[A-Z0-9._]+\\/#[A-Z0-9._]+$"); // Starts with #
 static const std::regex RESTRICTED_INDICATOR("^[\\$][A-Z0-9._]{3,}$"); // Starts with $
 
-static const std::regex YERBAS_NAMES("^YERB$|^YERBAS$|^YERBAS$|^#YERB$|^#YERBAS$|^#YERBAS$");
+static const std::regex EGODCOIN_NAMES("^EGOD$|^EGODCOIN$|^EGODCOIN$|^#EGOD$|^#EGODCOIN$|^#EGODCOIN$");
 
 bool IsRootNameValid(const std::string& name)
 {
@@ -86,7 +88,7 @@ bool IsRootNameValid(const std::string& name)
         && !std::regex_match(name, DOUBLE_PUNCTUATION)
         && !std::regex_match(name, LEADING_PUNCTUATION)
         && !std::regex_match(name, TRAILING_PUNCTUATION)
-        && !std::regex_match(name, YERBAS_NAMES);
+        && !std::regex_match(name, EGODCOIN_NAMES);
 }
 
 bool IsQualifierNameValid(const std::string& name)
@@ -95,7 +97,7 @@ bool IsQualifierNameValid(const std::string& name)
            && !std::regex_match(name, DOUBLE_PUNCTUATION)
            && !std::regex_match(name, QUALIFIER_LEADING_PUNCTUATION)
            && !std::regex_match(name, TRAILING_PUNCTUATION)
-           && !std::regex_match(name, YERBAS_NAMES);
+           && !std::regex_match(name, EGODCOIN_NAMES);
 }
 
 bool IsRestrictedNameValid(const std::string& name)
@@ -104,7 +106,7 @@ bool IsRestrictedNameValid(const std::string& name)
            && !std::regex_match(name, DOUBLE_PUNCTUATION)
            && !std::regex_match(name, LEADING_PUNCTUATION)
            && !std::regex_match(name, TRAILING_PUNCTUATION)
-           && !std::regex_match(name, YERBAS_NAMES);
+           && !std::regex_match(name, EGODCOIN_NAMES);
 }
 
 bool IsSubQualifierNameValid(const std::string& name)
@@ -525,13 +527,13 @@ void CNewAsset::ConstructTransaction(CScript& script) const
     ssAsset << *this;
 
     std::vector<unsigned char> vchMessage;
-    vchMessage.push_back(YERB_R); // r
-    vchMessage.push_back(YERB_V); // v
-    vchMessage.push_back(YERB_N); // n
-    vchMessage.push_back(YERB_Q); // q
+    vchMessage.push_back(EGOD_R); // r
+    vchMessage.push_back(EGOD_V); // v
+    vchMessage.push_back(EGOD_N); // n
+    vchMessage.push_back(EGOD_Q); // q
 
     vchMessage.insert(vchMessage.end(), ssAsset.begin(), ssAsset.end());
-    script << OP_YERB_ASSET << ToByteVector(vchMessage) << OP_DROP;
+    script << OP_EGOD_ASSET << ToByteVector(vchMessage) << OP_DROP;
 }
 
 void CNewAsset::ConstructOwnerTransaction(CScript& script) const
@@ -540,13 +542,13 @@ void CNewAsset::ConstructOwnerTransaction(CScript& script) const
     ssOwner << std::string(this->strName + OWNER_TAG);
 
     std::vector<unsigned char> vchMessage;
-    vchMessage.push_back(YERB_R); // r
-    vchMessage.push_back(YERB_V); // v
-    vchMessage.push_back(YERB_N); // n
-    vchMessage.push_back(YERB_O); // o
+    vchMessage.push_back(EGOD_R); // r
+    vchMessage.push_back(EGOD_V); // v
+    vchMessage.push_back(EGOD_N); // n
+    vchMessage.push_back(EGOD_O); // o
 
     vchMessage.insert(vchMessage.end(), ssOwner.begin(), ssOwner.end());
-    script << OP_YERB_ASSET << ToByteVector(vchMessage) << OP_DROP;
+    script << OP_EGOD_ASSET << ToByteVector(vchMessage) << OP_DROP;
 }
 
 bool AssetFromTransaction(const CTransaction& tx, CNewAsset& asset, std::string& strAddress)
@@ -1271,7 +1273,7 @@ bool CTransaction::IsNewRestrictedAsset() const
 
 //! To be called on CTransactions where IsNewRestrictedAsset returns true
 bool CTransaction::VerifyNewRestrictedAsset(std::string& strError) const {
-    // Issuing a restricted asset must cointain at least 4 CTxOut(Yerbas Burn Tx, Asset Creation, Root Owner Token Transfer, and CNullAssetTxVerifierString)
+    // Issuing a restricted asset must cointain at least 4 CTxOut(Egodcoin Burn Tx, Asset Creation, Root Owner Token Transfer, and CNullAssetTxVerifierString)
     if (vout.size() < 4) {
         strError = "bad-txns-issue-restricted-vout-size-to-small";
         return false;
@@ -1525,13 +1527,13 @@ void CAssetTransfer::ConstructTransaction(CScript& script) const
     ssTransfer << *this;
 
     std::vector<unsigned char> vchMessage;
-    vchMessage.push_back(YERB_R); // r
-    vchMessage.push_back(YERB_V); // v
-    vchMessage.push_back(YERB_N); // n
-    vchMessage.push_back(YERB_T); // t
+    vchMessage.push_back(EGOD_R); // r
+    vchMessage.push_back(EGOD_V); // v
+    vchMessage.push_back(EGOD_N); // n
+    vchMessage.push_back(EGOD_T); // t
 
     vchMessage.insert(vchMessage.end(), ssTransfer.begin(), ssTransfer.end());
-    script << OP_YERB_ASSET << ToByteVector(vchMessage) << OP_DROP;
+    script << OP_EGOD_ASSET << ToByteVector(vchMessage) << OP_DROP;
 }
 
 CReissueAsset::CReissueAsset(const std::string &strAssetName, const CAmount &nAmount, const int &nUnits, const int &nReissuable,
@@ -1551,13 +1553,13 @@ void CReissueAsset::ConstructTransaction(CScript& script) const
     ssReissue << *this;
 
     std::vector<unsigned char> vchMessage;
-    vchMessage.push_back(YERB_R); // r
-    vchMessage.push_back(YERB_V); // v
-    vchMessage.push_back(YERB_N); // n
-    vchMessage.push_back(YERB_R); // r
+    vchMessage.push_back(EGOD_R); // r
+    vchMessage.push_back(EGOD_V); // v
+    vchMessage.push_back(EGOD_N); // n
+    vchMessage.push_back(EGOD_R); // r
 
     vchMessage.insert(vchMessage.end(), ssReissue.begin(), ssReissue.end());
-    script << OP_YERB_ASSET << ToByteVector(vchMessage) << OP_DROP;
+    script << OP_EGOD_ASSET << ToByteVector(vchMessage) << OP_DROP;
 }
 
 bool CReissueAsset::IsNull() const
@@ -2970,7 +2972,7 @@ size_t CAssetsCache::GetCacheSizeV2() const
 
 bool CheckIssueDataTx(const CTxOut& txOut)
 {
-    // Verify 'yerbq' is in the transaction
+    // Verify 'egodq' is in the transaction
     CScript scriptPubKey = txOut.scriptPubKey;
 
     int nStartingIndex = 0;
@@ -2979,7 +2981,7 @@ bool CheckIssueDataTx(const CTxOut& txOut)
 
 bool CheckReissueDataTx(const CTxOut& txOut)
 {
-    // Verify 'yerbr' is in the transaction
+    // Verify 'egodr' is in the transaction
     CScript scriptPubKey = txOut.scriptPubKey;
 
     return IsScriptReissueAsset(scriptPubKey);
@@ -2987,7 +2989,7 @@ bool CheckReissueDataTx(const CTxOut& txOut)
 
 bool CheckOwnerDataTx(const CTxOut& txOut)
 {
-    // Verify 'yerbq' is in the transaction
+    // Verify 'egodo' is in the transaction
     CScript scriptPubKey = txOut.scriptPubKey;
 
     return IsScriptOwnerAsset(scriptPubKey);
@@ -2995,7 +2997,7 @@ bool CheckOwnerDataTx(const CTxOut& txOut)
 
 bool CheckTransferOwnerTx(const CTxOut& txOut)
 {
-    // Verify 'yerbq' is in the transaction
+    // Verify 'egodq' is in the transaction
     CScript scriptPubKey = txOut.scriptPubKey;
 
     return IsScriptTransferAsset(scriptPubKey);
@@ -3713,7 +3715,7 @@ bool CreateAssetTransaction(CWallet* pwallet, CCoinControl& coinControl, const s
     if (!change_address.empty()) {
         CTxDestination destination = DecodeDestination(change_address);
         if (!IsValidDestination(destination)) {
-            error = std::make_pair(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Yerbas address: ") + change_address);
+            error = std::make_pair(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Egodcoin address: ") + change_address);
             return false;
         }
     } else {
@@ -3753,7 +3755,7 @@ bool CreateAssetTransaction(CWallet* pwallet, CCoinControl& coinControl, const s
     CAmount feesAmount = GetAssetsFees(assetType) * assets.size();
     CAmount curBalance = pwallet->GetBalance();
 
-    // Check to make sure the wallet has the YERB required by the burnAmount
+    // Check to make sure the wallet has the EGOD required by the burnAmount
     if (curBalance < feesAmount) {
         error = std::make_pair(RPC_WALLET_INSUFFICIENT_FUNDS, "Insufficient funds");
         return false;
@@ -3874,7 +3876,7 @@ bool CreateReissueAssetTransaction(CWallet* pwallet, CCoinControl& coinControl, 
 
     // Check that validitity of the address
     if (!IsValidDestinationString(address)) {
-        error = std::make_pair(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Yerbas address: ") + address);
+        error = std::make_pair(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Egodcoin address: ") + address);
         return false;
     }
 
@@ -3882,7 +3884,7 @@ bool CreateReissueAssetTransaction(CWallet* pwallet, CCoinControl& coinControl, 
     if (!change_address.empty()) {
         CTxDestination destination = DecodeDestination(change_address);
         if (!IsValidDestination(destination)) {
-            error = std::make_pair(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Yerbas address: ") + change_address);
+            error = std::make_pair(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Egodcoin address: ") + change_address);
             return false;
         }
     } else {
@@ -3953,7 +3955,7 @@ bool CreateReissueAssetTransaction(CWallet* pwallet, CCoinControl& coinControl, 
     // Get the current burn amount for issuing an asset
     CAmount feesAmount = GetAssetsFees(AssetType::REISSUE);
 
-    // Check to make sure the wallet has the YERB required by the burnAmount
+    // Check to make sure the wallet has the EGOD required by the burnAmount
     if (curBalance < feesAmount) {
         error = std::make_pair(RPC_WALLET_INSUFFICIENT_FUNDS, "Insufficient funds");
         return false;
@@ -4048,7 +4050,7 @@ bool CreateTransferAssetTransaction(CWallet* pwallet, const CCoinControl& coinCo
     // Check for a balance before processing transfers
     CAmount curBalance = pwallet->GetBalance();
     if (curBalance == 0) {
-        error = std::make_pair(RPC_WALLET_INSUFFICIENT_FUNDS, std::string("This wallet doesn't contain any YERB, transfering an asset requires a network fee"));
+        error = std::make_pair(RPC_WALLET_INSUFFICIENT_FUNDS, std::string("This wallet doesn't contain any EGOD, transfering an asset requires a network fee"));
         return false;
     }
 
@@ -4067,7 +4069,7 @@ bool CreateTransferAssetTransaction(CWallet* pwallet, const CCoinControl& coinCo
         int64_t expireTime = transfer.first.nExpireTime;
 
         if (!IsValidDestinationString(address)) {
-            error = std::make_pair(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Yerbas address: ") + address);
+            error = std::make_pair(RPC_INVALID_ADDRESS_OR_KEY, std::string("Invalid Egodcoin address: ") + address);
             return false;
         }
         auto currentActiveAssetCache = GetCurrentAssetCache();
@@ -4131,7 +4133,7 @@ bool CreateTransferAssetTransaction(CWallet* pwallet, const CCoinControl& coinCo
         vecSend.push_back(recipient);
     }
 
-    // If assetTxData is not nullptr, the user wants to add some OP_YERB_ASSET data transactions into the transaction
+    // If assetTxData is not nullptr, the user wants to add some OP_EGOD_ASSET data transactions into the transaction
     if (nullAssetTxData) {
         std::string strError = "";
         for (auto pair : *nullAssetTxData) {
@@ -4157,7 +4159,7 @@ bool CreateTransferAssetTransaction(CWallet* pwallet, const CCoinControl& coinCo
  
     }
 
-    // nullGlobalRestiotionData, the user wants to add OP_YERB_ASSET OP_YERB_ASSET OP_YERB_ASSETS data transaction to the transaction
+    // nullGlobalRestiotionData, the user wants to add OP_EGOD_ASSET OP_EGOD_ASSET OP_EGOD_ASSETS data transaction to the transaction
     if (nullGlobalRestrictionData) {
         std::string strError = "";
         for (auto dataObject : *nullGlobalRestrictionData) {
@@ -4371,7 +4373,7 @@ void CNullAssetTxData::ConstructGlobalRestrictionTransaction(CScript &script) co
 
     std::vector<unsigned char> vchMessage;
     vchMessage.insert(vchMessage.end(), ssAssetTxData.begin(), ssAssetTxData.end());
-    script << OP_YERB_ASSET << OP_RESERVED << OP_RESERVED << ToByteVector(vchMessage);
+    script << OP_EGOD_ASSET << OP_RESERVED << OP_RESERVED << ToByteVector(vchMessage);
 }
 
 CNullAssetTxVerifierString::CNullAssetTxVerifierString(const std::string &verifier)
@@ -4387,7 +4389,7 @@ void CNullAssetTxVerifierString::ConstructTransaction(CScript &script) const
 
     std::vector<unsigned char> vchMessage;
     vchMessage.insert(vchMessage.end(), ssAssetTxData.begin(), ssAssetTxData.end());
-    script << OP_YERB_ASSET << OP_RESERVED << ToByteVector(vchMessage);
+    script << OP_EGOD_ASSET << OP_RESERVED << ToByteVector(vchMessage);
 }
 
 bool CAssetsCache::GetAssetVerifierStringIfExists(const std::string &name, CNullAssetTxVerifierString& verifierString, bool fSkipTempCache)

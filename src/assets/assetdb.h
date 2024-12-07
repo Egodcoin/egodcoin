@@ -1,9 +1,11 @@
 // Copyright (c) 2017-2019 The Yerbas Core developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef YERBAS_ASSETDB_H
-#define YERBAS_ASSETDB_H
+#ifndef EGODCOIN_ASSETDB_H
+#define EGODCOIN_ASSETDB_H
 
 #include "fs.h"
 #include "serialize.h"
@@ -95,4 +97,4 @@ public:
 };
 
 
-#endif //YERBAS_ASSETDB_H
+#endif // EGODCOIN_ASSETDB_H

@@ -1,35 +1,37 @@
 # Copyright (c) 2013-2016 The Bitcoin Core developers
 # Copyright (c) 2014-2018 The Dash Core developers
 # Copyright (c) 2022 The Yerbas Endeavor developers
+# Copyright (c) 2024 https://egodcoin.org
+#
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-bin_PROGRAMS += qt/yerbas-qt
-EXTRA_LIBRARIES += qt/libyerbasqt.a
+bin_PROGRAMS += qt/egodcoin-qt
+EXTRA_LIBRARIES += qt/libegodcoinqt.a
 
-# yerbas qt core #
+# egodcoin qt core #
 QT_TS = \
-  qt/locale/yerbas_ar.ts \
-  qt/locale/yerbas_bg.ts \
-  qt/locale/yerbas_de.ts \
-  qt/locale/yerbas_en.ts \
-  qt/locale/yerbas_es.ts \
-  qt/locale/yerbas_fi.ts \
-  qt/locale/yerbas_fr.ts \
-  qt/locale/yerbas_it.ts \
-  qt/locale/yerbas_ja.ts \
-  qt/locale/yerbas_ko.ts \
-  qt/locale/yerbas_nl.ts \
-  qt/locale/yerbas_pl.ts \
-  qt/locale/yerbas_pt.ts \
-  qt/locale/yerbas_ro.ts \
-  qt/locale/yerbas_ru.ts \
-  qt/locale/yerbas_sk.ts \
-  qt/locale/yerbas_th.ts \
-  qt/locale/yerbas_tr.ts \
-  qt/locale/yerbas_vi.ts \
-  qt/locale/yerbas_zh_CN.ts \
-  qt/locale/yerbas_zh_TW.ts
+  qt/locale/wallet_ar.ts \
+  qt/locale/wallet_bg.ts \
+  qt/locale/wallet_de.ts \
+  qt/locale/wallet_en.ts \
+  qt/locale/wallet_es.ts \
+  qt/locale/wallet_fi.ts \
+  qt/locale/wallet_fr.ts \
+  qt/locale/wallet_it.ts \
+  qt/locale/wallet_ja.ts \
+  qt/locale/wallet_ko.ts \
+  qt/locale/wallet_nl.ts \
+  qt/locale/wallet_pl.ts \
+  qt/locale/wallet_pt.ts \
+  qt/locale/wallet_ro.ts \
+  qt/locale/wallet_ru.ts \
+  qt/locale/wallet_sk.ts \
+  qt/locale/wallet_th.ts \
+  qt/locale/wallet_tr.ts \
+  qt/locale/wallet_vi.ts \
+  qt/locale/wallet_zh_CN.ts \
+  qt/locale/wallet_zh_TW.ts
 
 QT_FORMS_UI = \
   qt/forms/addressbookpage.ui \
@@ -128,17 +130,17 @@ BITCOIN_MM = \
   qt/macos_appnap.mm
 
 QT_MOC = \
-  qt/yerbas.moc \
+  qt/egodcoin.moc \
   qt/bitcoinamountfield.moc \
   qt/callback.moc \
   qt/intro.moc \
   qt/overviewpage.moc \
   qt/rpcconsole.moc
 
-QT_QRC_CPP = qt/qrc_yerbas.cpp
-QT_QRC = qt/yerbas.qrc
-QT_QRC_LOCALE_CPP = qt/qrc_yerbas_locale.cpp
-QT_QRC_LOCALE = qt/yerbas_locale.qrc
+QT_QRC_CPP = qt/qrc_egodcoin.cpp
+QT_QRC = qt/egodcoin.qrc
+QT_QRC_LOCALE_CPP = qt/qrc_wallet_locale.cpp
+QT_QRC_LOCALE = qt/wallet_locale.qrc
 
 PROTOBUF_CC = qt/paymentrequest.pb.cc
 PROTOBUF_H = qt/paymentrequest.pb.h
@@ -219,9 +221,9 @@ BITCOIN_QT_H = \
 
 
 RES_ICONS = \
-  qt/res/icons/bitcoin.ico \
-  qt/res/icons/bitcoin_testnet.ico \
-  qt/res/icons/bitcoin.png \
+  qt/res/icons/egodcoin.ico \
+  qt/res/icons/egodcoin_testnet.ico \
+  qt/res/icons/egodcoin.png \
   qt/res/icons/chevron.png \
   qt/res/icons/warning.png \
   qt/res/icons/add.png \
@@ -362,10 +364,10 @@ RES_IMAGES = \
   qt/res/images/arrow_right_small.png \
   qt/res/images/arrow_up_small.png \
   qt/res/images/checked.png \
-  qt/res/images/yerbas_logo_horizontal.png \
-  qt/res/images/yerbas_logo_toolbar.png \
+  qt/res/images/egodcoin_logo_horizontal.png \
+  qt/res/images/egodcoin_logo_toolbar.png \
   qt/res/images/qtreeview_selected.png \
-  qt/res/images/splash_yerbas.png \
+  qt/res/images/splash.png \
   qt/res/images/unchecked.png
 
 RES_CSS = \
@@ -376,20 +378,20 @@ RES_CSS = \
 
 RES_MOVIES = $(wildcard $(srcdir)/qt/res/movies/spinner-*.png)
 
-BITCOIN_RC = qt/res/yerbas-qt-res.rc
+BITCOIN_RC = qt/res/egodcoin-qt-res.rc
 
 BITCOIN_QT_INCLUDES = -I$(builddir)/qt -I$(srcdir)/qt -I$(srcdir)/qt/forms \
   -I$(builddir)/qt/forms -DQT_NO_KEYWORDS
 
-qt_libyerbasqt_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
+qt_libegodcoinqt_a_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
   $(QT_INCLUDES) $(QT_DBUS_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
-qt_libyerbasqt_a_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
-qt_libyerbasqt_a_OBJCXXFLAGS = $(AM_OBJCXXFLAGS) $(QT_PIE_FLAGS)
+qt_libegodcoinqt_a_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
+qt_libegodcoinqt_a_OBJCXXFLAGS = $(AM_OBJCXXFLAGS) $(QT_PIE_FLAGS)
 
-qt_libyerbasqt_a_SOURCES = $(BITCOIN_QT_CPP) $(BITCOIN_QT_H) $(QT_FORMS_UI) \
+qt_libegodcoinqt_a_SOURCES = $(BITCOIN_QT_CPP) $(BITCOIN_QT_H) $(QT_FORMS_UI) \
   $(QT_QRC) $(QT_QRC_LOCALE) $(QT_TS) $(PROTOBUF_PROTO) $(RES_ICONS) $(RES_IMAGES) $(RES_CSS) $(RES_FONTS) $(RES_MOVIES)
 
-nodist_qt_libyerbasqt_a_SOURCES = $(QT_MOC_CPP) $(QT_MOC) $(PROTOBUF_CC) \
+nodist_qt_libegodcoinqt_a_SOURCES = $(QT_MOC_CPP) $(QT_MOC) $(PROTOBUF_CC) \
   $(PROTOBUF_H) $(QT_QRC_CPP) $(QT_QRC_LOCALE_CPP)
 
 # forms/foo.h -> forms/ui_foo.h
@@ -398,71 +400,71 @@ QT_FORMS_H=$(join $(dir $(QT_FORMS_UI)),$(addprefix ui_, $(notdir $(QT_FORMS_UI:
 # Most files will depend on the forms and moc files as includes. Generate them
 # before anything else.
 $(QT_MOC): $(QT_FORMS_H)
-$(qt_libyerbasqt_a_OBJECTS) $(qt_yerbas_qt_OBJECTS) : | $(QT_MOC)
+$(qt_libegodcoinqt_a_OBJECTS) $(qt_egodcoin_qt_OBJECTS) : | $(QT_MOC)
 
 #Generating these with a half-written protobuf header leads to wacky results.
 #This makes sure it's done.
 $(QT_MOC): $(PROTOBUF_H)
 $(QT_MOC_CPP): $(PROTOBUF_H)
 
-# yerbas-qt binary #
-qt_yerbas_qt_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
+# egodcoin-qt binary #
+qt_egodcoin_qt_CPPFLAGS = $(AM_CPPFLAGS) $(BITCOIN_INCLUDES) $(BITCOIN_QT_INCLUDES) \
   $(QT_INCLUDES) $(PROTOBUF_CFLAGS) $(QR_CFLAGS)
-qt_yerbas_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
+qt_egodcoin_qt_CXXFLAGS = $(AM_CXXFLAGS) $(QT_PIE_FLAGS)
 
-qt_yerbas_qt_SOURCES = qt/yerbas.cpp
+qt_egodcoin_qt_SOURCES = qt/egodcoin.cpp
 if TARGET_DARWIN
-  qt_yerbas_qt_SOURCES += $(BITCOIN_MM)
+  qt_egodcoin_qt_SOURCES += $(BITCOIN_MM)
 endif
 if TARGET_WINDOWS
-  qt_yerbas_qt_SOURCES += $(BITCOIN_RC)
+  qt_egodcoin_qt_SOURCES += $(BITCOIN_RC)
 endif
-qt_yerbas_qt_LDADD = qt/libyerbasqt.a $(LIBBITCOIN_SERVER)
+qt_egodcoin_qt_LDADD = qt/libegodcoinqt.a $(LIBBITCOIN_SERVER)
 if ENABLE_WALLET
-qt_yerbas_qt_LDADD += $(LIBBITCOIN_UTIL) $(LIBBITCOIN_WALLET)
+qt_egodcoin_qt_LDADD += $(LIBBITCOIN_UTIL) $(LIBBITCOIN_WALLET)
 endif
 if ENABLE_ZMQ
-qt_yerbas_qt_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
+qt_egodcoin_qt_LDADD += $(LIBBITCOIN_ZMQ) $(ZMQ_LIBS)
 endif
-qt_yerbas_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
+qt_egodcoin_qt_LDADD += $(LIBBITCOIN_CLI) $(LIBBITCOIN_COMMON) $(LIBBITCOIN_UTIL) $(LIBBITCOIN_CONSENSUS) $(LIBBITCOIN_CRYPTO) $(LIBUNIVALUE) $(LIBLEVELDB) $(LIBLEVELDB_SSE42) $(LIBMEMENV) \
   $(BACKTRACE_LIB) $(BOOST_LIBS) $(QT_LIBS) $(QT_DBUS_LIBS) $(QR_LIBS) $(PROTOBUF_LIBS) $(BDB_LIBS) $(SSL_LIBS) $(CRYPTO_LIBS) $(MINIUPNPC_LIBS) $(LIBSECP256K1) \
   $(EVENT_PTHREADS_LIBS) $(EVENT_LIBS) $(BLS_LIBS)
-qt_yerbas_qt_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
-qt_yerbas_qt_LIBTOOLFLAGS = $(AM_LIBTOOLFLAGS) --tag CXX
+qt_egodcoin_qt_LDFLAGS = $(LDFLAGS_WRAP_EXCEPTIONS) $(RELDFLAGS) $(AM_LDFLAGS) $(QT_LDFLAGS) $(LIBTOOL_APP_LDFLAGS)
+qt_egodcoin_qt_LIBTOOLFLAGS = $(AM_LIBTOOLFLAGS) --tag CXX
 
 #locale/foo.ts -> locale/foo.qm
 QT_QM=$(QT_TS:.ts=.qm)
 
 SECONDARY: $(QT_QM)
 
-$(srcdir)/qt/yerbasstrings.cpp: FORCE
+$(srcdir)/qt/egodcoinstrings.cpp: FORCE
 	@test -n $(XGETTEXT) || echo "xgettext is required for updating translations"
 	$(AM_V_GEN) cd $(srcdir); XGETTEXT=$(XGETTEXT) PACKAGE_NAME="$(PACKAGE_NAME)" COPYRIGHT_HOLDERS="$(COPYRIGHT_HOLDERS)" COPYRIGHT_HOLDERS_SUBSTITUTION="$(COPYRIGHT_HOLDERS_SUBSTITUTION)" $(PYTHON) ../share/qt/extract_strings_qt.py $(libdash_server_a_SOURCES) $(libdash_wallet_a_SOURCES) $(libdash_common_a_SOURCES) $(libdash_zmq_a_SOURCES) $(libdash_consensus_a_SOURCES) $(libdash_util_a_SOURCES)
 
-translate: $(srcdir)/qt/yerbasstrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(BITCOIN_QT_BASE_CPP) qt/yerbas.cpp $(BITCOIN_QT_WINDOWS_CPP) $(BITCOIN_QT_WALLET_CPP) $(BITCOIN_QT_H) $(BITCOIN_MM)
+translate: $(srcdir)/qt/egodcoinstrings.cpp $(QT_FORMS_UI) $(QT_FORMS_UI) $(BITCOIN_QT_BASE_CPP) qt/egodcoin.cpp $(BITCOIN_QT_WINDOWS_CPP) $(BITCOIN_QT_WALLET_CPP) $(BITCOIN_QT_H) $(BITCOIN_MM)
 	@test -n $(LUPDATE) || echo "lupdate is required for updating translations"
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -I$(srcdir) -locations relative -no-obsolete -ts $(srcdir)/qt/locale/yerbas_en.ts
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(LUPDATE) $^ -I$(srcdir) -locations relative -no-obsolete -ts $(srcdir)/qt/locale/wallet_en.ts
 
 $(QT_QRC_LOCALE_CPP): $(QT_QRC_LOCALE) $(QT_QM)
 	@test -f $(RCC)
 	@cp -f $< $(@D)/temp_$(<F)
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) $(RCCFLAGS) -name yerbas_locale $(@D)/temp_$(<F) | \
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) $(RCCFLAGS) -name wallet_locale $(@D)/temp_$(<F) | \
 	  $(SED) -e '/^\*\*.*Created:/d' -e '/^\*\*.*by:/d' > $@
 	@rm $(@D)/temp_$(<F)
 
 $(QT_QRC_CPP): $(QT_QRC) $(QT_FORMS_H) $(RES_ICONS) $(RES_IMAGES) $(RES_CSS) $(RES_FONTS) $(RES_MOVIES) $(PROTOBUF_H)
 	@test -f $(RCC)
-	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) $(RCCFLAGS) -name yerbas $< | \
+	$(AM_V_GEN) QT_SELECT=$(QT_SELECT) $(RCC) $(RCCFLAGS) -name egodcoin $< | \
 	  $(SED) -e '/^\*\*.*Created:/d' -e '/^\*\*.*by:/d' > $@
 
-CLEAN_QT = $(nodist_qt_libyerbasqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno qt/temp_yerbas_locale.qrc qt/res/css/colors/*
+CLEAN_QT = $(nodist_qt_libegodcoinqt_a_SOURCES) $(QT_QM) $(QT_FORMS_H) qt/*.gcda qt/*.gcno qt/temp_wallet_locale.qrc qt/res/css/colors/*
 
 CLEANFILES += $(CLEAN_QT)
 
-yerbas_qt_clean: FORCE
-	rm -f $(CLEAN_QT) $(qt_libyerbasqt_a_OBJECTS) $(qt_yerbas_qt_OBJECTS) qt/yerbas-qt$(EXEEXT) $(LIBBITCOINQT)
+egodcoin_qt_clean: FORCE
+	rm -f $(CLEAN_QT) $(qt_libegodcoinqt_a_OBJECTS) $(qt_egodcoin_qt_OBJECTS) qt/egodcoin-qt$(EXEEXT) $(LIBBITCOINQT)
 
-yerbas_qt : qt/yerbas-qt$(EXEEXT)
+egodcoin_qt : qt/egodcoin-qt$(EXEEXT)
 
 ui_%.h: %.ui
 	@test -f $(UIC)

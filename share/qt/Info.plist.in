@@ -11,7 +11,7 @@
   </array>
 
   <key>CFBundleIconFile</key>
-  <string>yerbas.icns</string>
+  <string>egodcoin.icns</string>
 
   <key>CFBundlePackageType</key>
   <string>APPL</string>
@@ -26,16 +26,16 @@
   <string>????</string>
 
   <key>CFBundleExecutable</key>
-  <string>Yerbas-Qt</string>
+  <string>Egodcoin-Qt</string>
 
   <key>CFBundleName</key>
-  <string>Yerbas-Qt</string>
+  <string>Egodcoin-Qt</string>
 
   <key>LSHasLocalizedDisplayName</key>
   <true/>
 
   <key>CFBundleIdentifier</key>
-  <string>org.yerbas.Yerbas-Qt</string>
+  <string>org.egodcoin.Egodcoin-Qt</string>
 
   <key>CFBundleURLTypes</key>
   <array>
@@ -43,10 +43,10 @@
       <key>CFBundleTypeRole</key>
       <string>Editor</string>
       <key>CFBundleURLName</key>
-      <string>org.yerbas.YerbasPayment</string>
+      <string>org.egodcoin.EgodcoinPayment</string>
       <key>CFBundleURLSchemes</key>
       <array>
-        <string>yerbas</string>
+        <string>egodcoin</string>
       </array>
     </dict>
   </array>
@@ -55,9 +55,9 @@
   <array>
     <dict>
       <key>UTTypeIdentifier</key>
-      <string>org.yerbas.paymentrequest</string>
+      <string>org.egodcoin.paymentrequest</string>
       <key>UTTypeDescription</key>
-      <string>Yerbas payment request</string>
+      <string>Egodcoin payment request</string>
       <key>UTTypeConformsTo</key>
       <array>
         <string>public.data</string>
@@ -65,10 +65,10 @@
       <key>UTTypeTagSpecification</key>
       <dict>
         <key>public.mime-type</key>
-        <string>application/x-yerbas-payment-request</string>
+        <string>application/x-egodcoin-payment-request</string>
         <key>public.filename-extension</key>
         <array>
-          <string>yerbasmentrequest</string>
+          <string>egodcoinmentrequest</string>
         </array>
       </dict>
     </dict>
@@ -81,7 +81,7 @@
       <string>Editor</string>
       <key>LSItemContentTypes</key>
       <array>
-        <string>org.yerbas.paymentrequest</string>
+        <string>org.egodcoin.paymentrequest</string>
       </array>
       <key>LSHandlerRank</key>
       <string>Owner</string>

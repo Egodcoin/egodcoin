@@ -6,7 +6,7 @@
 #define BITCOIN_QT_BITCOINGUI_H
 
 #if defined(HAVE_CONFIG_H)
-#include "config/yerbas-config.h"
+#include "config/egodcoin-config.h"
 #endif
 
 #include "amount.h"
@@ -277,7 +277,7 @@ private Q_SLOTS:
     void showPeers();
     void showRepair();
 
-    /** Open external (default) editor with yerbas.conf */
+    /** Open external (default) editor with egodcoin.conf */
     void showConfEditor();
     /** Show folder with wallet backups in default file browser */
     void showBackups();

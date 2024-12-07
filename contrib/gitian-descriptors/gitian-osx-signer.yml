@@ -1,5 +1,5 @@
 ---
-name: "yerbas-dmg-signer"
+name: "egodcoin-dmg-signer"
 suites:
 - "bionic"
 architectures:
@@ -7,10 +7,10 @@ architectures:
 packages:
 - "faketime"
 remotes:
-- "url": "https://github.com/The-Yerbas-Endeavor/yerbas-detached-sigs.git"
+- "url": "https://github.com/Egodcoin/egodcoin-detached-sigs.git"
   "dir": "signature"
 files:
-- "yerbascore-osx-unsigned.tar.gz"
+- "egodcoincore-osx-unsigned.tar.gz"
 script: |
   WRAP_DIR=$HOME/wrapped
   mkdir -p ${WRAP_DIR}
@@ -27,8 +27,8 @@ script: |
     chmod +x ${WRAP_DIR}/${prog}
   done
 
-  UNSIGNED=yerbascore-osx-unsigned.tar.gz
-  SIGNED=yerbascore-osx-signed.dmg
+  UNSIGNED=egodcoincore-osx-unsigned.tar.gz
+  SIGNED=egodcoincore-osx-signed.dmg
 
   tar -xf ${UNSIGNED}
   OSX_VOLNAME="$(cat osx_volname)"

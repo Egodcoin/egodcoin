@@ -51,12 +51,12 @@ enum txnouttype
     TX_SCRIPTHASH,
     TX_MULTISIG,
     TX_NULL_DATA,
-    /** YERB ASSETS START */
+    /** EGOD ASSETS START */
     TX_NEW_ASSET,
     TX_REISSUE_ASSET,
     TX_TRANSFER_ASSET,
-    TX_RESTRICTED_ASSET_DATA, //!< unspendable OP_YERB_ASSET script that carries data
-    /** YERB ASSETS END */
+    TX_RESTRICTED_ASSET_DATA, //!< unspendable OP_EGOD_ASSET script that carries data
+    /** EGOD ASSETS END */
 };
 
 class CNoDestination {

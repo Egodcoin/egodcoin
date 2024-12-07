@@ -1,0 +1,13 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Egodcoin Core
+Comment=Egodcoin P2P Cryptocurrency
+Comment[de]=Verbinde mit dem Egodcoin peer-to-peer Netzwerk
+Comment[fr]=Egodcoin, monnaie virtuelle cryptographique pair à pair
+Comment[tr]=Egodcoin, eşten eşe kriptografik sanal para birimi
+Exec=egodcoin-qt %u
+Terminal=false
+Type=Application
+Icon=egodcoin128
+MimeType=x-scheme-handler/egodcoin;
+Categories=Office;Finance;

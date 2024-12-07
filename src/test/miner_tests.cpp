@@ -19,7 +19,7 @@
 #include "util.h"
 #include "utilstrencodings.h"
 
-#include "test/test_yerbas.h"
+#include "test/test_egodcoin.h"
 
 #include <memory>
 

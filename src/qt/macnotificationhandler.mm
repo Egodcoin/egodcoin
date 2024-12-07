@@ -13,7 +13,7 @@
 - (NSString *)__bundleIdentifier
 {
     if (self == [NSBundle mainBundle]) {
-        return @"org.yerbas.Yerbas-Qt";
+        return @"org.egodcoin.Egodcoin-Qt";
     } else {
         return [self __bundleIdentifier];
     }

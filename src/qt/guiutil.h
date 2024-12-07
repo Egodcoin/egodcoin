@@ -29,7 +29,7 @@ class QUrl;
 class QWidget;
 QT_END_NAMESPACE
 
-/** Utility functions used by the Yerbas Qt UI.
+/** Utility functions used by the Egodcoin Qt UI.
  */
 namespace GUIUtil
 {
@@ -85,7 +85,7 @@ namespace GUIUtil
     void setupAddressWidget(QValidatedLineEdit *widget, QWidget *parent);
     void setupAmountWidget(QLineEdit *widget, QWidget *parent);
 
-    // Parse "yerbas:" URI into recipient object, return true on successful parsing
+    // Parse "egodcoin:" URI into recipient object, return true on successful parsing
     bool parseBitcoinURI(const QUrl &uri, SendCoinsRecipient *out);
     bool parseBitcoinURI(QString uri, SendCoinsRecipient *out);
     QString formatBitcoinURI(const SendCoinsRecipient &info);
@@ -159,7 +159,7 @@ namespace GUIUtil
     void concatenate(QPainter* painter, QString& strToCon, int static_width, int left_side, int right_size);
 
 	
-    // Open yerbas.conf
+    // Open egodcoin.conf
     void openConfigfile();	
 
     // Browse backup folder

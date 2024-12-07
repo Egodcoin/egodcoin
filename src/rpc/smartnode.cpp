@@ -1,5 +1,7 @@
 // Copyright (c) 2014-2019 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -51,13 +53,13 @@ void smartnode_list_help()
             "  json           - Print info in JSON format (can be additionally filtered, partial match)\n"
             "  lastpaidblock  - Print the last block height a node was paid on the network\n"
             "  lastpaidtime   - Print the last time a node was paid on the network\n"
-            "  owneraddress   - Print the smartnode owner Yerbas address\n"
-            "  payee          - Print the smartnode payout Yerbas address (can be additionally filtered,\n"
+            "  owneraddress   - Print the smartnode owner Egodcoin address\n"
+            "  payee          - Print the smartnode payout Egodcoin address (can be additionally filtered,\n"
             "                   partial match)\n"
             "  pubKeyOperator - Print the smartnode operator public key\n"
             "  status         - Print smartnode status: ENABLED / POSE_BANNED\n"
             "                   (can be additionally filtered, partial match)\n"
-            "  votingaddress  - Print the smartnode voting Yerbas address\n"
+            "  votingaddress  - Print the smartnode voting Egodcoin address\n"
         );
 }
 
@@ -542,8 +544,8 @@ UniValue smartnodelist(const JSONRPCRequest& request)
 static const CRPCCommand commands[] =
 { //  category              name                      actor (function)         okSafe argNames
   //  --------------------- ------------------------  -----------------------  ------ ----------
-    { "yerbas",               "smartnode",             &smartnode,             true,  {} },
-    { "yerbas",               "smartnodelist",         &smartnodelist,         true,  {} },
+    { "egodcoin",               "smartnode",             &smartnode,             true,  {} },
+    { "egodcoin",               "smartnodelist",         &smartnodelist,         true,  {} },
 };
 
 void RegisterSmartnodeRPCCommands(CRPCTable &t)

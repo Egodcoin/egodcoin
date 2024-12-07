@@ -1,5 +1,7 @@
 // Copyright (c) 2019-2020 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -11,6 +13,8 @@
 #include "rpc/server.h"
 
 #include <univalue.h>
+
+extern const std::string CURRENCY_UNIT;
 
 #ifdef ENABLE_WALLET
 UniValue privatesend(const JSONRPCRequest& request)
@@ -152,10 +156,10 @@ UniValue getprivatesendinfo(const JSONRPCRequest& request)
 static const CRPCCommand commands[] =
     { //  category              name                      actor (function)         okSafe argNames
         //  --------------------- ------------------------  -----------------------  ------ ----------
-        { "yerbas",               "getpoolinfo",            &getpoolinfo,            true,  {} },
-        { "yerbas",               "getprivatesendinfo",     &getprivatesendinfo,     true,  {} },
+        { "egodcoin",               "getpoolinfo",            &getpoolinfo,            true,  {} },
+        { "egodcoin",               "getprivatesendinfo",     &getprivatesendinfo,     true,  {} },
 #ifdef ENABLE_WALLET
-        { "yerbas",               "privatesend",            &privatesend,            false, {} },
+        { "egodcoin",               "privatesend",            &privatesend,            false, {} },
 #endif // ENABLE_WALLET
 };
 

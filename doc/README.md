@@ -1,39 +1,39 @@
-Yerbas Core
+Egodcoin Core
 ==========
 
-This is the official reference wallet for Yerbas digital currency and comprises the backbone of the Yerbas peer-to-peer network. You can [download Yerbas Core](https://www.yerbas.org/downloads/) or [build it yourself](#building) using the guides below.
+This is the official reference wallet for Egodcoin digital currency and comprises the backbone of the Egodcoin peer-to-peer network. You can [download Egodcoin Core](https://www.egodoin.org/downloads/) or [build it yourself](#building) using the guides below.
 
 Running
 ---------------------
-The following are some helpful notes on how to run Yerbas on your native platform.
+The following are some helpful notes on how to run Egodcoin on your native platform.
 
 ### Unix
 
 Unpack the files into a directory and run:
 
-- `bin/yerbas-qt` (GUI) or
-- `bin/yerbasd` (headless)
+- `bin/egodcoin-qt` (GUI) or
+- `bin/egodcoind` (headless)
 
 ### Windows
 
-Unpack the files into a directory, and then run yerbas-qt.exe.
+Unpack the files into a directory, and then run egodcoin-qt.exe.
 
 ### OS X
 
-Drag Yerbas-Qt to your applications folder, and then run Yerbas-Qt.
+Drag Egodcoin-Qt to your applications folder, and then run Egodcoin-Qt.
 
 ### Need Help?
 
-* See the [Yerbas documentation](https://docs.yerbas.org)
+* See the [Egodcoin documentation](https://docs.egodcoin.org)
 for help and more information.
-* See the [Yerbas Developer Documentation](https://yerbas-docs.github.io/) 
+* See the [Egodcoin Developer Documentation](https://egodcoin-docs.github.io/) 
 for technical specifications and implementation details.
-* Ask for help on [Yerbas Nation Discord](http://yerbaschat.org)
-* Ask for help on the [Yerbas Forum](https://yerbas.org/forum)
+* Ask for help on [Egodcoin Nation Discord](https://egodcoinchat.org)
+* Ask for help on the [Egodcoin Forum](https://forum.egodcoin.org)
 
 Building
 ---------------------
-The following are developer notes on how to build Yerbas Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
+The following are developer notes on how to build Egodcoin Core on your native platform. They are not complete guides, but include notes on the necessary libraries, compile flags, etc.
 
 - [OS X Build Notes](build-osx.md)
 - [Unix Build Notes](build-unix.md)
@@ -43,7 +43,7 @@ The following are developer notes on how to build Yerbas Core on your native pla
 
 Development
 ---------------------
-The Yerbas Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
+The Egodcoin Core repo's [root README](/README.md) contains relevant information on the development process and automated testing.
 
 - [Developer Notes](developer-notes.md)
 - [Release Notes](release-notes.md)
@@ -59,8 +59,8 @@ The Yerbas Core repo's [root README](/README.md) contains relevant information o
 - [Benchmarking](benchmarking.md)
 
 ### Resources
-* Discuss on the [Yerbas Forum](https://yerbas.org/forum), in the Development & Technical Discussion board.
-* Discuss on [Yerbas Nation Discord](http://yerbaschat.org)
+* Discuss on the [Egodcoin Forum](https://forum.egodcoin.org), in the Development & Technical Discussion board.
+* Discuss on [Egodcoin Nation Discord](http://egodcoinchat.org)
 
 ### Miscellaneous
 - [Assets Attribution](assets-attribution.md)

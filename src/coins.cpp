@@ -95,7 +95,7 @@ void CCoinsViewCache::AddCoin(const COutPoint &outpoint, Coin&& coin, bool possi
 void AddCoins(CCoinsViewCache& cache, const CTransaction &tx, int nHeight, uint256 blockHash, bool check, CAssetsCache* assetsCache, std::pair<std::string, CBlockAssetUndo>* undoAssetData) {
     bool fCoinbase = tx.IsCoinBase();
     const uint256& txid = tx.GetHash();
-    /** YERB ASSETS START */
+    /** EGOD ASSETS START */
     if (Params().IsAssetsActive(chainActive.Tip())) {
         if (assetsCache) {  
             if (tx.IsNewAsset()) { // This works are all new root assets, sub asset, and restricted assets
@@ -211,7 +211,7 @@ void AddCoins(CCoinsViewCache& cache, const CTransaction &tx, int nHeight, uint2
             }    
         }
     }
-    /** YERB ASSETS END */
+    /** EGOD ASSETS END */
 
     for (size_t i = 0; i < tx.vout.size(); ++i) {
         bool overwrite = check ? cache.HaveCoin(COutPoint(txid, i)) : fCoinbase;
@@ -219,7 +219,7 @@ void AddCoins(CCoinsViewCache& cache, const CTransaction &tx, int nHeight, uint2
         // deal with the pre-BIP30 occurrences of duplicate coinbase transactions.
         cache.AddCoin(COutPoint(txid, i), Coin(tx.vout[i], nHeight, fCoinbase), overwrite);
     
-        /** YERB ASSETS START */
+        /** EGOD ASSETS START */
         if (Params().IsAssetsActive(chainActive.Tip())) {
             if (assetsCache) {
                 CAssetOutputEntry assetData;
@@ -312,7 +312,7 @@ void AddCoins(CCoinsViewCache& cache, const CTransaction &tx, int nHeight, uint2
                 }
             }
         }
-        /** YERB ASSETS END */
+        /** EGOD ASSETS END */
     }
 }
 
@@ -320,9 +320,9 @@ bool CCoinsViewCache::SpendCoin(const COutPoint &outpoint, Coin* moveout, CAsset
     CCoinsMap::iterator it = FetchCoin(outpoint);
     if (it == cacheCoins.end()) return false;
     cachedCoinsUsage -= it->second.coin.DynamicMemoryUsage();
-    /** YERB START */
+    /** EGOD START */
     Coin tempCoin = it->second.coin;
-    /** YERB END */
+    /** EGOD END */
     if (moveout) {
         *moveout = std::move(it->second.coin);
     }
@@ -332,7 +332,7 @@ bool CCoinsViewCache::SpendCoin(const COutPoint &outpoint, Coin* moveout, CAsset
         it->second.flags |= CCoinsCacheEntry::DIRTY;
         it->second.coin.Clear();
     }
-    /** YERB START */
+    /** EGOD START */
     if (AreAssetsDeployed()) {
         if (assetsCache) {
             if (!assetsCache->TrySpendCoin(outpoint, tempCoin.out)) {
@@ -340,7 +340,7 @@ bool CCoinsViewCache::SpendCoin(const COutPoint &outpoint, Coin* moveout, CAsset
             }
         }
     }
-    /** YERB END */
+    /** EGOD END */
     return true;
 }
 

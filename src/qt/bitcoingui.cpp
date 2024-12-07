@@ -1,11 +1,13 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
 // Copyright (c) 2014-2019 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #if defined(HAVE_CONFIG_H)
-#include "config/yerbas-config.h"
+#include "config/egodcoin-config.h"
 #endif
 
 #include "bitcoingui.h"
@@ -79,6 +81,8 @@ const std::string BitcoinGUI::DEFAULT_UIPLATFORM =
         "other"
 #endif
         ;
+
+// extern const std::string ASSET_UNIT;
 
 /** Display name for default wallet name. Uses tilde to avoid name
  * collisions in the future with additional wallets */
@@ -328,7 +332,7 @@ void BitcoinGUI::createActions()
     tabGroup->addAction(overviewAction);
 
     sendCoinsAction = new QAction(tr("&Send"), this);
-    sendCoinsAction->setStatusTip(tr("Send coins to a Yerbas address"));
+    sendCoinsAction->setStatusTip(tr("Send coins to a Egodcoin address"));
     sendCoinsAction->setToolTip(sendCoinsAction->statusTip());
     sendCoinsAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -343,7 +347,7 @@ void BitcoinGUI::createActions()
     sendCoinsMenuAction->setToolTip(sendCoinsMenuAction->statusTip());
 
     receiveCoinsAction = new QAction(tr("&Receive"), this);
-    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and yerbas: URIs)"));
+    receiveCoinsAction->setStatusTip(tr("Request payments (generates QR codes and egodcoin: URIs)"));
     receiveCoinsAction->setToolTip(receiveCoinsAction->statusTip());
     receiveCoinsAction->setCheckable(true);
 #ifdef Q_OS_MAC
@@ -386,7 +390,7 @@ void BitcoinGUI::createActions()
     }
 
     TransferAssetsAction = new QAction(tr("&Transfer Assets"), this);
-    TransferAssetsAction->setStatusTip(tr("Transfer assets to YERB addresses"));
+    TransferAssetsAction->setStatusTip(tr("Transfer assets to EGOD addresses"));
     TransferAssetsAction->setCheckable(true);
     tabGroup->addAction(TransferAssetsAction);
 
@@ -433,7 +437,7 @@ void BitcoinGUI::createActions()
     quitAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_Q));
     quitAction->setMenuRole(QAction::QuitRole);
     aboutAction = new QAction(QIcon(":/icons/about"), tr("&About %1").arg(tr(PACKAGE_NAME)), this);
-    aboutAction->setStatusTip(tr("Show information about Yerbas Core"));
+    aboutAction->setStatusTip(tr("Show information about Egodcoin Core"));
     aboutAction->setMenuRole(QAction::AboutRole);
     aboutAction->setEnabled(false);
     aboutQtAction = new QAction(QIcon(":/icons/about_qt"), tr("About &Qt"), this);
@@ -457,9 +461,9 @@ void BitcoinGUI::createActions()
     unlockWalletAction->setToolTip(tr("Unlock wallet"));
     lockWalletAction = new QAction(tr("&Lock Wallet"), this);
     signMessageAction = new QAction(QIcon(":/icons/edit"), tr("Sign &message..."), this);
-    signMessageAction->setStatusTip(tr("Sign messages with your Yerbas addresses to prove you own them"));
+    signMessageAction->setStatusTip(tr("Sign messages with your Egodcoin addresses to prove you own them"));
     verifyMessageAction = new QAction(QIcon(":/icons/transaction_0"), tr("&Verify message..."), this);
-    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Yerbas addresses"));
+    verifyMessageAction->setStatusTip(tr("Verify messages to ensure they were signed with specified Egodcoin addresses"));
 
     openInfoAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation), tr("&Information"), this);
     openInfoAction->setStatusTip(tr("Show diagnostic information"));
@@ -488,11 +492,11 @@ void BitcoinGUI::createActions()
     usedReceivingAddressesAction->setStatusTip(tr("Show the list of used receiving addresses and labels"));
 
     openAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_DirOpenIcon), tr("Open &URI..."), this);
-    openAction->setStatusTip(tr("Open a yerbas: URI or payment request"));
+    openAction->setStatusTip(tr("Open an egodcoin: URI or payment request"));
 
     showHelpMessageAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation), tr("&Command-line options"), this);
     showHelpMessageAction->setMenuRole(QAction::NoRole);
-    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Yerbas command-line options").arg(tr(PACKAGE_NAME)));
+    showHelpMessageAction->setStatusTip(tr("Show the %1 help message to get a list with possible Egodcoin command-line options").arg(tr(PACKAGE_NAME)));
 
     showPrivateSendHelpAction = new QAction(QApplication::style()->standardIcon(QStyle::SP_MessageBoxInformation), tr("&PrivateSend information"), this);
     showPrivateSendHelpAction->setMenuRole(QAction::NoRole);
@@ -626,13 +630,13 @@ void BitcoinGUI::createToolBars()
         toolbar->addAction(ManageAssetsAction);
         toolbar->addAction(RestrictedAssetsAction);
 
-        // Add Yerbas logo on the right side
+        // Add Egodcoin logo on the right side
         QWidget* spacer = new QWidget();
         spacer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
         toolbar->addWidget(spacer);
 
         QLabel *logoLabel = new QLabel();
-        QPixmap logoPixmap(":/images/yerbas_logo_toolbar");
+        QPixmap logoPixmap(":/images/egodcoin_logo_toolbar");
         logoLabel->setPixmap(logoPixmap);
         toolbar->addWidget(logoLabel);
 
@@ -1023,7 +1027,7 @@ void BitcoinGUI::updateNetworkState()
     }
 
     if (clientModel->getNetworkActive()) {
-        labelConnectionsIcon->setToolTip(tr("%n active connection(s) to Yerbas network", "", count));
+        labelConnectionsIcon->setToolTip(tr("%n active connection(s) to Egodcoin network", "", count));
     } else {
         labelConnectionsIcon->setToolTip(tr("Network activity disabled"));
         icon = ":/icons/network_disabled";
@@ -1228,7 +1232,7 @@ void BitcoinGUI::setAdditionalDataSyncProgress(double nSyncProgress)
 
 void BitcoinGUI::message(const QString &title, const QString &message, unsigned int style, bool *ret)
 {
-    QString strTitle = tr("Yerbas Core"); // default title
+    QString strTitle = tr("Egodcoin Core"); // default title
     // Default to information icon
     int nMBoxIcon = QMessageBox::Information;
     int nNotifyIcon = Notificator::Information;
@@ -1254,7 +1258,7 @@ void BitcoinGUI::message(const QString &title, const QString &message, unsigned 
             break;
         }
     }
-    // Append title to "Yerbas Core - "
+    // Append title to "Egodcoin Core - "
     if (!msgType.isEmpty())
         strTitle += " - " + msgType;
 
@@ -1398,7 +1402,7 @@ void BitcoinGUI::showIncomingTransactions()
 
         QString msg;
         if (sentCount > 0) {
-            if (txs.back().assetName == "YERB")
+            if (txs.back().assetName == "EGOD")
                 msg += tr("Sent Amount: %1\n").arg(BitcoinUnits::formatWithUnit(unit, sentAmount, true));
             else
                 msg += tr("Sent Amount: %1\n").arg(BitcoinUnits::formatWithCustomName(txs.back().assetName, sentAmount, MAX_ASSET_UNITS, true));
@@ -1406,7 +1410,7 @@ void BitcoinGUI::showIncomingTransactions()
             //msg += tr("Sent Amount: %1\n").arg(BitcoinUnits::formatWithUnit(unit, sentAmount, true));
         }
         if (receivedCount > 0) {
-            if (txs.back().assetName == "YERB")
+            if (txs.back().assetName == "EGOD")
                 msg += tr("Received Amount: %1\n").arg(BitcoinUnits::formatWithUnit(unit, receivedAmount, true));
             else
                 msg += tr("Received Amount: %1\n").arg(BitcoinUnits::formatWithCustomName(txs.back().assetName, receivedAmount, MAX_ASSET_UNITS, true));
@@ -1419,7 +1423,7 @@ void BitcoinGUI::showIncomingTransactions()
         for (auto& itx : txs) {
             // On new transaction, make an info balloon
             QString msg = tr("Date: %1\n").arg(itx.date);
-            if (itx.assetName == "YERB")
+            if (itx.assetName == "EGOD")
                 msg += tr("Amount: %1\n").arg(BitcoinUnits::formatWithUnit(itx.unit, itx.amount, true));
             else
                 msg += tr("Amount: %1\n").arg(BitcoinUnits::formatWithCustomName(itx.assetName, itx.amount, MAX_ASSET_UNITS, true));
@@ -1439,7 +1443,7 @@ void BitcoinGUI::checkAssets()
     // Check that status of RIP2 and activate the assets icon if it is active
     if(AreAssetsDeployed()) {
         TransferAssetsAction->setDisabled(false);
-        TransferAssetsAction->setToolTip(tr("Transfer assets to YERB addresses"));
+        TransferAssetsAction->setToolTip(tr("Transfer assets to EGOD addresses"));
         CreateAssetsAction->setDisabled(false);
         CreateAssetsAction->setToolTip(tr("Create new assets"));
         ManageAssetsAction->setDisabled(false);

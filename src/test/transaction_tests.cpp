@@ -4,7 +4,7 @@
 
 #include "data/tx_invalid.json.h"
 #include "data/tx_valid.json.h"
-#include "test/test_yerbas.h"
+#include "test/test_egodcoin.h"
 
 #include "clientversion.h"
 #include "checkqueue.h"

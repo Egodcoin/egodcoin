@@ -2,7 +2,7 @@
 // It's very important to not execute any scripts outside of the builder container, as it's our protection against
 // external developers bringing in harmful code into Jenkins.
 // Jenkins will only run the build if this Jenkinsfile was not modified in an external pull request. Only branches
-// which are part of the Yerbas repo will allow modification to the Jenkinsfile.
+// which are part of the Egodcoin repo will allow modification to the Jenkinsfile.
 
 def targets = [
   'win32',
@@ -34,7 +34,7 @@ for(int i = 0; i < targets.size(); i++) {
         "JOB_NUMBER=${BUILD_NUMBER}",
       ]
       withEnv(env) {
-        def builderImageName="yerbas-builder-${target}"
+        def builderImageName="egodcoin-builder-${target}"
 
         def builderImage
         stage("${target}/builder-image") {
@@ -44,49 +44,49 @@ for(int i = 0; i < targets.size(); i++) {
         builderImage.inside("-t") {
           // copy source into fixed path
           // we must build under the same path everytime as otherwise caches won't work properly
-          sh "cp -ra ${pwd}/. /yerbas-src/"
+          sh "cp -ra ${pwd}/. /egodcoin-src/"
 
           // restore cache
           def hasCache = false
           try {
-            copyArtifacts(projectName: "yerbas-yerbas/${BRANCH_NAME}", optional: true, selector: lastSuccessful(), filter: "ci-cache-${target}.tar.gz")
+            copyArtifacts(projectName: "egodcoin-egodcoin/${BRANCH_NAME}", optional: true, selector: lastSuccessful(), filter: "ci-cache-${target}.tar.gz")
           } catch (Exception e) {
           }
           if (fileExists("ci-cache-${target}.tar.gz")) {
             hasCache = true
-            echo "Using cache from yerbas-yerbas/${BRANCH_NAME}"
+            echo "Using cache from egodcoin-egodcoin/${BRANCH_NAME}"
           } else {
             try {
-              copyArtifacts(projectName: 'yerbas-yerbas/develop', optional: true, selector: lastSuccessful(), filter: "ci-cache-${target}.tar.gz");
+              copyArtifacts(projectName: 'egodcoin-egodcoin/develop', optional: true, selector: lastSuccessful(), filter: "ci-cache-${target}.tar.gz");
             } catch (Exception e) {
             }
             if (fileExists("ci-cache-${target}.tar.gz")) {
               hasCache = true
-              echo "Using cache from yerbas-yerbas/develop"
+              echo "Using cache from egodcoin-egodcoin/develop"
             }
           }
 
           if (hasCache) {
-            sh "cd /yerbas-src && tar xzf ${pwd}/ci-cache-${target}.tar.gz"
+            sh "cd /egodcoin-src && tar xzf ${pwd}/ci-cache-${target}.tar.gz"
           } else {
-            sh "mkdir -p /yerbas-src/ci-cache-${target}"
+            sh "mkdir -p /egodcoin-src/ci-cache-${target}"
           }
 
           stage("${target}/depends") {
-            sh 'cd /yerbas-src && ./ci/build_depends.sh'
+            sh 'cd /egodcoin-src && ./ci/build_depends.sh'
           }
           stage("${target}/build") {
-            sh 'cd /yerbas-src && ./ci/build_src.sh'
+            sh 'cd /egodcoin-src && ./ci/build_src.sh'
           }
           stage("${target}/test") {
-            sh 'cd /yerbas-src && ./ci/test_unittests.sh'
+            sh 'cd /egodcoin-src && ./ci/test_unittests.sh'
           }
           stage("${target}/test") {
-            sh 'cd /yerbas-src && ./ci/test_integrationtests.sh'
+            sh 'cd /egodcoin-src && ./ci/test_integrationtests.sh'
           }
 
           // archive cache and copy it into the jenkins workspace
-          sh "cd /yerbas-src && tar czfv ci-cache-${target}.tar.gz ci-cache-${target} && cp ci-cache-${target}.tar.gz ${pwd}/"
+          sh "cd /egodcoin-src && tar czfv ci-cache-${target}.tar.gz ci-cache-${target} && cp ci-cache-${target}.tar.gz ${pwd}/"
         }
 
         // upload cache

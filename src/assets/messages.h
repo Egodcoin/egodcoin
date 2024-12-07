@@ -1,10 +1,12 @@
 // Copyright (c) 2018-2020 The Yerbas Core developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 
-#ifndef YERBAS_MESSAGES_H
-#define YERBAS_MESSAGES_H
+#ifndef EGODCOIN_MESSAGES_H
+#define EGODCOIN_MESSAGES_H
 
 #include <uint256.h>
 #include <serialize.h>
@@ -140,4 +142,4 @@ public:
     std::string createJsonString();
 };
 
-#endif //YERBAS_MESSAGES_H
+#endif // EGODCOIN_MESSAGES_H

@@ -85,7 +85,7 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey)
             return ISMINE_SPENDABLE;
         break;
     }
-     /** YERB START */
+     /** EGOD START */
     case TX_NEW_ASSET: {
         if (!AreAssetsDeployed())
             return ISMINE_NO;
@@ -113,7 +113,7 @@ isminetype IsMine(const CKeyStore &keystore, const CScript& scriptPubKey)
             return ISMINE_SPENDABLE;
         break;
     }
-    /** YERB END*/
+    /** EGOD END */
     }
 
     if (keystore.HaveWatchOnly(scriptPubKey)) {

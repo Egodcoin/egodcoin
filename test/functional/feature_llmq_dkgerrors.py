@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 # Copyright (c) 2015-2020 The Dash Core developers
 # Copyright (c) 2022 The Yerbas Endeavor developers
+# Copyright (c) 2024 https://egodcoin.org
+#
 # Distributed under the MIT software license, see the accompanying
 # file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -13,9 +15,9 @@ Simulate and check DKG errors
 
 '''
 
-class LLMQDKGErrors(YerbasTestFramework):
+class LLMQDKGErrors(EgodcoinTestFramework):
     def set_test_params(self):
-        self.set_yerbas_test_params(6, 5, [["-whitelist=127.0.0.1"]] * 6, fast_dip3_enforcement=True)
+        self.set_egodcoin_test_params(6, 5, [["-whitelist=127.0.0.1"]] * 6, fast_dip3_enforcement=True)
 
     def run_test(self):
 

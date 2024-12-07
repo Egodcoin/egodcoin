@@ -10,10 +10,10 @@
 
 /**
  * Name of client reported in the 'version' message. Report the same name
- * for both yerbasd and yerbas-qt, to make it harder for attackers to
+ * for both egodcoind and egodcoin-qt, to make it harder for attackers to
  * target servers or GUI users specifically.
  */
-const std::string CLIENT_NAME("Yerbas Core");
+const std::string CLIENT_NAME("Egodcoin Core");
 
 /**
  * Client version number

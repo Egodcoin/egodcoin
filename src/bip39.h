@@ -21,8 +21,8 @@
  * OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#ifndef YERBAS_BIP39_H
-#define YERBAS_BIP39_H
+#ifndef EGODCOIN_BIP39_H
+#define EGODCOIN_BIP39_H
 
 #include "support/allocators/secure.h"
 

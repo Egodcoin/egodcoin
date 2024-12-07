@@ -2,6 +2,8 @@
 // Copyright (c) 2009-2015 The Bitcoin Core developers
 // Copyright (c) 2014-2019 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -47,7 +49,7 @@
 
 //////////////////////////////////////////////////////////////////////////////
 //
-// YerbasMiner
+// EgodcoinMiner
 //
 
 //
@@ -542,11 +544,11 @@ CWallet *GetFirstWallet() {
     return(NULL);
 }
 
-void static YerbasMiner(const CChainParams& chainparams)
+void static EgodcoinMiner(const CChainParams& chainparams)
 {
-    LogPrintf("YerbasMiner -- started\n");
+    LogPrintf("EgodMiner -- started\n");
     SetThreadPriority(THREAD_PRIORITY_LOWEST);
-    RenameThread("yerbas-miner");
+    RenameThread("egod-miner");
 
     unsigned int nExtraNonce = 0;
 
@@ -558,7 +560,7 @@ void static YerbasMiner(const CChainParams& chainparams)
     #endif
 
     if (!EnsureWalletIsAvailable(pWallet, false)) {
-        LogPrintf("YerbasMiner -- Wallet not available\n");
+        LogPrintf("EgodMiner -- Wallet not available\n");
     }
 
     if (pWallet == NULL)
@@ -618,7 +620,7 @@ void static YerbasMiner(const CChainParams& chainparams)
 
             if (!pblocktemplate.get())
             {
-                LogPrintf("YerbasMiner -- Keypool ran out, please call keypoolrefill before restarting the mining thread\n");
+                LogPrintf("EgodMiner -- Keypool ran out, please call keypoolrefill before restarting the mining thread\n");
                 return;
             }
             CBlock *pblock = &pblocktemplate->block;
@@ -628,7 +630,7 @@ void static YerbasMiner(const CChainParams& chainparams)
 			LogPrintf("Algos: %s\n",hashSelection.getHashSelectionString());
             IncrementExtraNonce(pblock, pindexPrev, nExtraNonce);
 
-            LogPrintf("YerbasMiner -- Running miner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
+            LogPrintf("EgodMiner -- Running miner with %u transactions in block (%u bytes)\n", pblock->vtx.size(),
                 ::GetSerializeSize(*pblock, SER_NETWORK, PROTOCOL_VERSION));
 
             //
@@ -648,7 +650,7 @@ void static YerbasMiner(const CChainParams& chainparams)
                     {
                         // Found a solution
                         SetThreadPriority(THREAD_PRIORITY_NORMAL);
-                        LogPrintf("YerbasMiner:\n  proof-of-work found\n  hash: %s\n  target: %s\n", hash.GetHex(), hashTarget.GetHex());
+                        LogPrintf("EgodMiner:\n  proof-of-work found\n  hash: %s\n  target: %s\n", hash.GetHex(), hashTarget.GetHex());
                         ProcessBlockFound(pblock, chainparams, hash);
                         SetThreadPriority(THREAD_PRIORITY_LOWEST);
                         coinbaseScript->KeepScript();
@@ -664,7 +666,7 @@ void static YerbasMiner(const CChainParams& chainparams)
                     if (nHashesDone % 1000 == 0) {   //Calculate hashing speed
                         nHashesPerSec = nHashesDone / (((GetTimeMicros() - nMiningTimeStart) / 1000000.00) + 1);
                         LogPrintf("nNonce: %d, hashRate %f\n",pblock->nNonce, nHashesPerSec);
-                        //LogPrintf("YerbasMiner:\n  proof-of-work in progress \n  hash: %s\n  target: %s\n, different=%s\n", hash.GetHex(), hashTarget.GetHex(), (UintToArith256(hash) - hashTarget));
+                        //LogPrintf("EgodMiner:\n  proof-of-work in progress \n  hash: %s\n  target: %s\n, different=%s\n", hash.GetHex(), hashTarget.GetHex(), (UintToArith256(hash) - hashTarget));
                     }
                     if ((pblock->nNonce & 0xFF) == 0)
                         break;
@@ -696,17 +698,17 @@ void static YerbasMiner(const CChainParams& chainparams)
     }
     catch (const boost::thread_interrupted&)
     {
-        LogPrintf("YerbasMiner -- terminated\n");
+        LogPrintf("EgodMiner -- terminated\n");
         throw;
     }
     catch (const std::runtime_error &e)
     {
-        LogPrintf("YerbasMiner -- runtime error: %s\n", e.what());
+        LogPrintf("EgodMiner -- runtime error: %s\n", e.what());
         return;
     }
 }
 
-int GenerateYerbass(bool fGenerate, int nThreads, const CChainParams& chainparams)
+int GenerateEgodcoins(bool fGenerate, int nThreads, const CChainParams& chainparams)
 {
 
     static boost::thread_group* minerThreads = NULL;
@@ -733,7 +735,7 @@ int GenerateYerbass(bool fGenerate, int nThreads, const CChainParams& chainparam
     nHashesPerSec = 0;
 
     for (int i = 0; i < nThreads; i++){
-        minerThreads->create_thread(boost::bind(&YerbasMiner, boost::cref(chainparams)));
+        minerThreads->create_thread(boost::bind(&EgodcoinMiner, boost::cref(chainparams)));
     }
 
     return(numCores);

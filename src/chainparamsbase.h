@@ -10,8 +10,8 @@
 #include <vector>
 
 /**
- * CBaseChainParams defines the base parameters (shared between yerbas-cli and yerbasd)
- * of a given instance of the Yerbas system.
+ * CBaseChainParams defines the base parameters (shared between egodcoin-cli and egodcoind)
+ * of a given instance of the Egodcoin system.
  */
 class CBaseChainParams
 {

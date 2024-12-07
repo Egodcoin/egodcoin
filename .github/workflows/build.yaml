@@ -1,4 +1,4 @@
-name: Yerbas Build
+name: Egodcoin Build
 on:
   push:
     branches:
@@ -12,10 +12,10 @@ on:
   workflow_dispatch:
 
 env:
-  COIN_NAME: yerbas
-  BUILD_DIR: yerbas-build
-  COMPRESS_DIR: yerbas-compress
-  TEST_DIR: yerbas-test
+  COIN_NAME: egodcoin
+  BUILD_DIR: egodcoin-build
+  COMPRESS_DIR: egodcoin-compress
+  TEST_DIR: egodcoin-test
 
 permissions:
     contents: read
@@ -94,9 +94,9 @@ jobs:
         run: |
           make -j$(nproc)
           mkdir -p ${BUILD_DIR} ${BUILD_DIR}_not_strip ${TEST_DIR}
-          cp src/{yerbas-cli,yerbasd,qt/yerbas-qt} ${BUILD_DIR}/
-          mv src/{yerbas-cli,yerbasd,qt/yerbas-qt} ${BUILD_DIR}_not_strip/
-          mv src/test/test_yerbas ${TEST_DIR}
+          cp src/{egodcoin-cli,egodcoind,qt/egodcoin-qt} ${BUILD_DIR}/
+          mv src/{egodcoin-cli,egodcoind,qt/egodcoin-qt} ${BUILD_DIR}_not_strip/
+          mv src/test/test_egodcoin ${TEST_DIR}
           strip ${BUILD_DIR}/*
 
       - name: Build Debug Binaries
@@ -107,7 +107,7 @@ jobs:
           ./configure --prefix=`pwd`/depends/x86_64-pc-linux-gnu --disable-tests --enable-debug
           make -j$(nproc)
           mkdir -p ${BUILD_DIR}_debug
-          mv src/{yerbas-cli,yerbasd,qt/yerbas-qt} ${BUILD_DIR}_debug/
+          mv src/{egodcoin-cli,egodcoind,qt/egodcoin-qt} ${BUILD_DIR}_debug/
 
       - name: Generate Checksum and Compress
         run: |
@@ -196,9 +196,9 @@ jobs:
         run: |
           make -j$(nproc)
           mkdir -p ${BUILD_DIR} ${BUILD_DIR}_not_strip ${TEST_DIR}
-          cp src/{yerbas-cli,yerbasd,qt/yerbas-qt} ${BUILD_DIR}/
-          mv src/{yerbas-cli,yerbasd,qt/yerbas-qt} ${BUILD_DIR}_not_strip/
-          mv src/test/test_yerbas ${TEST_DIR}
+          cp src/{egodcoin-cli,egodcoind,qt/egodcoin-qt} ${BUILD_DIR}/
+          mv src/{egodcoin-cli,egodcoind,qt/egodcoin-qt} ${BUILD_DIR}_not_strip/
+          mv src/test/test_egodcoin ${TEST_DIR}
           strip ${BUILD_DIR}/*
 
       - name: Build Debug Binaries
@@ -209,7 +209,7 @@ jobs:
           ./configure --prefix=`pwd`/depends/x86_64-pc-linux-gnu --disable-tests --enable-debug
           make -j$(nproc)
           mkdir -p ${BUILD_DIR}_debug
-          mv src/{yerbas-cli,yerbasd,qt/yerbas-qt} ${BUILD_DIR}_debug/
+          mv src/{egodcoin-cli,egodcoind,qt/egodcoin-qt} ${BUILD_DIR}_debug/
 
       - name: Generate Checksum and Compress
         run: |
@@ -298,9 +298,9 @@ jobs:
         run: |
           make -j8
           mkdir -p ${BUILD_DIR} ${BUILD_DIR}_not_strip ${TEST_DIR}
-          cp src/{yerbas-cli,yerbasd,qt/yerbas-qt} ${BUILD_DIR}/
-          mv src/{yerbas-cli,yerbasd,qt/yerbas-qt} ${BUILD_DIR}_not_strip/
-          mv src/test/test_yerbas ${TEST_DIR}
+          cp src/{egodcoin-cli,egodcoind,qt/egodcoin-qt} ${BUILD_DIR}/
+          mv src/{egodcoin-cli,egodcoind,qt/egodcoin-qt} ${BUILD_DIR}_not_strip/
+          mv src/test/test_egodcoin ${TEST_DIR}
           strip ${BUILD_DIR}/*
 
       - name: Generate Checksum and Compress
@@ -352,10 +352,10 @@ jobs:
         run: |
           make deploy
           mkdir -p macos-dmg
-          mv Yerbas-Qt.dmg macos-dmg/
+          mv Egodcoin-Qt.dmg macos-dmg/
           cd macos-dmg
-          echo "sha256: `shasum Yerbas-Qt.dmg`" >> checksums.txt
-          echo "openssl-sha256: `openssl sha256 Yerbas-Qt.dmg`" >> checksums.txt
+          echo "sha256: `shasum Egodcoin-Qt.dmg`" >> checksums.txt
+          echo "openssl-sha256: `openssl sha256 Egodcoin-Qt.dmg`" >> checksums.txt
           cd ..
 
       - name: Upload dmg file
@@ -393,8 +393,8 @@ jobs:
         run: |
           make -j$(nproc)
           mkdir -p ${BUILD_DIR} ${TEST_DIR}
-          mv src/{yerbas-cli,yerbasd,qt/yerbas-qt} ${BUILD_DIR}/
-          mv src/test/test_yerbas ${TEST_DIR}/
+          mv src/{egodcoin-cli,egodcoind,qt/egodcoin-qt} ${BUILD_DIR}/
+          mv src/test/test_egodcoin ${TEST_DIR}/
 
       - name: Build Debug Binaries
         run: |
@@ -404,7 +404,7 @@ jobs:
           ./configure --prefix=`pwd`/depends/aarch64-linux-gnu --disable-tests --enable-debug
           make -j$(nproc)
           mkdir -p ${BUILD_DIR}_debug
-          mv src/{yerbas-cli,yerbasd,qt/yerbas-qt} ${BUILD_DIR}_debug/
+          mv src/{egodcoin-cli,egodcoind,qt/egodcoin-qt} ${BUILD_DIR}_debug/
 
       - name: Generate Checksum and Compress
         run: |
@@ -484,9 +484,9 @@ jobs:
         run: |
           make -j$(nproc)
           mkdir -p ${BUILD_DIR} ${BUILD_DIR}_not_strip ${TEST_DIR}
-          cp src/{yerbas-cli.exe,yerbasd.exe,qt/yerbas-qt.exe} ${BUILD_DIR}/
-          mv src/{yerbas-cli.exe,yerbasd.exe,qt/yerbas-qt.exe} ${BUILD_DIR}_not_strip/
-          mv src/test/test_yerbas.exe ${TEST_DIR}
+          cp src/{egodcoin-cli.exe,egodcoind.exe,qt/egodcoin-qt.exe} ${BUILD_DIR}/
+          mv src/{egodcoin-cli.exe,egodcoind.exe,qt/egodcoin-qt.exe} ${BUILD_DIR}_not_strip/
+          mv src/test/test_egodcoin.exe ${TEST_DIR}
           strip ${BUILD_DIR}/*
 
       - name: Generate Checksum and Compress

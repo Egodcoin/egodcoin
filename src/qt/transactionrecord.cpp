@@ -1,6 +1,8 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
 // Copyright (c) 2014-2019 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -51,10 +53,10 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
             const CTxOut& txout = wtx.tx->vout[i];
             isminetype mine = wallet->IsMine(txout);
 
-            /** YERB START */
+            /** EGOD START */
             if (txout.scriptPubKey.IsAssetScript() || txout.scriptPubKey.IsNullAssetTxDataScript() || txout.scriptPubKey.IsNullGlobalRestrictionAssetTxDataScript())
                 continue;
-            /** YERB END */
+            /** EGOD END */
 
             if(mine)
             {
@@ -65,7 +67,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
                 sub.involvesWatchAddress = mine & ISMINE_WATCH_ONLY;
                 if (ExtractDestination(txout.scriptPubKey, address) && IsMine(*wallet, address))
                 {
-                    // Received by Yerbas Address
+                    // Received by Egodcoin Address
                     sub.type = TransactionRecord::RecvWithAddress;
                     sub.strAddress = CBitcoinAddress(address).ToString();
                 }
@@ -109,10 +111,10 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
         int nToMe = 0;
         for (const CTxOut& txout : wtx.tx->vout) {
 
-            /** YERB START */
+            /** EGOD START */
             if (txout.scriptPubKey.IsAssetScript() || txout.scriptPubKey.IsNullAssetTxDataScript() || txout.scriptPubKey.IsNullGlobalRestrictionAssetTxDataScript())
                 continue;
-            /** YERB END */
+            /** EGOD END */
             
             if(wallet->IsMine(txout)) {
                 fAllToMeDenom = fAllToMeDenom && CPrivateSend::IsDenominatedAmount(txout.nValue);
@@ -144,7 +146,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
                 CTxDestination address;
                 if (ExtractDestination(wtx.tx->vout[0].scriptPubKey, address))
                 {
-                    // Sent to Yerbas Address
+                    // Sent to Egodcoin Address
                     sub.strAddress = CBitcoinAddress(address).ToString();
                 }
                 else
@@ -209,10 +211,10 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
             {
                 const CTxOut& txout = wtx.tx->vout[nOut];
 
-                /** YERB START */
+                /** EGOD START */
                 if (txout.scriptPubKey.IsAssetScript())
                     continue;
-                /** YERB END */
+                /** EGOD END */
 
                 TransactionRecord sub(hash, nTime);
                 sub.idx = nOut;
@@ -228,7 +230,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
                 CTxDestination address;
                 if (ExtractDestination(txout.scriptPubKey, address))
                 {
-                    // Sent to Yerbas Address
+                    // Sent to Egodcoin Address
                     sub.type = TransactionRecord::SendToAddress;
                     sub.strAddress = CBitcoinAddress(address).ToString();
                 }
@@ -269,7 +271,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
         }
     }
 
-     /** YERB START */
+     /** EGOD START */
     if (AreAssetsDeployed()) {
         CAmount nFee;
         std::string strSentAccount;
@@ -370,7 +372,7 @@ QList<TransactionRecord> TransactionRecord::decomposeTransaction(const CWallet *
             }
         }
     }
-    /** YERB END */
+    /** EGOD END */
 
     return parts;
 }

@@ -1,10 +1,12 @@
 // Copyright (c) 2018-2019 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef YERBAS_SPECIALTX_H
-#define YERBAS_SPECIALTX_H
+#ifndef EGODCOIN_SPECIALTX_H
+#define EGODCOIN_SPECIALTX_H
 
 #include "primitives/transaction.h"
 #include "streams.h"
@@ -50,4 +52,4 @@ void SetTxPayload(CMutableTransaction& tx, const T& payload)
 
 uint256 CalcTxInputsHash(const CTransaction& tx);
 
-#endif //YERBAS_SPECIALTX_H
+#endif // EGODCOIN_SPECIALTX_H

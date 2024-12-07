@@ -1,10 +1,12 @@
 // Copyright (c) 2017-2021 The Yerbas Core developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 
-#ifndef YERBAS_ASSET_PROTOCOL_H
-#define YERBAS_ASSET_PROTOCOL_H
+#ifndef EGODCOIN_ASSET_PROTOCOL_H
+#define EGODCOIN_ASSET_PROTOCOL_H
 
 #include "amount.h"
 #include "tinyformat.h"
@@ -16,12 +18,12 @@
 #include <unordered_map>
 #include <list>
 
-#define YERB_R 114
-#define YERB_V 118
-#define YERB_N 110
-#define YERB_Q 113
-#define YERB_T 116
-#define YERB_O 111
+#define EGOD_R 114
+#define EGOD_V 118
+#define EGOD_N 110
+#define EGOD_Q 113
+#define EGOD_T 116
+#define EGOD_O 111
 
 #define DEFAULT_UNITS 0
 #define DEFAULT_REISSUABLE 1
@@ -443,10 +445,10 @@ bool AssetNullVerifierDataFromScript(const CScript& scriptPubKey, CNullAssetTxVe
 bool GlobalAssetNullDataFromScript(const CScript& scriptPubKey, CNullAssetTxData& assetData);
 
 //! issue asset scripts to make sure script meets the standards
-bool CheckIssueDataTx(const CTxOut& txOut); // OP_YERBAS_ASSET YERBQ (That is a Q as in Que not an O)
-bool CheckOwnerDataTx(const CTxOut& txOut);// OP_YERBAS_ASSET YERBO
-bool CheckReissueDataTx(const CTxOut& txOut);// OP_YERBAS_ASSET YERBR
-bool CheckTransferOwnerTx(const CTxOut& txOut);// OP_YERBAS_ASSET YERBT
+bool CheckIssueDataTx(const CTxOut& txOut); // OP_EGODCOIN_ASSET EGODQ (That is a Q as in Que not an O)
+bool CheckOwnerDataTx(const CTxOut& txOut); // OP_EGODCOIN_ASSET EGODO
+bool CheckReissueDataTx(const CTxOut& txOut); // OP_EGODCOIN_ASSET EGODR
+bool CheckTransferOwnerTx(const CTxOut& txOut); // OP_EGODCOIN_ASSET EGODT
 
 //! Check the Encoded hash and make sure it is either an IPFS hash or a OIP hash
 bool CheckEncoded(const std::string& hash, std::string& strError);
@@ -559,4 +561,4 @@ bool ContextualCheckReissueAsset(CAssetsCache* assetCache, const CReissueAsset& 
 bool ContextualCheckUniqueAssetTx(CAssetsCache* assetCache, std::string& strError, const CTransaction& tx);
 bool ContextualCheckUniqueAsset(CAssetsCache* assetCache, const CNewAsset& unique_asset, std::string& strError);
 
-#endif //YERBAS_ASSET_PROTOCOL_H
+#endif // EGODCOIN_ASSET_PROTOCOL_H

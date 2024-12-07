@@ -11,7 +11,7 @@
 #include "script/script.h"
 #include "serialize.h"
 
-static const std::string YERB = "YERB";
+extern const std::string CURRENCY_UNIT;
 
 struct CSpentIndexKey {
     uint256 txid;
@@ -195,7 +195,7 @@ struct CAddressUnspentKey {
     CAddressUnspentKey(unsigned int addressType, uint160 addressHash, uint256 txid, size_t indexValue) {
         type = addressType;
         hashBytes = addressHash;
-        asset = YERB;
+        asset = CURRENCY_UNIT;
         txhash = txid;
         index = indexValue;
     }
@@ -299,7 +299,7 @@ struct CAddressIndexKey {
                      uint256 txid, size_t indexValue, bool isSpending) {
         type = addressType;
         hashBytes = addressHash;
-        asset = YERB;
+        asset = CURRENCY_UNIT;
         blockHeight = height;
         txindex = blockindex;
         txhash = txid;

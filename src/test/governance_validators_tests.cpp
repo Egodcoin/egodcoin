@@ -1,5 +1,6 @@
 // Copyright (c) 2014-2019 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
 
 #include "governance/governance-validators.h"
 #include "utilstrencodings.h"
@@ -7,7 +8,7 @@
 #include "data/proposals_valid.json.h"
 #include "data/proposals_invalid.json.h"
 
-#include "test/test_yerbas.h"
+#include "test/test_egodcoin.h"
 
 #include <iostream>
 #include <fstream>

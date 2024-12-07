@@ -217,8 +217,8 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, int nHeig
         if (!MoneyRange(nValueOut))
             return state.DoS(100, false, REJECT_INVALID, "bad-txns-txouttotal-toolarge");
 
-        /** YERB START */
-        // Find and handle all new OP_YERB_ASSET null data transactions
+        /** EGOD START */
+        // Find and handle all new OP_EGOD_ASSET null data transactions
         if (txout.scriptPubKey.IsNullAsset()) {
             CNullAssetTxData data;
             std::string address;
@@ -265,9 +265,9 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, int nHeig
                 fContainsNullAssetVerifierTx = true;
             }
         }
-        /** YERB END */
+        /** EGOD END */
 
-        /** YERB START */
+        /** EGOD START */
         bool isAsset = false;
         int nType;
         bool fIsOwner;
@@ -366,7 +366,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, int nHeig
         }
     }
 
-    /** YERB END */
+    /** EGOD END */
 
     // Check for duplicate inputs
     std::set<COutPoint> vInOutPoints;
@@ -400,7 +400,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, int nHeig
                 return state.DoS(10, false, REJECT_INVALID, "bad-txns-prevout-null");
     }
 
-    /** YERB START */
+    /** EGOD START */
     if (tx.IsNewAsset()) {
         /** Verify the reissue assets data */
         std::string strError = "";
@@ -530,7 +530,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, int nHeig
     }
     else {
         // Fail if transaction contains any non-transfer asset scripts and hasn't conformed to one of the
-        // above transaction types.  Also fail if it contains OP_YERB_ASSET opcode but wasn't a valid script.
+        // above transaction types.  Also fail if it contains OP_EGOD_ASSET opcode but wasn't a valid script.
         for (auto out : tx.vout) {
             int nType;
             bool _isOwner;
@@ -539,10 +539,9 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, int nHeig
                     return state.DoS(100, false, REJECT_INVALID, "bad-txns-bad-asset-transaction");
                 }
             } else {
-                if (out.scriptPubKey.Find(OP_YERB_ASSET)) {
-                    if (out.scriptPubKey[0] != OP_YERB_ASSET) {
-                        return state.DoS(100, false, REJECT_INVALID,
-                                         "bad-txns-op-yerb-asset-not-in-right-script-location");
+                if (out.scriptPubKey.Find(OP_EGOD_ASSET)) {
+                    if (out.scriptPubKey[0] != OP_EGOD_ASSET) {
+                        return state.DoS(100, false, REJECT_INVALID, "bad-txns-op-egod-asset-not-in-right-script-location");
                     }
                 }
             }
@@ -559,7 +558,7 @@ bool CheckTransaction(const CTransaction& tx, CValidationState &state, int nHeig
     }
 
     // we allow restricted asset reissuance without having a verifier string transaction, we don't force it to be update
-    /** YERB END */
+    /** EGOD END */
 
     return true;
 }
@@ -617,7 +616,7 @@ bool Consensus::CheckTxInputs(const CTransaction& tx, CValidationState& state, c
 	}
     return true;
 }
- /* YERB ASSETS START */ 
+ /* EGOD ASSETS START */ 
 
     //! Check to make sure that the inputs and outputs CAmount match exactly.
 //! Check to make sure that the inputs and outputs CAmount match exactly.
@@ -831,13 +830,12 @@ bool Consensus::CheckTxAssets(const CTransaction& tx, CValidationState& state, c
                 bool _isOwner;
                 if (out.scriptPubKey.IsAssetScript(nType, _isOwner)) {
                     if (nType != TX_TRANSFER_ASSET) {
-                        return state.DoS(100, false, REJECT_INVALID, "bad-txns-bad-asset-transaction" );
+                        return state.DoS(100, false, REJECT_INVALID, "bad-txns-bad-asset-transaction");
                     }
                 } else {
-                    if (out.scriptPubKey.Find(OP_YERB_ASSET)) {
-                        if (out.scriptPubKey[0] != OP_YERB_ASSET) {
-                            return state.DoS(100, false, REJECT_INVALID,
-                                                "bad-txns-op-yerb-asset-not-in-right-script-location" );
+                    if (out.scriptPubKey.Find(OP_EGOD_ASSET)) {
+                        if (out.scriptPubKey[0] != OP_EGOD_ASSET) {
+                            return state.DoS(100, false, REJECT_INVALID, "bad-txns-op-egod-asset-not-in-right-script-location");
                         }
                     }
                 }
@@ -866,4 +864,4 @@ bool Consensus::CheckTxAssets(const CTransaction& tx, CValidationState& state, c
     return true;
 }
 
-    /* YERB ASSETS END */
+    /* EGOD ASSETS END */

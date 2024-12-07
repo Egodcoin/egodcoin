@@ -1,10 +1,12 @@
 // Copyright (c) 2018-2019 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT/X11 software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
-#ifndef YERBAS_BATCHEDLOGGER_H
-#define YERBAS_BATCHEDLOGGER_H
+#ifndef EGODCOIN_BATCHEDLOGGER_H
+#define EGODCOIN_BATCHEDLOGGER_H
 
 #include "tinyformat.h"
 
@@ -30,4 +32,4 @@ public:
     void Flush();
 };
 
-#endif//YERBAS_BATCHEDLOGGER_H
+#endif // EGODCOIN_BATCHEDLOGGER_H

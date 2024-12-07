@@ -1,11 +1,11 @@
 Sample configuration files for:
 ```
-SystemD: yerbasd.service
-Upstart: yerbasd.conf
-OpenRC:  yerbasd.openrc
-         yerbasd.openrcconf
-CentOS:  yerbasd.init
-OS X:    org.yerbas.yerbasd.plist
+SystemD: egodcoind.service
+Upstart: egodcoind.conf
+OpenRC:  egodcoind.openrc
+         egodcoind.openrcconf
+CentOS:  egodcoind.init
+OS X:    org.egodcoin.egodcoind.plist
 ```
 have been made available to assist packagers in creating node packages here.
 

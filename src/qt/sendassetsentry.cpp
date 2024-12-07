@@ -50,9 +50,9 @@ SendAssetsEntry::SendAssetsEntry(const PlatformStyle *_platformStyle, const QStr
     ui->addAsLabel->setPlaceholderText(tr("Enter a label for this address to add it to your address book"));
 #endif
 
-    // normal yerbas address field
+    // normal egodcoin address field
     GUIUtil::setupAddressWidget(ui->payTo, this);
-    // just a label for displaying yerbas address(es)
+    // just a label for displaying egodcoin address(es)
     
     // Connect signals
     connect(ui->payAssetAmount, SIGNAL(valueChanged()), this, SIGNAL(payAmountChanged()));

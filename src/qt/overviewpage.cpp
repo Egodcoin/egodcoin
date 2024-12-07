@@ -1,6 +1,8 @@
 // Copyright (c) 2011-2015 The Bitcoin Core developers
 // Copyright (c) 2014-2020 The Dash Core developers
 // Copyright (c) 2020 The Yerbas developers
+// Copyright (c) 2024 https://egodcoin.org
+//
 // Distributed under the MIT software license, see the accompanying
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
@@ -44,7 +46,7 @@ class TxViewDelegate : public QAbstractItemDelegate
     Q_OBJECT
 public:
     TxViewDelegate(const PlatformStyle *_platformStyle, QObject *parent=nullptr):
-        QAbstractItemDelegate(), unit(BitcoinUnits::YERB),
+        QAbstractItemDelegate(), unit(BitcoinUnits::EGOD),
         platformStyle(_platformStyle)
     {
 
@@ -131,7 +133,7 @@ class AssetViewDelegate : public QAbstractItemDelegate
 Q_OBJECT
 public:
     explicit AssetViewDelegate(const PlatformStyle *_platformStyle, QObject *parent=nullptr):
-            QAbstractItemDelegate(parent), unit(BitcoinUnits::YERB),
+            QAbstractItemDelegate(parent), unit(BitcoinUnits::EGOD),
             platformStyle(_platformStyle)
     {
 
@@ -178,22 +180,23 @@ public:
         QLinearGradient gradient(mainRect.topLeft(), mainRect.bottomRight());
 
         // Select the color of the gradient
+        QString theme = QSettings().value("theme", "").toString();
         if (admin) {
-            /*if (darkModeEnabled) {
-                gradient.setColorAt(0, COLOR_ADMIN_CARD_DARK);
-                gradient.setColorAt(1, COLOR_ADMIN_CARD_DARK);
-            } else {*/
-                gradient.setColorAt(0, QColor("#25301f"));
+            if (theme.startsWith("Dark") || theme.startsWith("Traditional")) {
+                gradient.setColorAt(0, QColor("#25201f"));
                 gradient.setColorAt(1, QColor("#161b13"));
-            //}
+            } else {
+                gradient.setColorAt(0, QColor("#b4ecf9"));
+                gradient.setColorAt(1, QColor("#84bce9"));
+            }
         } else {
-            /*if (darkModeEnabled) {
-                gradient.setColorAt(0, COLOR_REGULAR_CARD_LIGHT_BLUE_DARK_MODE);
-                gradient.setColorAt(1, COLOR_REGULAR_CARD_DARK_BLUE_DARK_MODE);
-            } else {*/
-                gradient.setColorAt(0, QColor("#2f3f27"));
-                gradient.setColorAt(1, QColor("#25301f"));
-            //}
+            if (theme.startsWith("Dark") || theme.startsWith("Traditional")) {
+                gradient.setColorAt(0, QColor("#25201f"));
+                gradient.setColorAt(1, QColor("#161b13"));
+            } else {
+                gradient.setColorAt(0, QColor("#b4ecf9"));
+                gradient.setColorAt(1, QColor("#84bce9"));
+            }
         }
 
         // Using 4 are the radius because the pixels are solid
@@ -234,9 +237,11 @@ public:
         QString amountText = index.data(AssetTableModel::FormattedAmountRole).toString();
         
         // Setup the pens
-        QColor textColor = QColor(255, 255, 255);
-        //if (darkModeEnabled)
-        //    textColor = COLOR_TOOLBAR_SELECTED_TEXT_DARK_MODE;
+        
+        QColor textColor = QColor(30, 30, 30);
+        if (theme.startsWith("Dark") || theme.startsWith("Traditional")) {
+            textColor = QColor(255, 255, 255);
+        }
 
         QPen penName(textColor);
 
@@ -588,7 +593,7 @@ void OverviewPage::setWalletModel(WalletModel *model)
     this->walletModel = model;
     if(model && model->getOptionsModel())
     {
-        // update the display unit, to not use the default ("YERB")
+        // update the display unit, to not use the default ("EGOD")
         updateDisplayUnit();
         // Keep up to date with wallet
         setBalance(model->getBalance(), model->getUnconfirmedBalance(), model->getImmatureBalance(), model->getAnonymizedBalance(),

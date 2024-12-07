@@ -12,7 +12,7 @@
 #include "script/script_error.h"
 #include "script/sign.h"
 #include "script/ismine.h"
-#include "test/test_yerbas.h"
+#include "test/test_egodcoin.h"
 
 #include <vector>
 
