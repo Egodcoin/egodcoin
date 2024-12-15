@@ -152,7 +152,7 @@ static void FindMainNetGenesisBlock(uint32_t nTime, uint32_t nBits, const char* 
     for (uint32_t nNonce = 0; nNonce < UINT32_MAX; nNonce++) {
         block.nNonce = nNonce;
 
-        uint256 hash = block.GetPOWHash();
+        uint256 hash = block.GetPOWHash(0);
         if (nNonce % 48 == 0) {
         	printf("\nrnonce=%d, pow is %s\n", nNonce, hash.GetHex().c_str());
         }

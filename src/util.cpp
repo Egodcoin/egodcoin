@@ -113,6 +113,8 @@ int nWalletBackups = 10;
 const char * const BITCOIN_CONF_FILENAME = "egodcoin.conf";
 const char * const BITCOIN_PID_FILENAME = "egodcoin.pid";
 
+int nMiningAlgo = 0;
+
 ArgsManager gArgs;
 bool fPrintToConsole = false;
 bool fPrintToDebugLog = true;

@@ -446,6 +446,9 @@ crypto_libegodcoin_crypto_base_a_SOURCES = \
   crypto/sph_sha2.c \
   crypto/sph_sha512.c \
   crypto/ripemd160.h \
+  crypto/scrypt.cpp \
+  crypto/scrypt-sse2.cpp \
+  crypto/scrypt.h \  
   crypto/sha1.cpp \
   crypto/sha1.h \
   crypto/sha256.cpp \

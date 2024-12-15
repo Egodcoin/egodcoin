@@ -11,17 +11,39 @@
 #include <util.h>
 #include <utilstrencodings.h>
 
+#include <crypto/common.h>
+#include <crypto/scrypt.h>
+
+int ALGO = ALGO_GHOSTRIDER;
+
 uint256 CBlockHeader::GetHash() const
 {
 	return SerializeHash(*this);
 }
 
-uint256 CBlockHeader::ComputeHash() const
+uint256 CBlockHeader::ComputeHash(int algo) const
 {
+    switch (algo)
+    {
+        case ALGO_GHOSTRIDER:
+        {
+            return HashGR(BEGIN(nVersion), END(nNonce), hashPrevBlock);
+        }
+        case ALGO_SCRYPT:
+        {
+            uint256 thash;
+            scrypt_1024_1_1_256(BEGIN(nVersion), BEGIN(thash));
+            return thash;
+        }
+        case ALGO_SHA256D:
+        {
+            return GetHash();
+        }
+    }
     return HashGR(BEGIN(nVersion), END(nNonce), hashPrevBlock);
 }
 
-uint256 CBlockHeader::GetPOWHash(bool readCache) const
+uint256 CBlockHeader::GetPOWHash(int algo, bool readCache) const
 {
     LOCK(cs_pow);
     CPowCache& cache(CPowCache::Instance());
@@ -35,7 +57,7 @@ uint256 CBlockHeader::GetPOWHash(bool readCache) const
     }
 
     if (!found || cache.IsValidate()) {
-        uint256 powHash2 = ComputeHash();
+        uint256 powHash2 = ComputeHash(algo);
         if (found && powHash2 != powHash) {
            LogPrintf("PowCache failure: headerHash: %s, from cache: %s, computed: %s, correcting\n", headerHash.ToString(), powHash.ToString(), powHash2.ToString());
         }

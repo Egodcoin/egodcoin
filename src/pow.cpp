@@ -4,6 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "pow.h"
+#include "util.h"
 
 #include "arith_uint256.h"
 #include "chain.h"
@@ -127,7 +128,7 @@ unsigned int static DarkGravityWave(const CBlockIndex* pindexLast, const Consens
 	return bnFinal.GetCompact();
 }
 
-unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
+unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, int algo)
 {
     assert(pindexLast != nullptr);
     unsigned int nProofOfWorkLimit = UintToArith256(params.powLimit).GetCompact();
@@ -160,10 +161,10 @@ unsigned int GetNextWorkRequiredBTC(const CBlockIndex* pindexLast, const CBlockH
     const CBlockIndex* pindexFirst = pindexLast->GetAncestor(nHeightFirst);
     assert(pindexFirst);
 
-   return CalculateNextWorkRequired(pindexLast, pindexFirst->GetBlockTime(), params);
+   return CalculateNextWorkRequired(pindexLast, pindexFirst->GetBlockTime(), params, algo);
 }
 
-unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params)
+unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHeader *pblock, const Consensus::Params& params, int algo)
 {
     assert(pindexLast != nullptr);
     assert(pblock != nullptr);
@@ -174,15 +175,16 @@ unsigned int GetNextWorkRequired(const CBlockIndex* pindexLast, const CBlockHead
         return bnPowLimit.GetCompact();
     }
 
+    // block 1 to 60
     if (pindexLast->nHeight + 1 < params.nPowDGWHeight) {
-        return GetNextWorkRequiredBTC(pindexLast, pblock, params);
+        return GetNextWorkRequiredBTC(pindexLast, pblock, params, algo);
     }
 
     return DarkGravityWave(pindexLast, params);
 }
 
 // for DIFF_BTC only!
-unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params& params)
+unsigned int CalculateNextWorkRequired(const CBlockIndex* pindexLast, int64_t nFirstBlockTime, const Consensus::Params& params, int algo)
 {
     if (params.fPowNoRetargeting)
         return pindexLast->nBits;
@@ -223,4 +225,39 @@ bool CheckProofOfWork(uint256 hash, unsigned int nBits, const Consensus::Params&
         return false;
 
     return true;
+}
+
+const CBlockIndex* GetLastBlockIndexForAlgo(const CBlockIndex* pindex, const Consensus::Params& params, int algo)
+{
+    for (; pindex; pindex = pindex->pprev)
+    {
+        if (pindex->GetAlgo() != algo)
+            continue;
+            
+        // ignore special min-difficulty testnet blocks
+        if (params.fPowAllowMinDifficultyBlocks &&
+            pindex->pprev &&
+            pindex->nTime > pindex->pprev->nTime + params.nPowTargetSpacing * 6)
+        {
+            continue;
+        }
+        return pindex;
+    }
+    return nullptr;
+}
+
+unsigned int GetAlgoWeight(int algo)
+{
+    switch (algo)
+    {
+        case ALGO_GHOSTRIDER:
+            return (unsigned int)(6 * 100000);
+        case ALGO_SCRYPT:
+            return (unsigned int)(1.2 * 100000);
+        case ALGO_SHA256D:
+            return (unsigned int)(0.005 * 100000);
+        default: // Lowest
+            printf("GetAlgoWeight(): can't find algo %d", algo);
+            return (unsigned int)(0.005 * 100000);
+    }
 }

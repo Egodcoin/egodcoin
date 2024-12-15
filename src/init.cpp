@@ -98,6 +98,9 @@
 #include <boost/thread.hpp>
 #include <openssl/crypto.h>
 
+#include <crypto/common.h>
+#include <crypto/scrypt.h>
+
 #if ENABLE_ZMQ
 #include "zmq/zmqnotificationinterface.h"
 #endif
@@ -551,6 +554,8 @@ std::string HelpMessage(HelpMessageMode mode)
     strUsage += HelpMessageOpt("-addressindex", strprintf(_("Maintain a full address index, used to query for the balance, txids and unspent outputs for addresses (default: %u)"), DEFAULT_ADDRESSINDEX));
     strUsage += HelpMessageOpt("-timestampindex", strprintf(_("Maintain a timestamp index for block hashes, used to query blocks hashes by a range of timestamps (default: %u)"), DEFAULT_TIMESTAMPINDEX));
     strUsage += HelpMessageOpt("-spentindex", strprintf(_("Maintain a full spent index, used to query the spending txid and input index for an outpoint (default: %u)"), DEFAULT_SPENTINDEX));
+    strUsage += HelpMessageGroup(_("Set Algorithm:"));
+    strUsage += HelpMessageOpt("-algo=<algo>", "Mining algorithms: ghostrider, scrypt or sha256d. Default ghostrider");
 
     strUsage += HelpMessageGroup(_("Connection options:"));
     strUsage += HelpMessageOpt("-addnode=<ip>", _("Add a node to connect to and attempt to keep the connection open (see the `addnode` RPC command help for more info)"));
@@ -1755,6 +1760,20 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
             SetLimited(NET_TOR, false);
         }
     }
+
+    // -algo
+    std::string strAlgo = gArgs.GetArg("-algo", "ghostrider");
+    transform(strAlgo.begin(),strAlgo.end(),strAlgo.begin(),::tolower);
+    if (strAlgo == "ghostrider")
+        nMiningAlgo = ALGO_GHOSTRIDER;
+    else if (strAlgo == "scrypt")
+        nMiningAlgo = ALGO_SCRYPT;
+    else if (strAlgo == "sha" || strAlgo == "sha256" || strAlgo == "sha256d")
+        nMiningAlgo = ALGO_SHA256D;
+    else
+        nMiningAlgo = ALGO_GHOSTRIDER;
+
+    LogPrintf("Use mining algorithm: %s\n", strAlgo);
 
     // see Step 2: parameter interactions for more information about these
     fListen = gArgs.GetBoolArg("-listen", DEFAULT_LISTEN);

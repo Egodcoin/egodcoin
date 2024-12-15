@@ -61,6 +61,7 @@ static const bool DEFAULT_LOGTIMESTAMPS  = true;
 static const bool DEFAULT_LOGTHREADNAMES = false;
 static const int  DEFAULT_POW_CACHE_SIZE = 150000;
 
+extern int nMiningAlgo;
 
 /** Signals for translation. */
 class CTranslationInterface

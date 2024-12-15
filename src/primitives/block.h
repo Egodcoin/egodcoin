@@ -12,6 +12,49 @@
 #include <unordered_lru_cache.h>
 #include <util.h>
 
+enum
+{
+    ALGO_GHOSTRIDER  = 0,
+    ALGO_SCRYPT      = 1,
+    ALGO_SHA256D     = 2
+};
+
+const int NUM_ALGOS   = 3;
+
+enum
+{
+    // algo
+    BLOCK_VERSION_ALGO_BROKEN    = (10 << 11), //'101000000000000' 10 (broken bitmask)
+    BLOCK_VERSION_ALGO           = (15 << 11), //'111100000000000' 15 (bitmask)
+    BLOCK_VERSION_GHOSTRIDER     = (1  << 11), //'000100000000000' 1
+    BLOCK_VERSION_SCRYPT         = (2  << 11), //'001000000000000' 2
+    BLOCK_VERSION_SHA256D        = (3  << 11)  //'001100000000000' 3
+    // BLOCK_VERSION_YESPOWER 	 = (4  << 11) //'010000000000000' 4
+};
+
+static inline int GetAlgorithmByName(std::string strAlgo){
+    if (strAlgo == "ghostrider")
+	    return ALGO_GHOSTRIDER;
+    if (strAlgo == "scrypt")
+            return ALGO_SCRYPT;
+    if (strAlgo == "sha" || strAlgo == "sha256" || strAlgo == "sha256d")
+        return ALGO_SHA256D;
+    return ALGO_GHOSTRIDER;
+}
+
+static inline std::string GetAlgorithmName(int algo)
+{
+    switch (algo)
+    {
+        case ALGO_GHOSTRIDER:
+            return std::string("ghostrider");
+        case ALGO_SCRYPT:
+            return std::string("scrypt");
+        case ALGO_SHA256D:
+            return std::string("sha256d");
+    }
+    return std::string("unknown");
+}
 
 /** Nodes collect new transactions into a block, hash them into a hash tree,
  * and scan through nonce values to make the block's hash satisfy proof-of-work
@@ -65,14 +108,28 @@ public:
         return (nBits == 0);
     }
 
+    int GetAlgo() const
+    {
+        switch (nVersion & BLOCK_VERSION_ALGO)
+        {
+            case BLOCK_VERSION_GHOSTRIDER:
+                return ALGO_GHOSTRIDER;
+            case BLOCK_VERSION_SCRYPT:
+                return ALGO_SCRYPT;
+            case BLOCK_VERSION_SHA256D:
+                return ALGO_SHA256D;
+        }
+        return ALGO_GHOSTRIDER;
+    }
+
     /// Compute the Header Hash from the block
     uint256 GetHash() const;
 
     /// Compute the POW hash using GhostRider algorithm
-    uint256 ComputeHash() const;
+    uint256 ComputeHash(int algo) const;
 
     /// Caching lookup/computation of POW hash using GhostRider algorithm
-    uint256 GetPOWHash(bool readCache = true) const;
+    uint256 GetPOWHash(int algo, bool readCache = true) const;
 
     int64_t GetBlockTime() const
     {

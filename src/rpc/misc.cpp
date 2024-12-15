@@ -111,13 +111,16 @@ UniValue getinfo(const JSONRPCRequest& request)
         obj.push_back(Pair("privatesend_balance",       ValueFromAmount(pwallet->GetAnonymizedBalance())));
     }
 #endif
-    obj.push_back(Pair("blocks",        (int)chainActive.Height()));
-    obj.push_back(Pair("timeoffset",    GetTimeOffset()));
+    obj.push_back(Pair("blocks",                (int) chainActive.Height()));
+    obj.push_back(Pair("timeoffset",            GetTimeOffset()));
     if(g_connman)
-        obj.push_back(Pair("connections",   (int)g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL)));
-    obj.push_back(Pair("proxy",         (proxy.IsValid() ? proxy.proxy.ToStringIPPort() : std::string())));
-    obj.push_back(Pair("difficulty",    (double)GetDifficulty()));
-    obj.push_back(Pair("testnet",       Params().NetworkIDString() == CBaseChainParams::TESTNET));
+        obj.push_back(Pair("connections",       (int) g_connman->GetNodeCount(CConnman::CONNECTIONS_ALL)));
+    obj.push_back(Pair("proxy",                 (proxy.IsValid() ? proxy.proxy.ToStringIPPort() : std::string())));
+    obj.push_back(Pair("difficulty",            GetDifficulty()));
+    obj.push_back(Pair("difficulty_ghostrider", (double) GetDifficulty(ALGO_GHOSTRIDER)));
+    obj.push_back(Pair("difficulty_scrypt",     (double) GetDifficulty(ALGO_SCRYPT)));
+    obj.push_back(Pair("difficulty_sha256d",    (double) GetDifficulty(ALGO_SHA256D)));
+    obj.push_back(Pair("testnet",               Params().NetworkIDString() == CBaseChainParams::TESTNET));
 #ifdef ENABLE_WALLET
     if (pwallet) {
         obj.push_back(Pair("keypoololdest", pwallet->GetOldestKeyPoolTime()));
@@ -1308,7 +1311,7 @@ static const CRPCCommand commands[] =
     { "addressindex",       "getaddressutxos",        &getaddressutxos,        false, {"addresses"} },
     { "addressindex",       "getaddressdeltas",       &getaddressdeltas,       false, {"addresses"} },
     { "addressindex",       "getaddresstxids",        &getaddresstxids,        false, {"addresses"} },
-    { "addressindex",       "getaddressbalance",      &getaddressbalance,      false, {"addresses"} },
+    { "addressindex",       "getaddressbalance",      &getaddressbalance,      false, {"addresses", "tokens"} },
 
     /* Egodcoin features */
     { "egodcoin",               "mnsync",                 &mnsync,                 true,  {} },
