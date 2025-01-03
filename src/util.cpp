@@ -114,6 +114,8 @@ const char * const BITCOIN_CONF_FILENAME = "egodcoin.conf";
 const char * const BITCOIN_PID_FILENAME = "egodcoin.pid";
 
 int nMiningAlgo = 0;
+int nDefaultKeyType = 1;
+bool fLogKeysAndSign = DEFAULT_LOGKEYSANDSIGN;
 
 ArgsManager gArgs;
 bool fPrintToConsole = false;

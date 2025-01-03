@@ -39,7 +39,7 @@
 
 // Uncomment the following line to enable debugging messages
 // or enable on a per file basis prior to inclusion of util.h
-//#define ENABLE_EGODCOIN_DEBUG
+#define ENABLE_EGODCOIN_DEBUG
 #ifdef ENABLE_EGODCOIN_DEBUG
 #define DBG( x ) x
 #else
@@ -59,9 +59,12 @@ static const bool DEFAULT_LOGTIMEMICROS  = false;
 static const bool DEFAULT_LOGIPS         = false;
 static const bool DEFAULT_LOGTIMESTAMPS  = true;
 static const bool DEFAULT_LOGTHREADNAMES = false;
+static const bool DEFAULT_LOGKEYSANDSIGN = false;
 static const int  DEFAULT_POW_CACHE_SIZE = 150000;
 
 extern int nMiningAlgo;
+extern int nDefaultKeyType;
+extern bool fLogKeysAndSign;
 
 /** Signals for translation. */
 class CTranslationInterface

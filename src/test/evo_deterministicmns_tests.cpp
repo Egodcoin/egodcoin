@@ -95,7 +95,7 @@ static void SignTransaction(CMutableTransaction& tx, const CKey& coinbaseKey)
 
 static CMutableTransaction CreateProRegTx(SimpleUTXOMap& utxos, int port, const CScript& scriptPayout, const CKey& coinbaseKey, CKey& ownerKeyRet, CBLSSecretKey& operatorKeyRet)
 {
-    ownerKeyRet.MakeNewKey(true);
+    ownerKeyRet.MakeNewKeySecp256k1(true);
     operatorKeyRet.MakeNewKey();
 
     CAmount change;
@@ -199,7 +199,7 @@ static CMutableTransaction MalleateProTxPayout(const CMutableTransaction& tx)
     ProTx proTx;
     GetTxPayload(tx, proTx);
 
-    CKey key;
+    CKey key = CKey(CKey::KEY_TYPE_SECP_256_K1);
     key.MakeNewKey(false);
     proTx.scriptPayout = GetScriptForDestination(key.GetPubKey().GetID());
 
@@ -211,7 +211,7 @@ static CMutableTransaction MalleateProTxPayout(const CMutableTransaction& tx)
 
 static CScript GenerateRandomAddress()
 {
-    CKey key;
+    CKey key = CKey(CKey::KEY_TYPE_SECP_256_K1);
     key.MakeNewKey(false);
     return GetScriptForDestination(key.GetPubKey().GetID());
 }
@@ -285,7 +285,7 @@ BOOST_FIXTURE_TEST_CASE(dip3_activation, TestChainDIP3BeforeActivationSetup)
 
 BOOST_FIXTURE_TEST_CASE(dip3_protx, TestChainDIP3Setup)
 {
-    CKey sporkKey;
+    CKey sporkKey = CKey(CKey::KEY_TYPE_SECP_256_K1);
     sporkKey.MakeNewKey(false);
     CBitcoinSecret sporkSecret(sporkKey);
     CBitcoinAddress sporkAddress;

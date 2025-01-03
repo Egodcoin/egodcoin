@@ -269,7 +269,7 @@ SetupDummyInputs(CBasicKeyStore& keystoreRet, CCoinsViewCache& coinsRet)
     CKey key[4];
     for (int i = 0; i < 4; i++)
     {
-        key[i].MakeNewKey(i % 2);
+        key[i].MakeNewKeySecp256k1(i % 2);
         keystoreRet.AddKey(key[i]);
     }
 
@@ -332,7 +332,7 @@ BOOST_AUTO_TEST_CASE(test_IsStandard)
     t.vin[0].scriptSig << std::vector<unsigned char>(65, 0);
     t.vout.resize(1);
     t.vout[0].nValue = 90*CENT;
-    CKey key;
+    CKey key = CKey(CKey::KEY_TYPE_SECP_256_K1);
     key.MakeNewKey(true);
     t.vout[0].scriptPubKey = GetScriptForDestination(key.GetPubKey().GetID());
 

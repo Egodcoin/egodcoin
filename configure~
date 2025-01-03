@@ -665,6 +665,7 @@ am__EXEEXT_TRUE
 LTLIBOBJS
 LIBOBJS
 subdirs
+HAVE_GMTIME_R
 DSYMUTIL_FLAT
 MINIUPNPC_LIBS
 MINIUPNPC_CPPFLAGS
@@ -26122,6 +26123,56 @@ rm -f core conftest.err conftest.$ac_objext conftest.beam \
     conftest$ac_exeext conftest.$ac_ext
 LDFLAGS="$TEMP_LDFLAGS"
 
+{ printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for gmtime_r" >&5
+printf %s "checking for gmtime_r... " >&6; }
+cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ctime>
+int
+main (void)
+{
+ gmtime_r((const time_t *) nullptr, (struct tm *) nullptr);
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; };
+printf "%s\n" "#define HAVE_GMTIME_R 1" >>confdefs.h
+
+else $as_nop
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; };
+    { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for gmtime_s" >&5
+printf %s "checking for gmtime_s... " >&6; };
+    cat confdefs.h - <<_ACEOF >conftest.$ac_ext
+/* end confdefs.h.  */
+#include <ctime>
+int
+main (void)
+{
+ gmtime_s((struct tm *) nullptr, (const time_t *) nullptr);
+  ;
+  return 0;
+}
+_ACEOF
+if ac_fn_cxx_try_compile "$LINENO"
+then :
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+printf "%s\n" "yes" >&6; }
+else $as_nop
+   { printf "%s\n" "$as_me:${as_lineno-$LINENO}: result: no" >&5
+printf "%s\n" "no" >&6; }; as_fn_error $? "Both gmtime_r and gmtime_s are unavailable" "$LINENO" 5
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
+
+fi
+rm -f core conftest.err conftest.$ac_objext conftest.beam conftest.$ac_ext
+
 # Check for different ways of gathering OS randomness
 { printf "%s\n" "$as_me:${as_lineno-$LINENO}: checking for Linux getrandom syscall" >&5
 printf %s "checking for Linux getrandom syscall... " >&6; }
@@ -33191,6 +33242,7 @@ COPYRIGHT_HOLDERS="The %s developers"
 COPYRIGHT_HOLDERS_SUBSTITUTION="Egodcoin Core"
 
 COPYRIGHT_HOLDERS_FINAL="The Egodcoin Core developers"
+
 
 
 

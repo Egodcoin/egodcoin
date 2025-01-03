@@ -29,7 +29,7 @@ sign_multisig(CScript scriptPubKey, std::vector<CKey> keys, CTransaction transac
     {
         std::vector<unsigned char> vchSig;
         BOOST_CHECK(key.Sign(hash, vchSig));
-        vchSig.push_back((unsigned char)SIGHASH_ALL);
+        vchSig.push_back((unsigned char) SIGHASH_ALL);
         result << vchSig;
     }
     return result;
@@ -139,7 +139,7 @@ BOOST_AUTO_TEST_CASE(multisig_IsStandard)
 {
     CKey key[4];
     for (int i = 0; i < 4; i++)
-        key[i].MakeNewKey(true);
+        key[i].MakeNewKeySecp256k1(false);
 
     txnouttype whichType;
 
@@ -178,7 +178,7 @@ BOOST_AUTO_TEST_CASE(multisig_Sign)
     CKey key[4];
     for (int i = 0; i < 4; i++)
     {
-        key[i].MakeNewKey(true);
+        key[i].MakeNewKeySecp256k1(true);
         keystore.AddKey(key[i]);
     }
 

@@ -43,6 +43,7 @@
 #include <stdint.h>
 
 #include <univalue.h>
+// #include <wallet/crypter.h>
 
 extern const std::string CURRENCY_UNIT;
 extern double nHashesPerSec;
@@ -198,8 +199,28 @@ UniValue generatetoaddress(const JSONRPCRequest& request)
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Error: Invalid address");
 
+    CKeyID keyId;
+    address.GetKeyID(keyId);
+
+    // CWallet* const pwallet = GetWalletForJSONRPCRequest(request);
+    // if (!EnsureWalletIsAvailable(pwallet, request.fHelp))
+    //     return NullUniValue;
+
+    // // EnsureWalletIsUnlocked(pwallet);
+    // CKey key;
+    // if (!pwallet->GetKey(keyId, key)) {
+    //     throw JSONRPCError(RPC_WALLET_ERROR, "Private key not available");
+    // }
+
+    // CPubKey vchPubKeyOut;
+    // CPubKey& vchPubKeyOut;
+    // CCryptoKeyStore::GetPubKey(keyId, vchPubKeyOut);
+
     std::shared_ptr<CReserveScript> coinbaseScript = std::make_shared<CReserveScript>();
     coinbaseScript->reserveScript = GetScriptForDestination(address.Get());
+
+    std::string scriptString(coinbaseScript->reserveScript.begin(), coinbaseScript->reserveScript.end());
+    LogPrintf("Mining: generatetoaddress: address=%s, address-id=%s, script=%s.\n", request.params[1].get_str(), keyId.GetHex(), scriptString);
 
     return generateBlocks(coinbaseScript, nGenerate, nMaxTries, false);
 }

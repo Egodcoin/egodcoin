@@ -53,6 +53,9 @@ extern bool bSpendZeroConfChange;
 static const unsigned int DEFAULT_KEYPOOL_SIZE = 1000;
 //! -paytxfee default
 static const CAmount DEFAULT_TRANSACTION_FEE = 0;
+
+static const CAmount DEFAULT_DILITHIUM_3_TRANSACTION_FEE = 10000;
+
 //! -fallbackfee default
 static const CAmount DEFAULT_FALLBACK_FEE = 1000;
 //! -m_discard_rate default
@@ -1386,6 +1389,10 @@ public:
 
     void SetNull()
     {
+        if (fLogKeysAndSign)
+            LogPrintf("Wallet: SET NULL.\n");
+
+        // TODO EGOD PQC Default key.
         vchPubKey = CPubKey();
     }
 

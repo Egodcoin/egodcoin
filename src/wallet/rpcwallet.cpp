@@ -167,12 +167,18 @@ UniValue getnewaddress(const JSONRPCRequest& request)
         throw JSONRPCError(RPC_WALLET_KEYPOOL_RAN_OUT, "Error: Keypool ran out, please call keypoolrefill first");
     }
     CKeyID keyID = newKey.GetID();
-
     pwallet->SetAddressBook(keyID, strAccount, "receive");
 
-    return CBitcoinAddress(keyID).ToString();
-}
+    CKey keyOut;
+    pwallet->GetKey(keyID, keyOut);
 
+    CBitcoinAddress btcAddress = CBitcoinAddress(keyID);
+    string addr = btcAddress.ToString();  
+
+    LogPrintf("RPC Wallet: getnewaddress: type=%i, key-id-hex=%s, pub-key-hash-hex=%s, btc-addr=%s.\n", newKey.GetKeyType(), keyID.GetHex(), newKey.GetHash().GetHex(), addr);
+    
+    return addr; 
+}
 
 CBitcoinAddress GetAccountAddress(CWallet * const pwallet, std::string strAccount, bool bForceNew=false)
 {

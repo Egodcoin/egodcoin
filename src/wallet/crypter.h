@@ -9,15 +9,17 @@
 #include "serialize.h"
 #include "support/allocators/secure.h"
 
-const unsigned int WALLET_CRYPTO_KEY_SIZE = 32;
-const unsigned int WALLET_CRYPTO_SALT_SIZE = 8;
-const unsigned int WALLET_CRYPTO_IV_SIZE = 16;
+#include "util.h"
+
+const unsigned int WALLET_CRYPTO_KEY_SIZE   =   32;
+const unsigned int WALLET_CRYPTO_SALT_SIZE  =    8;
+const unsigned int WALLET_CRYPTO_IV_SIZE    =   16;
 
 /**
  * Private key encryption is done based on a CMasterKey,
  * which holds a salt and random encryption key.
  * 
- * CMasterKeys are encrypted using AES-256-CBC using a key
+ * CMasterKeys are encrypted using AES-256-CBC using a key                                             
  * derived using derivation method nDerivationMethod
  * (0 == EVP_sha512()) and derivation iterations nDeriveIterations.
  * vchOtherDerivationParameters is provided for alternative algorithms
@@ -190,13 +192,16 @@ public:
     bool AddKeyPubKey(const CKey& key, const CPubKey &pubkey) override;
     bool HaveKey(const CKeyID &address) const override
     {
+        bool ret = false;
         {
             LOCK(cs_KeyStore);
-            if (!IsCrypted())
-                return CBasicKeyStore::HaveKey(address);
-            return mapCryptedKeys.count(address) > 0;
+            if (!IsCrypted()) {
+                ret = CBasicKeyStore::HaveKey(address);
+            } else {
+                ret = mapCryptedKeys.count(address) > 0;
+            }
         }
-        return false;
+        return ret;
     }
     bool GetKey(const CKeyID &address, CKey& keyOut) const override;
     bool GetPubKey(const CKeyID &address, CPubKey& vchPubKeyOut) const override;

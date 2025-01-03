@@ -419,7 +419,7 @@ BOOST_FIXTURE_TEST_CASE(rescan, TestChain100Setup)
         keys.push_back(key);
         key.clear();
         key.setObject();
-        CKey futureKey;
+        CKey futureKey = CKey(CKey::KEY_TYPE_SECP_256_K1);
         futureKey.MakeNewKey(true);
         key.pushKV("scriptPubKey", HexStr(GetScriptForRawPubKey(futureKey.GetPubKey())));
         key.pushKV("timestamp", newTip->GetBlockTimeMax() + TIMESTAMP_WINDOW + 1);

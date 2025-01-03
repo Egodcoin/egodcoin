@@ -53,6 +53,8 @@
 #include "assets/assets.h"
 #include "core_io.h"
 
+#include "consensus/params.h"
+
 extern const std::string CURRENCY_UNIT;
 
 std::vector<CWalletRef> vpwallets;
@@ -163,9 +165,11 @@ const CWalletTx* CWallet::GetWalletTx(const uint256& hash) const
 CPubKey CWallet::GenerateNewKey(CWalletDB &walletdb, uint32_t nAccountIndex, bool fInternal)
 {
     AssertLockHeld(cs_wallet); // mapKeyMetadata
-    bool fCompressed = CanSupportFeature(FEATURE_COMPRPUBKEY); // default to compressed public keys if we want 0.6.0 wallets
 
-    CKey secret;
+    // Usually true.
+    bool fCompressed = CanSupportFeature(FEATURE_COMPRPUBKEY); // default to compressed public keys if we want 0.6.0 wallets
+    // TODO EGOD PQC Default key.
+    CKey secret = CKey(nDefaultKeyType);
 
     // Create new metadata
     int64_t nCreationTime = GetTime();
@@ -185,13 +189,18 @@ CPubKey CWallet::GenerateNewKey(CWalletDB &walletdb, uint32_t nAccountIndex, boo
         }
 
         pubkey = secret.GetPubKey();
+        // const std::string keyType = to_string(pubkey.GetKeyType());
+        // const std::string keyId = pubkey.GetID().GetHex();
+
         assert(secret.VerifyPubKey(pubkey));
+        LogPrintf("Generated new public key: type=%i, key-id-hex=%s .\n", pubkey.GetKeyType(), pubkey.GetID().GetHex());
 
         // Create new metadata
         mapKeyMetadata[pubkey.GetID()] = metadata;
         UpdateTimeFirstKey(nCreationTime);
 
         if (!AddKeyPubKeyWithDB(walletdb, secret, pubkey)) {
+            LogPrintf("Warning: AddKey failed: type=%i, key-id-hex=%s.\n", pubkey.GetKeyType(), pubkey.GetID().GetHex());
             throw std::runtime_error(std::string(__func__) + ": AddKey failed");
         }
     }
@@ -304,7 +313,7 @@ bool CWallet::GetKey(const CKeyID &address, CKey& keyOut) const
 bool CWallet::HaveKey(const CKeyID &address) const
 {
     LOCK(cs_wallet);
-    if (mapHdPubKeys.count(address) > 0)
+    if (mapHdPubKeys.count(address) > 0) 
         return true;
     return CCryptoKeyStore::HaveKey(address);
 }
@@ -354,10 +363,14 @@ bool CWallet::AddKeyPubKeyWithDB(CWalletDB &walletdb, const CKey& secret, const 
         pwalletdbEncryption = &walletdb;
     }
     if (!CCryptoKeyStore::AddKeyPubKey(secret, pubkey)) {
-        if (needsDB) pwalletdbEncryption = NULL;
-        return false;
+        if (needsDB) 
+            pwalletdbEncryption = NULL;
         return false;
     }
+
+    if (fLogKeysAndSign)
+        LogPrintf("Wallet: Added pub key with DB (type=%i, type=%i, key-id-hex=%s, pub-key-hash-hex=%s).\n", secret.GetKeyType(), pubkey.GetKeyType(), pubkey.GetID().GetHex(), pubkey.GetHash().GetHex());
+
     if (needsDB) pwalletdbEncryption = NULL;
     // check if we need to remove from watch-only
     CScript script;
@@ -371,9 +384,7 @@ bool CWallet::AddKeyPubKeyWithDB(CWalletDB &walletdb, const CKey& secret, const 
     }
 
     if (!IsCrypted()) {
-        return walletdb.WriteKey(pubkey,
-                                 secret.GetPrivKey(),
-                                 mapKeyMetadata[pubkey.GetID()]);
+        return walletdb.WriteKey(pubkey, secret.GetPrivKey(), mapKeyMetadata[pubkey.GetID()]);
     }
     return true;
 }
@@ -4798,6 +4809,9 @@ bool CWallet::CreateTransactionAll(const std::vector<CRecipient>& vecSend, CWall
 bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletTx& wtxNew, CReserveKey& reservekey, CAmount& nFeeRet,
                                 int& nChangePosInOut, std::string& strFailReason, const CCoinControl& coin_control, bool sign, int nExtraPayloadSize)
 {
+    if (fLogKeysAndSign)
+        LogPrintf("Wallet: Create transaction (feeRet=%d, changePosInOut=%i, sign=%s, extraPayloadSize=%i).\n", nFeeRet, nChangePosInOut, sign, nExtraPayloadSize);
+
     CAmount nValue = 0;
     int nChangePosRequest = nChangePosInOut;
     unsigned int nSubtractFeeFromAmount = 0;
@@ -4895,6 +4909,9 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
                     strFailReason = _("Keypool ran out, please call keypoolrefill first");
                     return false;
                 }
+
+                if (fLogKeysAndSign)
+                    LogPrintf("Wallet: Create transaction: GetScriptForDest: type=%d, key-id-hex=%s\n.", vchPubKey.GetKeyType(), vchPubKey.GetID().GetHex());
 
                 scriptChange = GetScriptForDestination(vchPubKey.GetID());
             }
@@ -5048,6 +5065,16 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
                 {
                     const CScript& scriptPubKey = txdsin.prevPubKey;
                     SignatureData sigdata;
+                    
+                    if (fLogKeysAndSign) {
+                        // , vchPubKey.GetID().GetHex()
+                        std::string scriptString(scriptPubKey.begin(), scriptPubKey.end());
+                        LogPrintf("Wallet: Create transaction (address=?, prev-pub-key-script-length=%d, prev-pub-key-script=%s).\n.", scriptString.length(), scriptString);
+                    }
+                    // TransactionSignatureCreator(this, &txNewConst, nIn, SIGHASH_ALL), scriptPubKey, sigdata)
+                    // DummySignatureCreator(this)
+                    // TransactionSignatureCreator(this, &txNewConst, nIn, SIGHASH_ALL)
+                    CTransaction txNewConst(txNew);
                     if (!ProduceSignature(DummySignatureCreator(this), scriptPubKey, sigdata))
                     {
                         strFailReason = _("Signing transaction failed");
@@ -5161,7 +5188,7 @@ bool CWallet::CreateTransaction(const std::vector<CRecipient>& vecSend, CWalletT
             {
                 const CScript& scriptPubKey = txdsin.prevPubKey;
                 SignatureData sigdata;
-
+                
                 if (!ProduceSignature(TransactionSignatureCreator(this, &txNewConst, nIn, SIGHASH_ALL), scriptPubKey, sigdata))
                 {
                     strFailReason = _("Signing transaction failed");
@@ -5401,6 +5428,10 @@ void CWallet::AutoLockSmartnodeCollaterals()
 DBErrors CWallet::ZapSelectTx(std::vector<uint256>& vHashIn, std::vector<uint256>& vHashOut)
 {
     AssertLockHeld(cs_wallet); // mapWallet
+    if (fLogKeysAndSign) {
+        // TODO EGOD PQC Default key.
+        LogPrintf("Wallet: ZAP SELECT TX.\n");
+    }
     vchDefaultKey = CPubKey();
     DBErrors nZapSelectTxRet = CWalletDB(*dbw,"cr+").ZapSelectTx(vHashIn, vHashOut);
     for (uint256 hash : vHashOut)
@@ -5430,6 +5461,10 @@ DBErrors CWallet::ZapSelectTx(std::vector<uint256>& vHashIn, std::vector<uint256
 
 DBErrors CWallet::ZapWalletTx(std::vector<CWalletTx>& vWtx)
 {
+    if (fLogKeysAndSign) {
+        // TODO EGOD PQC Default key.
+        LogPrintf("Wallet: ZAP WALLET TX.\n");
+    }
     vchDefaultKey = CPubKey();
     DBErrors nZapWalletTxRet = CWalletDB(*dbw,"cr+").ZapWalletTx(vWtx);
     if (nZapWalletTxRet == DB_NEED_REWRITE)
@@ -5578,6 +5613,8 @@ size_t CWallet::KeypoolCountInternalKeys()
 
 bool CWallet::TopUpKeyPool(unsigned int kpSize)
 {
+    LogPrintf("CWallet::TopUpKeyPool Top up keypool (size=%i).\n", kpSize);
+
     {
         LOCK(cs_wallet);
 
@@ -5640,13 +5677,15 @@ bool CWallet::TopUpKeyPool(unsigned int kpSize)
             uiInterface.InitMessage(strMsg);
         }
     }
+    LogPrintf("CWallet::TopUpKeyPool Topped up keypool.\n");
     return true;
 }
 
 void CWallet::ReserveKeyFromKeyPool(int64_t& nIndex, CKeyPool& keypool, bool fInternal)
 {
     nIndex = -1;
-    keypool.vchPubKey = CPubKey();
+    keypool.vchPubKey = CPubKey(nDefaultKeyType);
+
     {
         LOCK(cs_wallet);
 
@@ -5667,8 +5706,14 @@ void CWallet::ReserveKeyFromKeyPool(int64_t& nIndex, CKeyPool& keypool, bool fIn
         if (!walletdb.ReadPool(nIndex, keypool)) {
             throw std::runtime_error(std::string(__func__) + ": read failed");
         }
+
+        if (fLogKeysAndSign)
+            LogPrintf("Wallet: Reserve key from keypool: db-index=%d, type=%d, key-id-hex=%s, pub-key-hash-hex=%s.\n.", nIndex, keypool.vchPubKey.GetKeyType(), keypool.vchPubKey.GetID().GetHex(), keypool.vchPubKey.GetHash().GetHex());
+
         if (!HaveKey(keypool.vchPubKey.GetID())) {
-            throw std::runtime_error(std::string(__func__) + ": unknown key in key pool");
+            const std::string keyType = to_string(keypool.vchPubKey.GetKeyType());
+            const std::string keyId = keypool.vchPubKey.GetID().GetHex();
+            throw std::runtime_error(std::string(__func__) + ": unknown key in key pool: type=" + keyType + ", id=" + keyId);
         }
         if (keypool.fInternal != fInternal) {
             throw std::runtime_error(std::string(__func__) + ": keypool entry misclassified");
@@ -5703,11 +5748,16 @@ void CWallet::ReturnKey(int64_t nIndex, bool fInternal, const CPubKey& pubkey)
         }
         m_pool_key_to_index[pubkey.GetID()] = nIndex;
     }
-    LogPrintf("keypool return %d\n", nIndex);
+
+    if (fLogKeysAndSign)
+        LogPrintf("Wallet: Return key (index=%d, type=%d, pub-key-hash=%s, address=%s).\n", nIndex, pubkey.GetKeyType(), pubkey.GetHash().ToString(), pubkey.GetID().GetHex());
 }
 
 bool CWallet::GetKeyFromPool(CPubKey& result, bool internal)
 {
+    if (fLogKeysAndSign)
+        LogPrintf("Wallet: GetKeyFromPool (internal=%s).\n", internal);
+
     CKeyPool keypool;
     {
         LOCK(cs_wallet);
@@ -5715,9 +5765,13 @@ bool CWallet::GetKeyFromPool(CPubKey& result, bool internal)
         ReserveKeyFromKeyPool(nIndex, keypool, internal);
         if (nIndex == -1)
         {
-            if (IsLocked(true)) return false;
-            // TODO: implement keypool for all accouts?
+            if (fLogKeysAndSign)
+                LogPrintf("Wallet: GetKeyFromPool (index=-1).\n");
 
+            if (IsLocked(true))
+                return false;
+
+            // TODO: implement keypool for all accouts?
             CWalletDB walletdb(*dbw);
             result = GenerateNewKey(walletdb, 0, internal);
             return true;
@@ -5931,6 +5985,10 @@ void CReserveKey::KeepKey()
         pwallet->KeepKey(nIndex);
     }
     nIndex = -1;
+    if (fLogKeysAndSign) {
+        // TODO EGOD PQC Default key.
+        LogPrintf("Wallet: KEEP KEY.\n");
+    }
     vchPubKey = CPubKey();
 }
 
@@ -5940,6 +5998,10 @@ void CReserveKey::ReturnKey()
         pwallet->ReturnKey(nIndex, fInternal, vchPubKey);
     }
     nIndex = -1;
+    if (fLogKeysAndSign) {
+        // TODO EGOD PQC Default key.
+        LogPrintf("Wallet: RETURN KEY.\n");
+    }
     vchPubKey = CPubKey();
 }
 
@@ -6280,13 +6342,14 @@ CWallet* CWallet::CreateWalletFromFile(const std::string walletFile)
         tempWallet = nullptr;
     }
 
-    uiInterface.InitMessage(_("Loading wallet..."));
+    uiInterface.InitMessage(_("Loading Wallet..."));
 
     int64_t nStart = GetTimeMillis();
     bool fFirstRun = true;
     std::unique_ptr<CWalletDBWrapper> dbw(new CWalletDBWrapper(&bitdb, walletFile));
     CWallet *walletInstance = new CWallet(std::move(dbw));
     DBErrors nLoadWalletRet = walletInstance->LoadWallet(fFirstRun);
+
     if (nLoadWalletRet != DB_LOAD_OK)
     {
         if (nLoadWalletRet == DB_CORRUPT) {
@@ -6335,6 +6398,8 @@ CWallet* CWallet::CreateWalletFromFile(const std::string walletFile)
 
     if (fFirstRun)
     {
+        LogPrintf("First run!");
+
         // Create new keyUser and set as default key
         if (gArgs.GetBoolArg("-usehd", DEFAULT_USE_HD_WALLET) && !walletInstance->IsHDEnabled()) {
             if (gArgs.GetArg("-mnemonicpassphrase", "").size() > 256) {
@@ -6520,6 +6585,24 @@ bool CWallet::ParameterInteraction()
     if (gArgs.GetBoolArg("-blocksonly", DEFAULT_BLOCKSONLY) && gArgs.SoftSetBoolArg("-walletbroadcast", false)) {
         LogPrintf("%s: parameter interaction: -blocksonly=1 -> setting -walletbroadcast=0\n", __func__);
     }
+
+    // std::string strAlgo = gArgs.GetArg("-algo", "ghostrider");
+    // transform(strAlgo.begin(),strAlgo.end(),strAlgo.begin(),::tolower);
+    // ALGO = GetAlgoByName(strAlgo);
+
+    // -algo
+    std::string strAlgo = gArgs.GetArg("-algo", "ghostrider");
+    transform(strAlgo.begin(),strAlgo.end(),strAlgo.begin(),::tolower);
+    if (strAlgo == "ghostrider")
+        nMiningAlgo = ALGO_GHOSTRIDER;
+    else if (strAlgo == "scrypt")
+        nMiningAlgo = ALGO_SCRYPT;
+    else if (strAlgo == "sha" || strAlgo == "sha256" || strAlgo == "sha256d")
+        nMiningAlgo = ALGO_SHA256D;
+    else
+        nMiningAlgo = ALGO_GHOSTRIDER;
+
+    LogPrintf("Use mining algorithm: %s\n", strAlgo);
 
     if (gArgs.GetBoolArg("-salvagewallet", false)) {
         if (is_multiwallet) {

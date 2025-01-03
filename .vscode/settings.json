@@ -80,6 +80,11 @@
         "typeinfo": "cpp",
         "valarray": "cpp",
         "variant": "cpp",
-        "qfiledialog": "cpp"
+        "qfiledialog": "cpp",
+        "any": "cpp",
+        "coroutine": "cpp",
+        "source_location": "cpp",
+        "span": "cpp",
+        "time.h": "c"
     }
 }

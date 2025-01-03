@@ -17,8 +17,11 @@
 #include "arith_uint256.h"
 
 #include <assert.h>
+#include <util.h>
+#include <key.h>
 
 #include "chainparamsseeds.h"
+
 static size_t lastCheckMnCount = 0;
 static int lastCheckHeight= 0;
 static bool lastCheckedLowLLMQParams = false;
@@ -459,11 +462,12 @@ public:
         pchMessageStart[3] = 0x62;//b
         nDefaultPort = 15520;
         nPruneAfterHeight = 100000;
+
         // FindMainNetGenesisBlock(1652138420, 0x20001fff, "main");
-        genesis = CreateGenesisBlock(1652138420, 3397, 0x20001fff, 4, 5000 * COIN);
+        genesis = CreateGenesisBlock(1652138420, 808, 0x20001fff, 4, 5000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0xeff0bbe5c1bbe1ef8da54822a18f528d6dc58232990bdb86e0a77ab2814ed12c"));
-        assert(genesis.hashMerkleRoot == uint256S("0xbfe15871764bf35d6391308fc2dab8846f177ba563d256b1764271987ec99bc0"));
+        assert(consensus.hashGenesisBlock == uint256S("0x8806f51ed8311d5e3534d060922eda54e33b2d9ded1cf50fa8ee1b85666a0613"));
+        assert(genesis.hashMerkleRoot == uint256S("0xea5437e7cac2fd312c99427f6001763a2beae90db0894a90d31271f9240e08f4"));
 
         // vSeeds.emplace_back("seed0.egodcoin.org", true);
         // vSeeds.emplace_back("seed1.egodcoin.org", true);
@@ -606,10 +610,19 @@ public:
         nDefaultPort = 15620;
         nPruneAfterHeight = 1000;
         // FindMainNetGenesisBlock(1675905317, 0x20001fff, "test");
-        genesis = CreateGenesisBlock(1675905317, 669, 0x20001fff, 4, 5000 * COIN);
+        genesis = CreateGenesisBlock(1675905317, 2443, 0x20001fff, 4, 5000 * COIN); // nonce 669
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0xe3a4fabed29dfc45e9aebe696453545ee2e198bae150e4c115fcc80ef3298554"));
-        assert(genesis.hashMerkleRoot == uint256S("0xbfe15871764bf35d6391308fc2dab8846f177ba563d256b1764271987ec99bc0"));
+
+        // printf("--- Genesis block hash: %s.\n", consensus.hashGenesisBlock.ToString());
+        LogPrintf("--- Genesis block hash: %s.\n", consensus.hashGenesisBlock.ToString());
+
+        // ECDSA last
+        // assert(consensus.hashGenesisBlock == uint256S("0xe3a4fabed29dfc45e9aebe696453545ee2e198bae150e4c115fcc80ef3298554")); // 
+        // assert(genesis.hashMerkleRoot == uint256S("0xbfe15871764bf35d6391308fc2dab8846f177ba563d256b1764271987ec99bc0")); // 
+
+        // PQC new
+        assert(consensus.hashGenesisBlock == uint256S("0xf6050f617957e49e32b28aa4409a18cf8237a69ec3b985a52691bf4e4eb6931e"));
+        assert(genesis.hashMerkleRoot == uint256S("0xea5437e7cac2fd312c99427f6001763a2beae90db0894a90d31271f9240e08f4"));
 
         vFixedSeeds.clear();
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
@@ -650,7 +663,8 @@ public:
 		);
 
         vector<FounderRewardStructure> rewardStructures = { {INT_MAX, 5} }; // 5% founder/dev fee forever
-		consensus.nFounderPayment = FounderPayment(rewardStructures, 200, "rbs4q5zojYQ87YK1h8Yv4Modi8S3J9zxWk"); // old rbKpULX5CgTcwJ7KbzY3BTwzEqwpFYHqXd
+        // LAST rovn6zwptpYhzz9dCSz1DhjZgkPJyVxpDG
+		consensus.nFounderPayment = FounderPayment(rewardStructures, 200, "ro6FDY1rf1sc7N6WSTVZBUp4paR6umDcVy"); // LAST ECC rW8LdNwngcJfnxdhYKqyt9GtpXatoanX1h
         consensus.nAssetsRewardShare = Consensus::AssetsRewardShare(0.8,0.2,0.0);
 
         fDefaultConsistencyChecks = false;

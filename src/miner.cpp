@@ -187,7 +187,8 @@ std::unique_ptr<CBlockTemplate> BlockAssembler::CreateNewBlock(const CScript& sc
 
     nLastBlockTx = nBlockTx;
     nLastBlockSize = nBlockSize;
-    LogPrintf("CreateNewBlock(): total size %u txs: %u fees: %ld specialTxFee: %ld sigops %d\n", nBlockSize, nBlockTx, nFees, nSpecialTxFees, nBlockSigOps);
+    std::string scriptString(scriptPubKeyIn.begin(), scriptPubKeyIn.end());
+    LogPrintf("Miner: CreateNewBlock(): total size=%u, txs=%u, fees=%ld, specialTxFee=%ld, sigops=%d, script=%s.\n", nBlockSize, nBlockTx, nFees, nSpecialTxFees, nBlockSigOps, scriptString);
 
     // Create coinbase transaction.
     CMutableTransaction coinbaseTx;

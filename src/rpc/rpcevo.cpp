@@ -650,6 +650,7 @@ UniValue protx_register(const JSONRPCRequest& request)
     }
     CKey keyOwner = ParsePrivKey(pwallet, request.params[paramIdx + 1].get_str(), true);
     CBLSPublicKey pubKeyOperator = ParseBLSPubKey(request.params[paramIdx + 2].get_str(), "operator BLS address");
+    // TODO EGOD PQC Default key (protx register).
     CKeyID keyIDVoting = keyOwner.GetPubKey().GetID();
     if (request.params[paramIdx + 3].get_str() != "") {
         keyIDVoting = ParsePubKeyIDFromAddress(request.params[paramIdx + 3].get_str(), "voting address");
@@ -668,7 +669,7 @@ UniValue protx_register(const JSONRPCRequest& request)
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, strprintf("invalid payout address: %s", request.params[paramIdx + 5].get_str()));
     }
 
-    ptx.keyIDOwner = keyOwner.GetPubKey().GetID();
+    ptx.keyIDOwner = keyOwner.GetPubKeySecp256k1().GetID();
     ptx.pubKeyOperator = pubKeyOperator;
     ptx.keyIDVoting = keyIDVoting;
     ptx.scriptPayout = GetScriptForDestination(payoutAddress.Get());

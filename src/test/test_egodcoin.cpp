@@ -130,7 +130,7 @@ TestingSetup::~TestingSetup()
 TestChainSetup::TestChainSetup(int blockCount) : TestingSetup(CBaseChainParams::REGTEST)
 {
     // Generate a 100-block chain:
-    coinbaseKey.MakeNewKey(true);
+    coinbaseKey.MakeNewKeySecp256k1(true);
     CScript scriptPubKey = CScript() << ToByteVector(coinbaseKey.GetPubKey()) << OP_CHECKSIG;
     for (int i = 0; i < blockCount; i++)
     {

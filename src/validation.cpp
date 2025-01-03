@@ -745,6 +745,8 @@ static bool AcceptToMemoryPoolWorker(const CChainParams& chainparams, CTxMemPool
 
         // No transactions are allowed below minRelayTxFee except from disconnected blocks
         if (fLimitFree && nModifiedFees < ::minRelayTxFee.GetFee(nSize)) {
+            // TODO EGOD PQC Set tmp. fee rate to 0.0001 per kilobyte.
+            LogPrintf("Transaction could not be broadcasted immediately, min relay fee not met: fLimitFree=%s, nSize=%i, min-fee-for-size=%d, nModifiedFees=%i, .\n", fLimitFree, nSize, minRelayTxFee.GetFee(nSize), nModifiedFees);
             return state.DoS(0, false, REJECT_INSUFFICIENTFEE, "min relay fee not met");
         }
 

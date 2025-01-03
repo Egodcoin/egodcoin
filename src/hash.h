@@ -15,6 +15,7 @@
 #include "prevector.h"
 #include "serialize.h"
 #include "uint256.h"
+#include "crypto/dilithium/span.h"
 #include "version.h"
 #include "hash_selection.h"
 
@@ -62,6 +63,11 @@ public:
 
     CHash160& Write(const unsigned char *data, size_t len) {
         sha.Write(data, len);
+        return *this;
+    }
+
+    CHash160& Write(Span<const unsigned char> input) {
+        sha.Write(input.data(), input.size());
         return *this;
     }
 
@@ -205,10 +211,17 @@ public:
         ctx.Write((const unsigned char*)pch, size);
     }
 
+    // TODO EGOD PQC For secp256k1.
     // invalidates the object
+    // uint256 GetHash() {
+    //     uint256 result;
+    //     ctx.Finalize((unsigned char*)&result);
+    //     return result;
+    // }
     uint256 GetHash() {
         uint256 result;
-        ctx.Finalize((unsigned char*)&result);
+        ctx.Finalize(result.begin());
+        ctx.Reset().Write(result.begin(), CSHA256::OUTPUT_SIZE).Finalize(result.begin());
         return result;
     }
 

@@ -17,21 +17,34 @@ bool CBasicKeyStore::GetPubKey(const CKeyID &address, CPubKey &vchPubKeyOut) con
 {
     CKey key;
     if (!GetKey(address, key)) {
+        LogPrintf("CBasicKeyStore::GetPubKey: Failed to get key (key-id-hex=%s).\n", address.GetHex());
         LOCK(cs_KeyStore);
         WatchKeyMap::const_iterator it = mapWatchKeys.find(address);
         if (it != mapWatchKeys.end()) {
             vchPubKeyOut = it->second;
+            LogPrintf("CBasicKeyStore::GetPubKey: Next key frmo watchlist (key-id-hex=%s, pub-key-hash-hex=%s).\n", vchPubKeyOut.GetID().GetHex(), vchPubKeyOut.GetHash().GetHex());
             return true;
         }
         return false;
     }
+
     vchPubKeyOut = key.GetPubKey();
+    CScript test = CScript(vchPubKeyOut.begin(), vchPubKeyOut.end());
+    std::string scriptString(test.begin(), test.end());
+
+    if (fLogKeysAndSign)
+        LogPrintf("Keystore: GetPubKey (type=%d, key-id-hex=%s, pub-key-hash-hex=%s, script=%s).\n", vchPubKeyOut.GetKeyType(), vchPubKeyOut.GetID().GetHex(), vchPubKeyOut.GetHash().GetHex(), scriptString);
+
+    assert(address.GetHex() == vchPubKeyOut.GetID().GetHex());
+
     return true;
 }
 
 bool CBasicKeyStore::AddKeyPubKey(const CKey& key, const CPubKey &pubkey)
 {
     LOCK(cs_KeyStore);
+
+    assert(key.GetPubKey().GetID().GetHex() == pubkey.GetID().GetHex());
     mapKeys[pubkey.GetID()] = key;
     return true;
 }
@@ -66,7 +79,10 @@ bool CBasicKeyStore::GetCScript(const CScriptID &hash, CScript& redeemScriptOut)
 
 static bool ExtractPubKey(const CScript &dest, CPubKey& pubKeyOut)
 {
-    //TODO: Use Solver to extract this?
+    if (fLogKeysAndSign)
+        LogPrintf("Keystore: ExtractPubKey.\n");
+
+    // TODO: Use Solver to extract this?
     CScript::const_iterator pc = dest.begin();
     opcodetype opcode;
     std::vector<unsigned char> vch;
@@ -79,6 +95,17 @@ static bool ExtractPubKey(const CScript &dest, CPubKey& pubKeyOut)
         return false;
     return true;
 }
+
+// TODO EGOD PQC User Solver here.
+// static bool ExtractPubKey(const CScript &dest, CPubKey& pubKeyOut)
+// {
+//     if (fLogKeysAndSign)
+//         LogPrintf("Keystore: ExtractPubKey.\n");
+
+//     std::vector<std::vector<unsigned char>> solutions;
+//     return Solver(dest, solutions) == TxoutType::PUBKEY &&
+//         (pubKeyOut = CPubKey(solutions[0])).IsFullyValid();
+// }
 
 bool CBasicKeyStore::AddWatchOnly(const CScript &dest)
 {

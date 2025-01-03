@@ -432,8 +432,7 @@ void CoinControlDialog::viewItemChanged(QTreeWidgetItem* item, int column)
             item->setCheckState(COLUMN_CHECKBOX, Qt::Unchecked);
         else {
             coinControl->Select(outpt);
-            int nRounds = vpwallets[0]->GetRealOutpointPrivateSendRounds(outpt);
-            if (coinControl->IsUsingPrivateSend() && nRounds < privateSendClient.nPrivateSendRounds) {
+            if (coinControl->IsUsingPrivateSend() && vpwallets[0]->GetRealOutpointPrivateSendRounds(outpt) < privateSendClient.nPrivateSendRounds) {
                 QMessageBox::warning(this, windowTitle(),
                     tr("Non-mixed input selected. <b>PrivateSend will be disabled.</b><br><br>If you still want to use PrivateSend, please deselect all non-mixed inputs first and then check the PrivateSend checkbox again."),
                     QMessageBox::Ok, QMessageBox::Ok);
