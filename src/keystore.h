@@ -15,6 +15,8 @@
 
 #include <boost/signals2/signal.hpp>
 
+#include "util.h"
+
 /** A virtual base class for key stores */
 class CKeyStore
 {
@@ -91,10 +93,20 @@ public:
     {
         {
             LOCK(cs_KeyStore);
+
+            for (auto it = mapKeys.begin(); it != mapKeys.end(); ++it)
+            {
+                assert(it->first.GetHex() == it->second.GetPubKey().GetID().GetHex());
+            }
+
+            int n = mapKeys.count(address);
             KeyMap::const_iterator mi = mapKeys.find(address);
             if (mi != mapKeys.end())
             {
                 keyOut = mi->second;
+                if (fLogKeysAndSign)
+                    LogPrintf("Keystore: GetKey (type=%d, size=%d, found=%d, key-id-hex=%s, pub-key-hash-hex=%s).\n", keyOut.GetKeyType(), mapKeys.size(), n, keyOut.GetPubKey().GetID().GetHex(), keyOut.GetPubKey().GetHash().GetHex());
+
                 return true;
             }
         }

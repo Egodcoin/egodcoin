@@ -101,6 +101,7 @@ struct PrecomputedTransactionData
     PrecomputedTransactionData(const CTransaction& tx);
 };
 
+// TODO EGOD PQC Add new signature version.
 enum SigVersion
 {
     SIGVERSION_BASE = 0,

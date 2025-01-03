@@ -324,12 +324,17 @@ bool CCryptoKeyStore::GetPubKey(const CKeyID &address, CPubKey& vchPubKeyOut) co
 {
     {
         LOCK(cs_KeyStore);
-        if (!IsCrypted())
+        if (!IsCrypted()) {
+            if (fLogKeysAndSign)
+                LogPrintf("Crypter: GetPubKey (crypted=false, key-id-hex=%s).\n", address.GetHex());
             return CBasicKeyStore::GetPubKey(address, vchPubKeyOut);
+        }
 
         CryptedKeyMap::const_iterator mi = mapCryptedKeys.find(address);
         if (mi != mapCryptedKeys.end())
         {
+            if (fLogKeysAndSign)
+                LogPrintf("Crypter: GetPubKey: (crypted=true, key-id-hex=%s).\n", address.GetHex());
             vchPubKeyOut = (*mi).second.first;
             return true;
         }

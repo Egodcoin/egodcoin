@@ -7,6 +7,9 @@
 #include <secp256k1.h>
 #include <secp256k1_recovery.h>
 
+#include <util.h>
+#include <crypto/dilithium/api.h>
+
 namespace
 {
 /* Global secp256k1_context object used for verification. */
@@ -164,7 +167,27 @@ static int ecdsa_signature_parse_der_lax(const secp256k1_context* ctx, secp256k1
     return 1;
 }
 
+// Verify public key generic.
+
 bool CPubKey::Verify(const uint256 &hash, const std::vector<unsigned char>& vchSig) const {
+    switch(GetKeyType()) {
+        case(KEY_TYPE_SECP_256_K1): {
+            return VerifySecp256k1(hash, vchSig);
+        }
+        case(KEY_TYPE_DILITHIUM_3): {
+            return VerifyDilithium3(hash, vchSig);
+        }
+        default: {
+            throw std::runtime_error(std::string(__func__) + ": unknown key type " + std::to_string(GetKeyType()));
+        }
+    }
+}
+
+bool CPubKey::VerifySecp256k1(const uint256 &hash, const std::vector<unsigned char>& vchSig) const {
+    if (fLogKeysAndSign)
+        LogPrintf("PubKey: Verify secp256k1.\n");
+
+    assert(nKeyType == KEY_TYPE_SECP_256_K1);
     if (!IsValid())
         return false;
     secp256k1_pubkey pubkey;
@@ -181,7 +204,49 @@ bool CPubKey::Verify(const uint256 &hash, const std::vector<unsigned char>& vchS
     return secp256k1_ecdsa_verify(secp256k1_context_verify, &sig, hash.begin(), &pubkey);
 }
 
+bool CPubKey::VerifyDilithium3(const uint256 &hash, const std::vector<unsigned char>& vchSig) const {
+    if (fLogKeysAndSign)
+        LogPrintf("PubKey: Verify Dilithium 3.\n");
+
+    assert(nKeyType == KEY_TYPE_DILITHIUM_3);
+    if (!IsValid()) {
+        LogPrintf("DILITHIUM 3 key verification failed (invalid=true)\n.");
+        return false;
+    }
+    if (vchSig.size() != DILITHIUM_3_COMPACT_SIGNATURE_SIZE) {
+        LogPrintf("DILITHIUM 3 key verification failed (vch-sig-size=%i)\n.", vchSig.size());
+        return false;
+    }
+    int r = PQCLEAN_DILITHIUM3_CLEAN_crypto_sign_verify(vchSig.data(),vchSig.size(),hash.begin(),32,begin()+1);
+    if (r == 0) {
+        return true;
+    } else {
+        LogPrintf("DILITHIUM 3 key verification failed (r=%i)\n.", r);
+        return false;
+    }
+}
+
+// Recover compact generic.
+
 bool CPubKey::RecoverCompact(const uint256 &hash, const std::vector<unsigned char>& vchSig) {
+    switch(GetKeyType()) {
+        case(KEY_TYPE_SECP_256_K1): {
+            return RecoverCompactSecp256k1(hash, vchSig);
+        }
+        case(KEY_TYPE_DILITHIUM_3): {
+            return RecoverCompactDilithium3(hash, vchSig);
+        }
+        default: {
+            throw std::runtime_error(std::string(__func__) + ": unknown key type " + std::to_string(GetKeyType()));
+        }
+    }
+}
+
+bool CPubKey::RecoverCompactSecp256k1(const uint256 &hash, const std::vector<unsigned char>& vchSig) {
+    if (fLogKeysAndSign)
+        LogPrintf("PubKey: Recover compact secp256k1.\n");
+
+    assert(nKeyType == KEY_TYPE_SECP_256_K1);
     if (vchSig.size() != 65)
         return false;
     int recid = (vchSig[0] - 27) & 3;
@@ -201,6 +266,27 @@ bool CPubKey::RecoverCompact(const uint256 &hash, const std::vector<unsigned cha
     return true;
 }
 
+bool CPubKey::RecoverCompactDilithium3(const uint256 &hash, const std::vector<unsigned char>& vchSig) {
+    if (fLogKeysAndSign)
+        LogPrintf("PubKey: Recover compact Dilithium 3.\n");
+
+    assert(nKeyType == KEY_TYPE_DILITHIUM_3);
+    unsigned int mlen = vchSig.size()-(DILITHIUM_3_PUBLIC_KEY_SIZE-1);
+    if (mlen != DILITHIUM_3_COMPACT_SIGNATURE_SIZE)
+        return false;
+    unsigned char *pch=(unsigned char *)begin();
+    memcpy(pch+1, vchSig.data()+mlen, DILITHIUM_3_PUBLIC_KEY_SIZE-1);
+    pch[0]=7;
+    
+    int r = PQCLEAN_DILITHIUM3_CLEAN_crypto_sign_verify(vchSig.data(), mlen, hash.begin(), 32, pch + 1);
+    if (r == 0) {
+        return true;
+    } else {
+        //LogPrintf("\n--- RecoverCompact verify is failed.\n");
+        return false;
+    }
+}
+
 bool CPubKey::IsFullyValid() const {
     if (!IsValid())
         return false;
@@ -209,6 +295,9 @@ bool CPubKey::IsFullyValid() const {
 }
 
 bool CPubKey::Decompress() {
+    if (fLogKeysAndSign)
+        LogPrintf("PubKey: Decompress.\n");
+
     if (!IsValid())
         return false;
     secp256k1_pubkey pubkey;
@@ -243,23 +332,49 @@ bool CPubKey::Derive(CPubKey& pubkeyChild, ChainCode &ccChild, unsigned int nChi
     return true;
 }
 
+// TODO EGOD PQC for secp256k1.
+// void CExtPubKey::Encode(unsigned char code[BIP32_EXTKEY_SIZE]) const {
+//     code[0] = nDepth;
+//     memcpy(code+1, vchFingerprint, 4);
+//     code[5] = (nChild >> 24) & 0xFF; code[6] = (nChild >> 16) & 0xFF;
+//     code[7] = (nChild >>  8) & 0xFF; code[8] = (nChild >>  0) & 0xFF;
+//     memcpy(code+9, chaincode.begin(), 32);
+//     assert(pubkey.size() == 33);
+//     memcpy(code+41, pubkey.begin(), 33);
+// }
+
+// void CExtPubKey::Decode(const unsigned char code[BIP32_EXTKEY_SIZE]) {
+//     nDepth = code[0];
+//     memcpy(vchFingerprint, code+1, 4);
+//     nChild = (code[5] << 24) | (code[6] << 16) | (code[7] << 8) | code[8];
+//     memcpy(chaincode.begin(), code+9, 32);
+//     pubkey.Set(code+41, code+BIP32_EXTKEY_SIZE);
+// }
+
 void CExtPubKey::Encode(unsigned char code[BIP32_EXTKEY_SIZE]) const {
+    if (fLogKeysAndSign)
+        LogPrintf("PubKey: Encode.\n");
+
     code[0] = nDepth;
     memcpy(code+1, vchFingerprint, 4);
     code[5] = (nChild >> 24) & 0xFF; code[6] = (nChild >> 16) & 0xFF;
     code[7] = (nChild >>  8) & 0xFF; code[8] = (nChild >>  0) & 0xFF;
     memcpy(code+9, chaincode.begin(), 32);
-    assert(pubkey.size() == 33);
-    memcpy(code+41, pubkey.begin(), 33);
+    assert(pubkey.size() == CPubKey::DILITHIUM_3_PUBLIC_KEY_COMPRESSED_SIZE);
+    memcpy(code+41, pubkey.begin(), CPubKey::DILITHIUM_3_PUBLIC_KEY_COMPRESSED_SIZE);
 }
 
 void CExtPubKey::Decode(const unsigned char code[BIP32_EXTKEY_SIZE]) {
+    if (fLogKeysAndSign)
+        LogPrintf("PubKey: Decode.\n");
+
     nDepth = code[0];
     memcpy(vchFingerprint, code+1, 4);
     nChild = (code[5] << 24) | (code[6] << 16) | (code[7] << 8) | code[8];
     memcpy(chaincode.begin(), code+9, 32);
     pubkey.Set(code+41, code+BIP32_EXTKEY_SIZE);
 }
+
 
 bool CExtPubKey::Derive(CExtPubKey &out, unsigned int _nChild) const {
     out.nDepth = nDepth + 1;
@@ -269,7 +384,7 @@ bool CExtPubKey::Derive(CExtPubKey &out, unsigned int _nChild) const {
     return pubkey.Derive(out.pubkey, out.chaincode, _nChild, chaincode);
 }
 
-/* static */ bool CPubKey::CheckLowS(const std::vector<unsigned char>& vchSig) {
+bool CPubKey::CheckLowS(const std::vector<unsigned char>& vchSig) {
     secp256k1_ecdsa_signature sig;
     if (!ecdsa_signature_parse_der_lax(secp256k1_context_verify, &sig, vchSig.data(), vchSig.size())) {
         return false;

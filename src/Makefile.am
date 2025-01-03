@@ -149,6 +149,7 @@ BITCOIN_CORE_H = \
   coins.h \
   compat.h \
   compat/byteswap.h \
+  compat/cpuid.h \
   compat/endian.h \
   compat/sanity.h \
   compressor.h \
@@ -226,6 +227,7 @@ BITCOIN_CORE_H = \
   pow.h \
   protocol.h \
   random.h \
+  randomenv.h \
   reverse_iterator.h \
   reverselock.h \
   rpc/blockchain.h \
@@ -276,7 +278,8 @@ BITCOIN_CORE_H = \
   zmq/zmqabstractnotifier.h \
   zmq/zmqconfig.h\
   zmq/zmqnotificationinterface.h \
-  zmq/zmqpublishnotifier.h
+  zmq/zmqpublishnotifier.h \
+  api.h
 
 
 obj/build.h: FORCE
@@ -551,6 +554,18 @@ libegodcoin_consensus_a_SOURCES = \
   primitives/transaction.h \
   pubkey.cpp \
   pubkey.h \
+  crypto/dilithium/api.h \
+  crypto/dilithium/sign.cpp \
+  crypto/dilithium/poly.cpp \
+  crypto/dilithium/polyvec.cpp \
+  crypto/dilithium/fips202.cpp \
+  crypto/dilithium/rounding.cpp \
+  crypto/dilithium/ntt.cpp \
+  crypto/dilithium/reduce.cpp \
+  crypto/dilithium/symmetric-shake.cpp \
+  crypto/dilithium/packing.h \
+  crypto/dilithium/packing.cpp \
+  crypto/dilithium/randombytes.cpp \
   script/egodcoinconsensus.cpp \
   script/interpreter.cpp \
   script/interpreter.h \
@@ -594,6 +609,28 @@ libegodcoin_common_a_SOURCES = \
   script/sign.cpp \
   script/standard.cpp \
   warnings.cpp \
+  crypto/dilithium/api.h \
+  crypto/dilithium/fips202.h \
+  crypto/dilithium/fips202.cpp \
+  crypto/dilithium/ntt.h \
+  crypto/dilithium/ntt.cpp \
+  crypto/dilithium/packing.h \
+  crypto/dilithium/packing.cpp \
+  crypto/dilithium/params.h \
+  crypto/dilithium/poly.h \
+  crypto/dilithium/poly.cpp \
+  crypto/dilithium/polyvec.cpp \
+  crypto/dilithium/randombytes.h \
+  crypto/dilithium/randombytes.cpp \
+  crypto/dilithium/reduce.h \
+  crypto/dilithium/reduce.cpp \
+  crypto/dilithium/rounding.h \
+  crypto/dilithium/sign.h \
+  crypto/dilithium/sign.cpp \
+  crypto/dilithium/symmetric-shake.cpp \
+  crypto/dilithium/symmetric.h \
+  crypto/dilithium/span.h \
+  crypto/dilithium/rounding.cpp \
   $(BITCOIN_CORE_H)
 
 # util: shared between all executables.

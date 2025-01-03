@@ -46,7 +46,7 @@ BOOST_AUTO_TEST_CASE(GetSigOpCount)
     std::vector<CPubKey> keys;
     for (int i = 0; i < 3; i++)
     {
-        CKey k;
+        CKey k = CKey(CKey::KEY_TYPE_SECP_256_K1);
         k.MakeNewKey(true);
         keys.push_back(k.GetPubKey());
     }

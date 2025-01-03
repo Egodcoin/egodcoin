@@ -9,6 +9,8 @@
 
 #include <vector>
 
+#include <util.h>
+
 // FIXME: Dedup with SetupDummyInputs in test/transaction_tests.cpp.
 //
 // Helper: create two dummy transactions, each with
@@ -25,6 +27,9 @@ SetupDummyInputs(CBasicKeyStore& keystoreRet, CCoinsViewCache& coinsRet)
     // Add some keys to the keystore:
     CKey key[4];
     for (int i = 0; i < 4; i++) {
+        if (fLogKeysAndSign)
+            LogPrintf("CoinsCache: SetDummyInputs.\n");
+
         key[i].MakeNewKey(i % 2);
         keystoreRet.AddKey(key[i]);
     }

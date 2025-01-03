@@ -366,8 +366,9 @@ bool CCoinsViewCache::HaveCoinInCache(const COutPoint &outpoint) const {
 }
 
 uint256 CCoinsViewCache::GetBestBlock() const {
-    if (hashBlock.IsNull())
+    if (hashBlock.IsNull()) {
         hashBlock = base->GetBestBlock();
+    }
     return hashBlock;
 }
 

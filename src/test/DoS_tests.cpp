@@ -274,7 +274,7 @@ CTransactionRef RandomOrphan()
 
 BOOST_AUTO_TEST_CASE(DoS_mapOrphans)
 {
-    CKey key;
+    CKey key = CKey(CKey::KEY_TYPE_SECP_256_K1);
     key.MakeNewKey(true);
     CBasicKeyStore keystore;
     keystore.AddKey(key);

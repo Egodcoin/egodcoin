@@ -312,7 +312,7 @@ public:
         std::vector<unsigned char> vchSig, r, s;
         uint32_t iter = 0;
         do {
-            key.Sign(hash, vchSig, iter++);
+            key.SignSecp256k1(hash, vchSig, iter++);
             if ((lenS == 33) != (vchSig[5 + vchSig[3]] == 33)) {
                 NegateSignatureS(vchSig);
             }
@@ -772,7 +772,7 @@ sign_multisig(CScript scriptPubKey, std::vector<CKey> keys, CTransaction transac
     for (const CKey &key : keys)
     {
         std::vector<unsigned char> vchSig;
-        BOOST_CHECK(key.Sign(hash, vchSig));
+        BOOST_CHECK(key.SignSecp256k1(hash, vchSig));
         vchSig.push_back((unsigned char)SIGHASH_ALL);
         result << vchSig;
     }
@@ -789,7 +789,11 @@ sign_multisig(CScript scriptPubKey, const CKey &key, CTransaction transaction)
 BOOST_AUTO_TEST_CASE(script_CHECKMULTISIG12)
 {
     ScriptError err;
-    CKey key1, key2, key3;
+
+    CKey key1 = CKey(CKey::KEY_TYPE_SECP_256_K1);
+    CKey key2 = CKey(CKey::KEY_TYPE_SECP_256_K1);
+    CKey key3 = CKey(CKey::KEY_TYPE_SECP_256_K1);
+
     key1.MakeNewKey(true);
     key2.MakeNewKey(false);
     key3.MakeNewKey(true);
@@ -819,7 +823,12 @@ BOOST_AUTO_TEST_CASE(script_CHECKMULTISIG12)
 BOOST_AUTO_TEST_CASE(script_CHECKMULTISIG23)
 {
     ScriptError err;
-    CKey key1, key2, key3, key4;
+
+    CKey key1 = CKey(CKey::KEY_TYPE_SECP_256_K1);
+    CKey key2 = CKey(CKey::KEY_TYPE_SECP_256_K1);
+    CKey key3 = CKey(CKey::KEY_TYPE_SECP_256_K1);
+    CKey key4 = CKey(CKey::KEY_TYPE_SECP_256_K1);
+
     key1.MakeNewKey(true);
     key2.MakeNewKey(false);
     key3.MakeNewKey(true);
@@ -894,8 +903,8 @@ BOOST_AUTO_TEST_CASE(script_combineSigs)
     std::vector<CPubKey> pubkeys;
     for (int i = 0; i < 3; i++)
     {
-        CKey key;
-        key.MakeNewKey(i%2 == 1);
+        CKey key = CKey(CKey::KEY_TYPE_SECP_256_K1);
+        key.MakeNewKey(i % 2 == 1);
         keys.push_back(key);
         pubkeys.push_back(key.GetPubKey());
         keystore.AddKey(key);
@@ -954,15 +963,15 @@ BOOST_AUTO_TEST_CASE(script_combineSigs)
     // A couple of partially-signed versions:
     std::vector<unsigned char> sig1;
     uint256 hash1 = SignatureHash(scriptPubKey, txTo, 0, SIGHASH_ALL, 0, SIGVERSION_BASE);
-    BOOST_CHECK(keys[0].Sign(hash1, sig1));
+    BOOST_CHECK(keys[0].SignSecp256k1(hash1, sig1));
     sig1.push_back(SIGHASH_ALL);
     std::vector<unsigned char> sig2;
     uint256 hash2 = SignatureHash(scriptPubKey, txTo, 0, SIGHASH_NONE, 0, SIGVERSION_BASE);
-    BOOST_CHECK(keys[1].Sign(hash2, sig2));
+    BOOST_CHECK(keys[1].SignSecp256k1(hash2, sig2));
     sig2.push_back(SIGHASH_NONE);
     std::vector<unsigned char> sig3;
     uint256 hash3 = SignatureHash(scriptPubKey, txTo, 0, SIGHASH_SINGLE, 0, SIGVERSION_BASE);
-    BOOST_CHECK(keys[2].Sign(hash3, sig3));
+    BOOST_CHECK(keys[2].SignSecp256k1(hash3, sig3));
     sig3.push_back(SIGHASH_SINGLE);
 
     // Not fussy about order (or even existence) of placeholders or signatures:

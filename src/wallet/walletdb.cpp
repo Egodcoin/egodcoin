@@ -341,7 +341,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
             ssKey >> vchPubKey;
             if (!vchPubKey.IsValid())
             {
-                strErr = "Error reading wallet database: CPubKey corrupt";
+                strErr = "Error reading wallet database: CPubKey (key or wkey) corrupt";
                 return false;
             }
             CKey key;
@@ -420,7 +420,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
             ssKey >> vchPubKey;
             if (!vchPubKey.IsValid())
             {
-                strErr = "Error reading wallet database: CPubKey corrupt";
+                strErr = "Error reading wallet database: CPubKey (ckey) corrupt";
                 return false;
             }
             std::vector<unsigned char> vchPrivKey;
@@ -436,6 +436,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
         }
         else if (strType == "keymeta" || strType == "watchmeta")
         {
+            
             CTxDestination keyID;
             if (strType == "keymeta")
             {
@@ -454,7 +455,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
             ssValue >> keyMeta;
             wss.nKeyMeta++;
 
-            pwallet->LoadKeyMetadata(keyID, keyMeta);
+            bool loaded = pwallet->LoadKeyMetadata(keyID, keyMeta);
         }
         else if (strType == "defaultkey")
         {
@@ -543,6 +544,7 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
         }
     } catch (...)
     {
+        LogPrintf("Failed to load object of type=%s from DB. Error: %s.\n", strType, strErr);
         return false;
     }
     return true;
@@ -557,7 +559,8 @@ bool CWalletDB::IsKeyType(const std::string& strType)
 
 DBErrors CWalletDB::LoadWallet(CWallet* pwallet)
 {
-    pwallet->vchDefaultKey = CPubKey();
+    pwallet->vchDefaultKey = CPubKey(nDefaultKeyType);
+    LogPrintf("Wallet: Load Wallet: default-key-type=%i, key-id-hash=%s, pub-key-hash-hex=%s.\n", pwallet->vchDefaultKey.GetKeyType(), pwallet->vchDefaultKey.GetID().GetHex(), pwallet->vchDefaultKey.GetHash().GetHex());
     CWalletScanState wss;
     bool fNoncriticalErrors = false;
     DBErrors result = DB_LOAD_OK;

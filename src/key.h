@@ -14,6 +14,11 @@
 #include <stdexcept>
 #include <vector>
 
+#include <util.h>
+
+#define PQCLEAN_DILITHIUM3_CLEAN_CRYPTO_SECRETKEYBYTES_   4000
+#define PQCLEAN_DILITHIUM3_CLEAN_CRYPTO_PUBLICKEYBYTES_   1952
+#define PQCLEAN_DILITHIUM3_CLEAN_CRYPTO_BYTES_            3293
 
 /**
  * secp256k1:
@@ -27,7 +32,8 @@
 
 /**
  * secure_allocator is defined in allocators.h
- * CPrivKey is a serialized private key, with all parameters included (279 bytes)
+ * CPrivKey is a serialized private key, with all parameters included
+ * (SIZE bytes)
  */
 typedef std::vector<unsigned char, secure_allocator<unsigned char> > CPrivKey;
 
@@ -35,6 +41,9 @@ typedef std::vector<unsigned char, secure_allocator<unsigned char> > CPrivKey;
 class CKey
 {
 private:
+
+    unsigned int nKeyType = nDefaultKeyType; 
+
     //! Whether this private key is valid. We check for correctness when modifying the key
     //! data, so fValid should always correspond to the actual state.
     bool fValid;
@@ -45,14 +54,40 @@ private:
     //! The actual byte data
     std::vector<unsigned char, secure_allocator<unsigned char> > keydata;
 
+    //! The actual byte data
+    std::vector<unsigned char, secure_allocator<unsigned char> > pubkeydata;
+    
     //! Check whether the 32-byte array pointed to by vch is valid keydata.
     bool static Check(const unsigned char* vch);
 
 public:
+
+    static const unsigned int KEY_TYPE_SECP_256_K1                      = 0;
+    static const unsigned int KEY_TYPE_DILITHIUM_3                      = 1;
+
+    static const unsigned int DILITHIUM_3_PRIVATE_KEY_SIZE              = PQCLEAN_DILITHIUM3_CLEAN_CRYPTO_SECRETKEYBYTES_;
+    static const unsigned int DILITHIUM_3_COMPRESSED_PRIVATE_KEY_SIZE   = PQCLEAN_DILITHIUM3_CLEAN_CRYPTO_SECRETKEYBYTES_;
+
     //! Construct an invalid private key.
     CKey() : fValid(false), fCompressed(false)
     {
-        // Important: vch must be 32 bytes in length to not break serialization
+        nKeyType = nDefaultKeyType;
+        
+        // TODO EGOD PQC Default key type.
+        if (nKeyType == KEY_TYPE_SECP_256_K1) {
+            // Important: vch must be 32 bytes in length to not break serialization
+            keydata.resize(32);
+        } else if (nKeyType == KEY_TYPE_DILITHIUM_3) {
+            // Re-size for Dilithium 3.
+            keydata.resize(DILITHIUM_3_PRIVATE_KEY_SIZE);
+            pubkeydata.resize(CPubKey::DILITHIUM_3_PUBLIC_KEY_SIZE);
+        }
+        // Re-sizing is done again in MakeNewKeyXxx.
+    }
+
+    CKey(int nKeyTypeIn) : fValid(false), fCompressed(false)
+    {
+        nKeyType = nKeyTypeIn;
         keydata.resize(32);
     }
 
@@ -88,6 +123,12 @@ public:
     const unsigned char* begin() const { return keydata.data(); }
     const unsigned char* end() const { return keydata.data() + size(); }
 
+    unsigned int pksize() const { return (fValid ? pubkeydata.size() : 0); }
+    const unsigned char* pkbegin() const { return pubkeydata.data(); }
+    const unsigned char* pkend() const { return pubkeydata.data() + pksize(); }
+
+    unsigned int GetKeyType() const { return nKeyType; }
+
     //! Check whether this private key is valid.
     bool IsValid() const { return fValid; }
 
@@ -95,7 +136,11 @@ public:
     bool IsCompressed() const { return fCompressed; }
 
     //! Generate a new private key using a cryptographic PRNG.
-    void MakeNewKey(bool fCompressed);
+    void MakeNewKey(bool fCompressed); // bool fPqc, 
+
+    void MakeNewKeySecp256k1(bool fCompressed);
+
+    void MakeNewKeyDilithium3(bool fCompressed);
 
     /**
      * Convert the private key to a CPrivKey (serialized OpenSSL private key data).
@@ -103,17 +148,29 @@ public:
      */
     CPrivKey GetPrivKey() const;
 
+    CPrivKey GetPrivKeySecp256k1() const;
+
+    CPrivKey GetPrivKeyDilithium3() const;
+
     /**
      * Compute the public key from a private key.
      * This is expensive.
      */
     CPubKey GetPubKey() const;
 
+    CPubKey GetPubKeySecp256k1() const;
+
+    CPubKey GetPubKeyDilithium3() const;
+
     /**
      * Create a DER-serialized signature.
      * The test_case parameter tweaks the deterministic nonce.
      */
     bool Sign(const uint256& hash, std::vector<unsigned char>& vchSig, uint32_t test_case = 0) const;
+
+    bool SignSecp256k1(const uint256& hash, std::vector<unsigned char>& vchSig, uint32_t test_case = 0) const;
+
+    bool SignDilithium3(const uint256& hash, std::vector<unsigned char>& vchSig, bool grind = true, uint32_t test_case = 0) const;
 
     /**
      * Create a compact signature (65 bytes), which allows reconstructing the used public key.
@@ -124,6 +181,10 @@ public:
      */
     bool SignCompact(const uint256& hash, std::vector<unsigned char>& vchSig) const;
 
+    bool SignCompactSecp256k1(const uint256& hash, std::vector<unsigned char>& vchSig) const;
+
+    bool SignCompactDilithium3(const uint256& hash, std::vector<unsigned char>& vchSig) const;
+
     //! Derive BIP32 child key.
     bool Derive(CKey& keyChild, ChainCode &ccChild, unsigned int nChild, const ChainCode& cc) const;
 
@@ -133,8 +194,16 @@ public:
      */
     bool VerifyPubKey(const CPubKey& vchPubKey) const;
 
+    bool VerifyPubKeySecp256k1(const CPubKey& vchPubKey) const;
+
+    bool VerifyPubKeyDilithium3(const CPubKey& vchPubKey) const;
+
     //! Load private key and check that public key matches.
     bool Load(CPrivKey& privkey, CPubKey& vchPubKey, bool fSkipCheck);
+
+    bool LoadSecp256k1(CPrivKey& privkey, CPubKey& vchPubKey, bool fSkipCheck);
+
+    bool LoadDilithium3(const CPrivKey& privkey, const CPubKey& vchPubKey, bool fSkipCheck);
 };
 
 struct CExtKey {
@@ -187,5 +256,11 @@ void ECC_Stop(void);
 
 /** Check that required EC support is available at runtime. */
 bool ECC_InitSanityCheck(void);
+
+/** Check that required PQC support is available at runtime. */
+bool PQC_InitSanityCheck(void);
+
+/** Check key, public key, sign and verify signatures. */
+bool InitSanityCheck(CKey key);
 
 #endif // BITCOIN_KEY_H

@@ -9,9 +9,12 @@
 #include "hash.h"
 #include "serialize.h"
 #include "uint256.h"
+#include "crypto/dilithium/span.h"
 
 #include <stdexcept>
 #include <vector>
+
+#include <util.h>
 
 /**
  * secp256k1:
@@ -38,16 +41,41 @@ typedef uint256 ChainCode;
 /** An encapsulated public key. */
 class CPubKey
 {
+public:
+
+    static const unsigned int KEY_TYPE_SECP_256_K1                          = 0;
+    static const unsigned int KEY_TYPE_DILITHIUM_3                          = 1;
+
+    static constexpr unsigned int DILITHIUM_3_PUBLIC_KEY_SIZE               = 1952 + 1;
+    static constexpr unsigned int DILITHIUM_3_PUBLIC_KEY_COMPRESSED_SIZE    = 1952 + 1;
+    static constexpr unsigned int DILITHIUM_3_SIGNATURE_SIZE                = 3293;
+    static constexpr unsigned int DILITHIUM_3_COMPACT_SIGNATURE_SIZE        = 3293;
+
+    unsigned int GetKeyType() const { return nKeyType; }
+    void SetKeyType(unsigned int type) { nKeyType = type; }
+
 private:
+
+    unsigned int nKeyType = nDefaultKeyType;
 
     /**
      * Just store the serialized data.
      * Its length can very cheaply be computed from the first byte.
      */
-    unsigned char vch[65];
+    // TODO EGOD PQC For secp256k1. Is resized later.
+    // unsigned char vch[65];
+    unsigned char vch[DILITHIUM_3_PUBLIC_KEY_SIZE];
 
-    //! Compute the length of a pubkey with a given first byte.
-    unsigned int static GetLen(unsigned char chHeader)
+    unsigned int static GetLenDilithium3(unsigned char chHeader)
+    {
+        if (chHeader == 2 || chHeader == 3)
+            return 1952 + 1;
+        if (chHeader == 4 || chHeader == 6 || chHeader == 7)
+            return 1952 + 1;
+        return 0;
+    }
+
+    unsigned int static GetLenSecp256k1(unsigned char chHeader)
     {
         if (chHeader == 2 || chHeader == 3)
             return 33;
@@ -63,21 +91,41 @@ private:
     }
 
 public:
+
     //! Construct an invalid public key.
     CPubKey()
     {
         Invalidate();
+        nKeyType = nDefaultKeyType;
+    }
+
+    CPubKey(int nKeyTypeIn)
+    {
+        Invalidate();
+        nKeyType = nKeyTypeIn;
     }
 
     //! Initialize a public key using begin/end iterators to byte data.
     template <typename T>
     void Set(const T pbegin, const T pend)
     {
-        int len = pend == pbegin ? 0 : GetLen(pbegin[0]);
+        int getLen = -1;
+        if (nKeyType == KEY_TYPE_SECP_256_K1) {
+            getLen = GetLenSecp256k1(pbegin[0]);
+        } else if (nKeyType == KEY_TYPE_DILITHIUM_3) {
+            getLen = GetLenDilithium3(pbegin[0]);  
+        }
+        
+        int len = pend == pbegin ? 0 : getLen;
+
+        if (fLogKeysAndSign)
+            LogPrintf("PubKey: Set (get-key-type=%d, len=%i, getLen=%d).\n", GetKeyType(), len, getLen);
+
         if (len && len == (pend - pbegin))
-            memcpy(vch, (unsigned char*)&pbegin[0], len);
-        else
+            memcpy(vch, (unsigned char*) & pbegin[0], len);
+        else {
             Invalidate();
+        }
     }
 
     //! Construct a public key using begin/end iterators to byte data.
@@ -90,11 +138,26 @@ public:
     //! Construct a public key from a byte vector.
     CPubKey(const std::vector<unsigned char>& _vch)
     {
+        nKeyType = nDefaultKeyType;
         Set(_vch.begin(), _vch.end());
     }
 
     //! Simple read-only vector-like interface to the pubkey data.
-    unsigned int size() const { return GetLen(vch[0]); }
+    unsigned int size() const {
+        switch(GetKeyType()) {
+            case(KEY_TYPE_SECP_256_K1): {
+                return GetLenSecp256k1(vch[0]);
+            }
+            case(KEY_TYPE_DILITHIUM_3): {
+                return GetLenDilithium3(vch[0]);
+            }
+            default: {
+                throw std::runtime_error(std::string(__func__) + ": unknown key type " + std::to_string(GetKeyType()));
+            }
+        }
+    }
+
+    const unsigned char* data() const { return vch; }
     const unsigned char* begin() const { return vch; }
     const unsigned char* end() const { return vch + size(); }
     const unsigned char& operator[](unsigned int pos) const { return vch[pos]; }
@@ -123,13 +186,35 @@ public:
         ::WriteCompactSize(s, len);
         s.write((char*)vch, len);
     }
+
+    // TODO EGOD PQC For secp256k1.
+    // template <typename Stream>
+    // void Unserialize(Stream& s)
+    // {
+    //     unsigned int len = ::ReadCompactSize(s);
+    //     if (len <= 65) {
+    //         s.read((char*)vch, len);
+    //     } else {
+    //         // invalid pubkey, skip available data
+    //         char dummy;
+    //         while (len--)
+    //             s.read(&dummy, 1);
+    //         Invalidate();
+    //     }
+    // }
+
     template <typename Stream>
     void Unserialize(Stream& s)
     {
         unsigned int len = ::ReadCompactSize(s);
-        if (len <= 65) {
+        if (len <= DILITHIUM_3_PUBLIC_KEY_SIZE) {
             s.read((char*)vch, len);
+            if (len != size()) {
+                Invalidate();
+            }
         } else {
+            if (fLogKeysAndSign)
+                LogPrintf("PubKey: Unserialize (invalid=true, get-key-type=%d, len=%i, size=%d).\n", GetKeyType(), len, size());
             // invalid pubkey, skip available data
             char dummy;
             while (len--)
@@ -166,14 +251,28 @@ public:
     //! Check whether this is a compressed public key.
     bool IsCompressed() const
     {
-        return size() == 33;
+        switch(GetKeyType()) {
+            case(KEY_TYPE_SECP_256_K1): {
+                return size() == 33;
+            }
+            case(KEY_TYPE_DILITHIUM_3): {
+                return size() == DILITHIUM_3_PUBLIC_KEY_COMPRESSED_SIZE;
+            }
+            default: {
+                throw std::runtime_error(std::string(__func__) + ": unknown key type " + std::to_string(GetKeyType()));
+            }
+        }
     }
 
     /**
      * Verify a DER signature (~72 bytes).
      * If this public key is not fully valid, the return value will be false.
      */
-    bool Verify(const uint256& hash, const std::vector<unsigned char>& vchSig) const;
+    bool Verify(const uint256 &hash, const std::vector<unsigned char>& vchSig) const;
+
+    bool VerifySecp256k1(const uint256& hash, const std::vector<unsigned char>& vchSig) const;
+
+    bool VerifyDilithium3(const uint256& hash, const std::vector<unsigned char>& vchSig) const;
 
     /**
      * Check whether a signature is normalized (lower-S).
@@ -181,7 +280,11 @@ public:
     static bool CheckLowS(const std::vector<unsigned char>& vchSig);
 
     //! Recover a public key from a compact signature.
-    bool RecoverCompact(const uint256& hash, const std::vector<unsigned char>& vchSig);
+    bool RecoverCompact(const uint256 &hash, const std::vector<unsigned char>& vchSig);
+
+    bool RecoverCompactSecp256k1(const uint256& hash, const std::vector<unsigned char>& vchSig);
+
+    bool RecoverCompactDilithium3(const uint256& hash, const std::vector<unsigned char>& vchSig);
 
     //! Turn this public key into an uncompressed public key.
     bool Decompress();

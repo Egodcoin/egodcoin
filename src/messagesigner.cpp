@@ -12,13 +12,20 @@
 #include "tinyformat.h"
 #include "utilstrencodings.h"
 
+#include "util.h"
+
 bool CMessageSigner::GetKeysFromSecret(const std::string& strSecret, CKey& keyRet, CPubKey& pubkeyRet)
 {
     CBitcoinSecret vchSecret;
 
-    if(!vchSecret.SetString(strSecret)) return false;
+    if (fLogKeysAndSign)
+        LogPrintf("MessageSigner: Bitcoin: GetKeysFromSecret.\n");
+
+    if (!vchSecret.SetString(strSecret))
+        return false;
 
     keyRet = vchSecret.GetKey();
+    // TODO EGOD PQC Implement vchSecret.GetKey() for Dilithium 3.
     pubkeyRet = keyRet.GetPubKey();
 
     return true;
@@ -64,6 +71,9 @@ bool CHashSigner::VerifyHash(const uint256& hash, const CKeyID& keyID, const std
         strErrorRet = "Error recovering public key.";
         return false;
     }
+
+    if (fLogKeysAndSign)
+        LogPrintf("MessageSigner: (Verify hash: type=%d, key-id-hex=%s).\n", pubkeyFromSig.GetKeyType(), pubkeyFromSig.GetID().GetHex());
 
     if(pubkeyFromSig.GetID() != keyID) {
         strErrorRet = strprintf("Keys don't match: pubkey=%s, pubkeyFromSig=%s, hash=%s, vchSig=%s",

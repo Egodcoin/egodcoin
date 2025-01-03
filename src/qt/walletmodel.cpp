@@ -240,6 +240,9 @@ bool WalletModel::validateAddress(const QString &address)
 
 WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransaction &transaction, const CCoinControl& coinControl)
 {
+    if (fLogKeysAndSign)
+        LogPrintf("Walletmodel: Prepare transaction (amount=%d, size=%i).\n", transaction.getTotalTransactionAmount(), transaction.getTransactionSize());
+
     CAmount total = 0;
     bool fSubtractFeeFromAmount = false;
     QList<SendCoinsRecipient> recipients = transaction.getRecipients();
@@ -261,6 +264,9 @@ WalletModel::SendCoinsReturn WalletModel::prepareTransaction(WalletModelTransact
     // Pre-check input data for validity
     for (const SendCoinsRecipient &rcp : recipients)
     {
+        if (fLogKeysAndSign)
+            LogPrintf("Walletmodel: Prepare transaction (recipient-address=%s).\n", rcp.address.toStdString());
+
         if (rcp.fSubtractFeeFromAmount)
             fSubtractFeeFromAmount = true;
 

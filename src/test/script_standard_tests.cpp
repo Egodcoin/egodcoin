@@ -25,7 +25,7 @@ BOOST_AUTO_TEST_CASE(script_standard_Solver_success)
     CKey keys[3];
     CPubKey pubkeys[3];
     for (int i = 0; i < 3; i++) {
-        keys[i].MakeNewKey(true);
+        keys[i].MakeNewKeySecp256k1(true);
         pubkeys[i] = keys[i].GetPubKey();
     }
 
@@ -106,8 +106,9 @@ BOOST_AUTO_TEST_CASE(script_standard_Solver_success)
 
 BOOST_AUTO_TEST_CASE(script_standard_Solver_failure)
 {
-    CKey key;
-    CPubKey pubkey;
+    CKey key = CKey(CKey::KEY_TYPE_SECP_256_K1);
+    CPubKey pubkey = CPubKey(CKey::KEY_TYPE_SECP_256_K1);
+
     key.MakeNewKey(true);
     pubkey = key.GetPubKey();
 
@@ -158,8 +159,9 @@ BOOST_AUTO_TEST_CASE(script_standard_Solver_failure)
 
 BOOST_AUTO_TEST_CASE(script_standard_ExtractDestination)
 {
-    CKey key;
-    CPubKey pubkey;
+    CKey key = CKey(CKey::KEY_TYPE_SECP_256_K1);
+    CPubKey pubkey = CPubKey(CKey::KEY_TYPE_SECP_256_K1);
+
     key.MakeNewKey(true);
     pubkey = key.GetPubKey();
 
@@ -204,7 +206,7 @@ BOOST_AUTO_TEST_CASE(script_standard_ExtractDestinations)
     CKey keys[3];
     CPubKey pubkeys[3];
     for (int i = 0; i < 3; i++) {
-        keys[i].MakeNewKey(true);
+        keys[i].MakeNewKeySecp256k1(true);
         pubkeys[i] = keys[i].GetPubKey();
     }
 
@@ -270,7 +272,7 @@ BOOST_AUTO_TEST_CASE(script_standard_GetScriptFor_)
     CKey keys[3];
     CPubKey pubkeys[3];
     for (int i = 0; i < 3; i++) {
-        keys[i].MakeNewKey(true);
+        keys[i].MakeNewKeySecp256k1(true);
         pubkeys[i] = keys[i].GetPubKey();
     }
 
@@ -316,11 +318,11 @@ BOOST_AUTO_TEST_CASE(script_standard_IsMine)
     CKey keys[2];
     CPubKey pubkeys[2];
     for (int i = 0; i < 2; i++) {
-        keys[i].MakeNewKey(true);
+        keys[i].MakeNewKeySecp256k1(true);
         pubkeys[i] = keys[i].GetPubKey();
     }
 
-    CKey uncompressedKey;
+    CKey uncompressedKey = CKey(CKey::KEY_TYPE_SECP_256_K1);
     uncompressedKey.MakeNewKey(false);
     CPubKey uncompressedPubkey = uncompressedKey.GetPubKey();
 

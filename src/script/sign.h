@@ -53,6 +53,9 @@ public:
 
 /** A signature creator that just produces 72-byte empty signatures. */
 class DummySignatureCreator : public BaseSignatureCreator {
+private:
+    char m_r_len = 32;
+    char m_s_len = 32;
 public:
     DummySignatureCreator(const CKeyStore* keystoreIn) : BaseSignatureCreator(keystoreIn) {}
     const BaseSignatureChecker& Checker() const override;
