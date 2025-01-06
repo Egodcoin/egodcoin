@@ -1008,6 +1008,7 @@ public:
      * Generate a new key
      */
     CPubKey GenerateNewKey(CWalletDB& walletdb, uint32_t nAccountIndex, bool fInternal /*= false*/);
+    CPubKey GenerateNewKey(CWalletDB& walletdb, int keyType, uint32_t nAccountIndex, bool fInternal /*= false*/);
     //! HaveKey implementation that also checks the mapHdPubKeys
     bool HaveKey(const CKeyID &address) const override;
     //! GetPubKey implementation that also checks the mapHdPubKeys
@@ -1159,6 +1160,7 @@ public:
     size_t KeypoolCountInternalKeys();
     bool TopUpKeyPool(unsigned int kpSize = 0);
     void ReserveKeyFromKeyPool(int64_t& nIndex, CKeyPool& keypool, bool fInternal);
+    void ReserveKeyFromKeyPool(int64_t& nIndex, CKeyPool& keypool, int keyType, bool fInternal);
     void KeepKey(int64_t nIndex);
     void ReturnKey(int64_t nIndex, bool fInternal, const CPubKey& pubkey);
     bool GetKeyFromPool(CPubKey &key, bool fInternal = false);

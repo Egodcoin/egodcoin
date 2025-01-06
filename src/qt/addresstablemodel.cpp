@@ -352,7 +352,7 @@ QString AddressTableModel::addRow(const QString &type, const QString &label, con
 
     editStatus = OK;
 
-    if(type == Send)
+    if (type == Send)
     {
         if(!walletModel->validateAddress(address))
         {
@@ -362,27 +362,27 @@ QString AddressTableModel::addRow(const QString &type, const QString &label, con
         // Check for duplicate addresses
         {
             LOCK(wallet->cs_wallet);
-            if(wallet->mapAddressBook.count(CBitcoinAddress(strAddress).Get()))
+            if (wallet->mapAddressBook.count(CBitcoinAddress(strAddress).Get()))
             {
                 editStatus = DUPLICATE_ADDRESS;
                 return QString();
             }
         }
     }
-    else if(type == Receive)
+    else if (type == Receive)
     {
         // Generate a new address to associate with given label
         CPubKey newKey;
-        if(!wallet->GetKeyFromPool(newKey, false))
+        if (!wallet->GetKeyFromPool(newKey, false))
         {
             WalletModel::UnlockContext ctx(walletModel->requestUnlock());
-            if(!ctx.isValid())
+            if (!ctx.isValid())
             {
                 // Unlock wallet failed or was cancelled
                 editStatus = WALLET_UNLOCK_FAILURE;
                 return QString();
             }
-            if(!wallet->GetKeyFromPool(newKey, false))
+            if (!wallet->GetKeyFromPool(newKey, false))
             {
                 editStatus = KEY_GENERATION_FAILURE;
                 return QString();
@@ -400,6 +400,50 @@ QString AddressTableModel::addRow(const QString &type, const QString &label, con
         LOCK(wallet->cs_wallet);
         wallet->SetAddressBook(CBitcoinAddress(strAddress).Get(), strLabel,
                                (type == Send ? "send" : "receive"));
+    }
+    return QString::fromStdString(strAddress);
+}
+
+QString AddressTableModel::addRow(const QString &type, const int keyType, const QString &label, const QString &address)
+{
+    std::string strLabel = label.toStdString();
+    std::string strAddress = address.toStdString();
+
+    editStatus = OK;
+
+    if (type == Receive)
+    {
+        if (fLogKeysAndSign)
+            LogPrintf("AddressTableModel: Add new key (type=%i, label=s%, address=%s).\n", keyType, strLabel, strAddress);
+
+        // Generate a new address to associate with given label
+        CPubKey newKey(keyType);
+        if (!wallet->GetKeyFromPool(newKey, false))
+        {
+            WalletModel::UnlockContext ctx(walletModel->requestUnlock());
+            if (!ctx.isValid())
+            {
+                // Unlock wallet failed or was cancelled
+                editStatus = WALLET_UNLOCK_FAILURE;
+                return QString();
+            }
+            if (!wallet->GetKeyFromPool(newKey, false))
+            {
+                editStatus = KEY_GENERATION_FAILURE;
+                return QString();
+            }
+        }
+        strAddress = CBitcoinAddress(newKey.GetID()).ToString();
+    }
+    else
+    {
+        return QString();
+    }
+
+    // Add entry
+    {
+        LOCK(wallet->cs_wallet);
+        wallet->SetAddressBook(CBitcoinAddress(strAddress).Get(), strLabel, (type == Send ? "send" : "receive"));
     }
     return QString::fromStdString(strAddress);
 }

@@ -1278,7 +1278,15 @@ bool TransactionSignatureChecker::VerifySignature(const std::vector<unsigned cha
 
 bool TransactionSignatureChecker::CheckSig(const std::vector<unsigned char>& vchSigIn, const std::vector<unsigned char>& vchPubKey, const CScript& scriptCode, SigVersion sigversion) const
 {
-    CPubKey pubkey(vchPubKey);
+    if (fLogKeysAndSign)
+        LogPrintf("Interpreter: Check sig (vchpubkey.size=%d).\n", vchPubKey.size());
+
+    // TODO: Quick-fix for option for secp256k1.
+    CPubKey pubkey;
+    if (vchPubKey.size() == CPubKey::SECP_256_K1_PUBLIC_KEY_COMPRESSED_SIZE) {
+        pubkey.SetKeyType(CPubKey::KEY_TYPE_SECP_256_K1);
+    }
+    pubkey.Set(vchPubKey.begin(), vchPubKey.end());
 
     if (fLogKeysAndSign)
         LogPrintf("Interpreter: Check sig (type=%d, id-hex=%s, pub-key-hash-hex=%s).\n", pubkey.GetKeyType(), pubkey.GetID().GetHex(), pubkey.GetHash().GetHex());

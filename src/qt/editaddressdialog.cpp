@@ -30,16 +30,20 @@ EditAddressDialog::EditAddressDialog(Mode _mode, QWidget *parent) :
     {
     case NewReceivingAddress:
         setWindowTitle(tr("New receiving address"));
+        ui->keyTypeSelector->setEnabled(true);
         ui->addressEdit->setEnabled(false);
         break;
     case NewSendingAddress:
         setWindowTitle(tr("New sending address"));
+        ui->keyTypeSelector->setEnabled(false);
         break;
     case EditReceivingAddress:
         setWindowTitle(tr("Edit receiving address"));
+        ui->keyTypeSelector->setEnabled(false);
         ui->addressEdit->setEnabled(false);
         break;
     case EditSendingAddress:
+        ui->keyTypeSelector->setEnabled(false);
         setWindowTitle(tr("Edit sending address"));
         break;
     }
@@ -71,12 +75,18 @@ void EditAddressDialog::loadRow(int row)
 
 bool EditAddressDialog::saveCurrentRow()
 {
-    if(!model)
+    if (!model)
         return false;
 
     switch(mode)
     {
     case NewReceivingAddress:
+        address = model->addRow(
+                mode == NewSendingAddress ? AddressTableModel::Send : AddressTableModel::Receive,
+                ui->keyTypeSelector->currentIndex(),
+                ui->labelEdit->text(),
+                ui->addressEdit->text());
+        break;
     case NewSendingAddress:
         address = model->addRow(
                 mode == NewSendingAddress ? AddressTableModel::Send : AddressTableModel::Receive,
@@ -145,4 +155,14 @@ void EditAddressDialog::setAddress(const QString &_address)
 {
     this->address = _address;
     ui->addressEdit->setText(_address);
+}
+
+QString EditAddressDialog::getKeyType() const
+{
+    return keyType;
+}
+
+void EditAddressDialog::setKeyType(const QString &_keyType)
+{
+    this->keyType = _keyType;
 }

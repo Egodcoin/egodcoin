@@ -40,6 +40,9 @@ public:
     QString getAddress() const;
     void setAddress(const QString &address);
 
+    QString getKeyType() const;
+    void setKeyType(const QString &keyType);
+
 public Q_SLOTS:
     void accept();
 
@@ -52,6 +55,7 @@ private:
     AddressTableModel *model;
 
     QString address;
+    QString keyType;
 };
 
 #endif // BITCOIN_QT_EDITADDRESSDIALOG_H

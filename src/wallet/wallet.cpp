@@ -162,6 +162,49 @@ const CWalletTx* CWallet::GetWalletTx(const uint256& hash) const
     return &(it->second);
 }
 
+CPubKey CWallet::GenerateNewKey(CWalletDB &walletdb, int keyType, uint32_t nAccountIndex, bool fInternal)
+{
+    AssertLockHeld(cs_wallet); // mapKeyMetadata
+
+    // Usually true.
+    bool fCompressed = CanSupportFeature(FEATURE_COMPRPUBKEY); // default to compressed public keys if we want 0.6.0 wallets
+    CKey secret = CKey(keyType);
+
+    // Create new metadata
+    int64_t nCreationTime = GetTime();
+    CKeyMetadata metadata(nCreationTime);
+
+    CPubKey pubkey;
+    // use HD key derivation if HD was enabled during wallet creation
+    if (IsHDEnabled()) {
+        DeriveNewChildKey(walletdb, metadata, secret, nAccountIndex, fInternal);
+        pubkey = secret.GetPubKey();
+    } else {
+        secret.MakeNewKey(fCompressed);
+
+        // Compressed public keys were introduced in version 0.6.0
+        if (fCompressed) {
+            SetMinVersion(FEATURE_COMPRPUBKEY);
+        }
+
+        pubkey = secret.GetPubKey();
+        assert(secret.VerifyPubKey(pubkey));
+
+        if (fLogKeysAndSign)
+            LogPrintf("Generated new public key: type=%i, key-id-hex=%s .\n", pubkey.GetKeyType(), pubkey.GetID().GetHex());
+
+        // Create new metadata
+        mapKeyMetadata[pubkey.GetID()] = metadata;
+        UpdateTimeFirstKey(nCreationTime);
+
+        if (!AddKeyPubKeyWithDB(walletdb, secret, pubkey)) {
+            LogPrintf("Warning: AddKey failed: type=%i, key-id-hex=%s.\n", pubkey.GetKeyType(), pubkey.GetID().GetHex());
+            throw std::runtime_error(std::string(__func__) + ": AddKey failed");
+        }
+    }
+    return pubkey;
+}
+
 CPubKey CWallet::GenerateNewKey(CWalletDB &walletdb, uint32_t nAccountIndex, bool fInternal)
 {
     AssertLockHeld(cs_wallet); // mapKeyMetadata
@@ -189,9 +232,6 @@ CPubKey CWallet::GenerateNewKey(CWalletDB &walletdb, uint32_t nAccountIndex, boo
         }
 
         pubkey = secret.GetPubKey();
-        // const std::string keyType = to_string(pubkey.GetKeyType());
-        // const std::string keyId = pubkey.GetID().GetHex();
-
         assert(secret.VerifyPubKey(pubkey));
         LogPrintf("Generated new public key: type=%i, key-id-hex=%s .\n", pubkey.GetKeyType(), pubkey.GetID().GetHex());
 
@@ -5725,6 +5765,49 @@ void CWallet::ReserveKeyFromKeyPool(int64_t& nIndex, CKeyPool& keypool, bool fIn
     }
 }
 
+void CWallet::ReserveKeyFromKeyPool(int64_t& nIndex, CKeyPool& keypool, int keyType, bool fInternal)
+{
+    nIndex = -1;
+    keypool.vchPubKey = CPubKey(keyType); // nDefaultKeyType
+
+    {
+        LOCK(cs_wallet);
+
+        if (!IsLocked(true))
+            TopUpKeyPool();
+
+        fInternal = fInternal && IsHDEnabled();
+        std::set<int64_t>& setKeyPool = fInternal ? setInternalKeyPool : setExternalKeyPool;
+
+        // Get the oldest key
+        if(setKeyPool.empty())
+            return;
+
+        CWalletDB walletdb(*dbw);
+
+        nIndex = *setKeyPool.begin();
+        setKeyPool.erase(nIndex);
+        if (!walletdb.ReadPool(nIndex, keypool)) {
+            throw std::runtime_error(std::string(__func__) + ": read failed");
+        }
+
+        if (fLogKeysAndSign)
+            LogPrintf("Wallet: ReserveKeyFromKeyPool: db-index=%d, type=%d, key-id-hex=%s, pub-key-hash-hex=%s.\n.", nIndex, keypool.vchPubKey.GetKeyType(), keypool.vchPubKey.GetID().GetHex(), keypool.vchPubKey.GetHash().GetHex());
+
+        if (!HaveKey(keypool.vchPubKey.GetID())) {
+            const std::string keyType = to_string(keypool.vchPubKey.GetKeyType());
+            const std::string keyId = keypool.vchPubKey.GetID().GetHex();
+            throw std::runtime_error(std::string(__func__) + ": unknown key in key pool: type=" + keyType + ", id=" + keyId);
+        }
+        if (keypool.fInternal != fInternal) {
+            throw std::runtime_error(std::string(__func__) + ": keypool entry misclassified");
+        }
+
+        assert(keypool.vchPubKey.IsValid());
+        m_pool_key_to_index.erase(keypool.vchPubKey.GetID());
+    }
+}
+
 void CWallet::KeepKey(int64_t nIndex)
 {
     // Remove from key pool
@@ -5733,7 +5816,9 @@ void CWallet::KeepKey(int64_t nIndex)
         --nKeysLeftSinceAutoBackup;
     if (!nWalletBackups)
         nKeysLeftSinceAutoBackup = 0;
-    LogPrintf("keypool keep %d\n", nIndex);
+
+    if (fLogKeysAndSign)
+        LogPrintf("Wallet: KeepKey at index %d.\n", nIndex);
 }
 
 void CWallet::ReturnKey(int64_t nIndex, bool fInternal, const CPubKey& pubkey)
@@ -5757,6 +5842,16 @@ bool CWallet::GetKeyFromPool(CPubKey& result, bool internal)
 {
     if (fLogKeysAndSign)
         LogPrintf("Wallet: GetKeyFromPool (internal=%s).\n", internal);
+
+    // If it is not the default key type. It is not in the pool.
+    if (result.GetKeyType() != nDefaultKeyType) {
+        if (fLogKeysAndSign)
+            LogPrintf("Wallet: Generate new key (type=%d).\n", result.GetKeyType());
+
+        CWalletDB walletdb(*dbw);
+        result = GenerateNewKey(walletdb, 0, internal);
+        return true;
+    }
 
     CKeyPool keypool;
     {

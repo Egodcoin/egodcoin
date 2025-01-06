@@ -65,6 +65,12 @@ public:
      */
     QString addRow(const QString &type, const QString &label, const QString &address);
 
+    /* Add an address to the model.
+       Returns the added address on success, and an empty string otherwise.
+       Only relevant for new recipient keys inlcuding key type secp256k1 or Dilithium 3.
+     */
+    QString addRow(const QString &type, const int keyType, const QString &label, const QString &address);
+
     /* Look up label for address in address book, if not found return empty string.
      */
     QString labelForAddress(const QString &address) const;

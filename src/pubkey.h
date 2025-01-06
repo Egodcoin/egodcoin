@@ -46,6 +46,9 @@ public:
     static const unsigned int KEY_TYPE_SECP_256_K1                          = 0;
     static const unsigned int KEY_TYPE_DILITHIUM_3                          = 1;
 
+    static constexpr unsigned int SECP_256_K1_PUBLIC_KEY_SIZE               = 65;
+    static constexpr unsigned int SECP_256_K1_PUBLIC_KEY_COMPRESSED_SIZE    = 33;
+
     static constexpr unsigned int DILITHIUM_3_PUBLIC_KEY_SIZE               = 1952 + 1;
     static constexpr unsigned int DILITHIUM_3_PUBLIC_KEY_COMPRESSED_SIZE    = 1952 + 1;
     static constexpr unsigned int DILITHIUM_3_SIGNATURE_SIZE                = 3293;
@@ -78,9 +81,9 @@ private:
     unsigned int static GetLenSecp256k1(unsigned char chHeader)
     {
         if (chHeader == 2 || chHeader == 3)
-            return 33;
+            return SECP_256_K1_PUBLIC_KEY_COMPRESSED_SIZE;
         if (chHeader == 4 || chHeader == 6 || chHeader == 7)
-            return 65;
+            return SECP_256_K1_PUBLIC_KEY_SIZE;
         return 0;
     }
 
@@ -192,7 +195,7 @@ public:
     // void Unserialize(Stream& s)
     // {
     //     unsigned int len = ::ReadCompactSize(s);
-    //     if (len <= 65) {
+    //     if (len <= SECP_256_K1_PUBLIC_KEY_SIZE) {
     //         s.read((char*)vch, len);
     //     } else {
     //         // invalid pubkey, skip available data
@@ -207,6 +210,11 @@ public:
     void Unserialize(Stream& s)
     {
         unsigned int len = ::ReadCompactSize(s);
+        // TODO: Quick-fix for option for secp256k1.
+        if (len == SECP_256_K1_PUBLIC_KEY_COMPRESSED_SIZE) {
+            nKeyType = KEY_TYPE_SECP_256_K1;
+        }
+
         if (len <= DILITHIUM_3_PUBLIC_KEY_SIZE) {
             s.read((char*)vch, len);
             if (len != size()) {
@@ -253,7 +261,7 @@ public:
     {
         switch(GetKeyType()) {
             case(KEY_TYPE_SECP_256_K1): {
-                return size() == 33;
+                return size() == SECP_256_K1_PUBLIC_KEY_COMPRESSED_SIZE;
             }
             case(KEY_TYPE_DILITHIUM_3): {
                 return size() == DILITHIUM_3_PUBLIC_KEY_COMPRESSED_SIZE;
