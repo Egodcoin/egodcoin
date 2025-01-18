@@ -273,7 +273,11 @@ CPubKey CKey::GetPubKeyDilithium3() const {
     assert(fValid);
     CPubKey pubkey = CPubKey(nKeyType);
     unsigned char* pch = (unsigned char *) pubkey.begin();
+
+    SecureVector& ref = const_cast <SecureVector&>(pubkeydata);   
+    ref.resize(CPubKey::DILITHIUM_3_PUBLIC_KEY_SIZE);
     memcpy(pch + 1, pubkeydata.data(), pubkeydata.size());
+
     pch[0] = 7;
     return pubkey;
 }
@@ -469,9 +473,13 @@ bool CKey::LoadDilithium3(const CPrivKey &seckey, const CPubKey &vchPubKey, bool
         LogPrintf("Key: Load Dilithium 3 key.\n");
 
     assert(nKeyType == KEY_TYPE_DILITHIUM_3);
+    
+    keydata.resize(DILITHIUM_3_PRIVATE_KEY_SIZE);
     memcpy((unsigned char*)begin(), seckey.data(), seckey.size());
     fCompressed = true; //vchPubKey.IsCompressed();
     fValid = true;
+
+    pubkeydata.resize(CPubKey::DILITHIUM_3_PUBLIC_KEY_SIZE);
     memcpy((unsigned char*)pkbegin(), vchPubKey.data()+1, pksize());
 
     if (fSkipCheck)

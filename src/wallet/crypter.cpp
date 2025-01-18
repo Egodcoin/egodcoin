@@ -270,6 +270,9 @@ bool CCryptoKeyStore::Unlock(const CKeyingMaterial& vMasterKeyIn, bool fForMixin
 
 bool CCryptoKeyStore::AddKeyPubKey(const CKey& key, const CPubKey &pubkey)
 {
+    assert(key.GetPubKey().GetKeyType() == pubkey.GetKeyType());
+    assert(key.GetPubKey().GetID().GetHex() == pubkey.GetID().GetHex());
+    
     {
         LOCK(cs_KeyStore);
         if (!IsCrypted())

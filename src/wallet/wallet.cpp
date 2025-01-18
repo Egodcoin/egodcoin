@@ -5841,7 +5841,7 @@ void CWallet::ReturnKey(int64_t nIndex, bool fInternal, const CPubKey& pubkey)
 bool CWallet::GetKeyFromPool(CPubKey& result, bool internal)
 {
     if (fLogKeysAndSign)
-        LogPrintf("Wallet: GetKeyFromPool (internal=%s).\n", internal);
+        LogPrintf("Wallet: GetKeyFromPool (default-key-type=%i, internal=%s).\n", nDefaultKeyType, internal);
 
     // If it is not the default key type. It is not in the pool.
     if (result.GetKeyType() != nDefaultKeyType) {
@@ -5849,7 +5849,7 @@ bool CWallet::GetKeyFromPool(CPubKey& result, bool internal)
             LogPrintf("Wallet: Generate new key (type=%d).\n", result.GetKeyType());
 
         CWalletDB walletdb(*dbw);
-        result = GenerateNewKey(walletdb, 0, internal);
+        result = GenerateNewKey(walletdb, result.GetKeyType(), 0, internal);
         return true;
     }
 

@@ -344,8 +344,9 @@ ReadKeyValue(CWallet* pwallet, CDataStream& ssKey, CDataStream& ssValue,
                 strErr = "Error reading wallet database: CPubKey (key or wkey) corrupt";
                 return false;
             }
-            CKey key;
-            CPrivKey pkey;
+
+            CKey key = CKey(vchPubKey.GetKeyType());
+            CPrivKey pkey = CPrivKey(vchPubKey.GetKeyType());
             uint256 hash;
 
             if (strType == "key")

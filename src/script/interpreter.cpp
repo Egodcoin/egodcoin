@@ -1280,11 +1280,12 @@ bool TransactionSignatureChecker::CheckSig(const std::vector<unsigned char>& vch
 {
     if (fLogKeysAndSign)
         LogPrintf("Interpreter: Check sig (vchpubkey.size=%d).\n", vchPubKey.size());
-
-    // TODO: Quick-fix for option for secp256k1.
     CPubKey pubkey;
     if (vchPubKey.size() == CPubKey::SECP_256_K1_PUBLIC_KEY_COMPRESSED_SIZE) {
         pubkey.SetKeyType(CPubKey::KEY_TYPE_SECP_256_K1);
+    }
+    if (vchPubKey.size() == CPubKey::DILITHIUM_3_PUBLIC_KEY_COMPRESSED_SIZE) {
+        pubkey.SetKeyType(CPubKey::KEY_TYPE_DILITHIUM_3);
     }
     pubkey.Set(vchPubKey.begin(), vchPubKey.end());
 

@@ -141,6 +141,9 @@ public:
     //! Construct a public key from a byte vector.
     CPubKey(const std::vector<unsigned char>& _vch)
     {
+        if (fLogKeysAndSign)
+            LogPrintf("PubKey: constructor (length=%s).\n", _vch.size());
+
         nKeyType = nDefaultKeyType;
         Set(_vch.begin(), _vch.end());
     }
@@ -210,10 +213,17 @@ public:
     void Unserialize(Stream& s)
     {
         unsigned int len = ::ReadCompactSize(s);
-        // TODO: Quick-fix for option for secp256k1.
         if (len == SECP_256_K1_PUBLIC_KEY_COMPRESSED_SIZE) {
             nKeyType = KEY_TYPE_SECP_256_K1;
         }
+        if (len == DILITHIUM_3_PUBLIC_KEY_COMPRESSED_SIZE) {
+            nKeyType = KEY_TYPE_DILITHIUM_3;
+        }
+
+        if (fLogKeysAndSign)
+            LogPrintf("PubKey: Unserialize (type=%i).\n", nKeyType);
+
+        assert(nKeyType == KEY_TYPE_SECP_256_K1 || nKeyType == KEY_TYPE_DILITHIUM_3);
 
         if (len <= DILITHIUM_3_PUBLIC_KEY_SIZE) {
             s.read((char*)vch, len);
