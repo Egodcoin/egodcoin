@@ -43,9 +43,11 @@
 #include <stdint.h>
 
 #include <univalue.h>
+
 // #include <wallet/crypter.h>
 
 extern const std::string CURRENCY_UNIT;
+// extern const std::string ALGO;
 extern double nHashesPerSec;
 extern std::string alsoHashString;
 
@@ -64,7 +66,9 @@ unsigned int ParseConfirmTarget(const UniValue& value)
  * or from the last difficulty change if 'lookup' is nonpositive.
  * If 'height' is nonnegative, compute the estimate at the time when a given block was found.
  */
-UniValue GetNetworkHashPS(int lookup, int height) {
+UniValue GetNetworkHashPS(int lookup, int height, int algo = nMiningAlgo) {
+    LogPrintf("Mining: GetNetworkHashPS: lookup=%d, height=%d, algo=%d.\n", lookup, height, algo);
+
     CBlockIndex *pb = chainActive.Tip();
 
     if (height >= 0 && height < chainActive.Height())
@@ -98,6 +102,7 @@ UniValue GetNetworkHashPS(int lookup, int height) {
     arith_uint256 workDiff = pb->nChainWork - pb0->nChainWork;
     int64_t timeDiff = maxTime - minTime;
 
+    workDiff /= GetAlgoWeight(algo);
     return workDiff.getdouble() / timeDiff;
 }
 
@@ -196,6 +201,8 @@ UniValue generatetoaddress(const JSONRPCRequest& request)
     }
 
     CBitcoinAddress address(request.params[1].get_str());
+    LogPrintf("Mining: generatetoaddress: addressStr=%s, address=%s.\n", request.params[1].get_str(), address.ToString());
+
     if (!address.IsValid())
         throw JSONRPCError(RPC_INVALID_ADDRESS_OR_KEY, "Error: Invalid address");
 
@@ -220,7 +227,7 @@ UniValue generatetoaddress(const JSONRPCRequest& request)
     coinbaseScript->reserveScript = GetScriptForDestination(address.Get());
 
     std::string scriptString(coinbaseScript->reserveScript.begin(), coinbaseScript->reserveScript.end());
-    LogPrintf("Mining: generatetoaddress: address=%s, address-id=%s, script=%s.\n", request.params[1].get_str(), keyId.GetHex(), scriptString);
+    LogPrintf("Mining: generatetoaddress: address=%s, address-id=%s, algo=%d, script=%s.\n", request.params[1].get_str(), keyId.GetHex(), nMiningAlgo, scriptString);
 
     return generateBlocks(coinbaseScript, nGenerate, nMaxTries, false);
 }
@@ -257,7 +264,7 @@ UniValue getmininginfo(const JSONRPCRequest& request)
     obj.push_back(Pair("blocks",                (int)chainActive.Height()));
     obj.push_back(Pair("currentblocksize",      (uint64_t)nLastBlockSize));
     obj.push_back(Pair("currentblocktx",        (uint64_t)nLastBlockTx));
-    obj.push_back(Pair("difficulty",            GetDifficulty()));
+    obj.push_back(Pair("difficulty",            GetDifficulty(nMiningAlgo)));
     obj.push_back(Pair("difficulty_ghostrider", (double) GetDifficulty(ALGO_GHOSTRIDER)));
     obj.push_back(Pair("difficulty_scrypt",     (double) GetDifficulty(ALGO_SCRYPT)));
     obj.push_back(Pair("difficulty_sha256d",    (double) GetDifficulty(ALGO_SHA256D)));
@@ -331,7 +338,7 @@ std::string gbt_vb_name(const Consensus::DeploymentPos pos) {
 
 UniValue getblocktemplate(const JSONRPCRequest& request)
 {
-    if (request.fHelp || request.params.size() > 1)
+    if (request.fHelp || request.params.size() > 2)
         throw std::runtime_error(
             "getblocktemplate ( TemplateRequest ) ( algorithm )\n"
             "\nIf the request parameters include a 'mode' key, that is used to explicitly select between the default 'template' request or a 'proposal'.\n"
@@ -767,7 +774,8 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
 
     result.push_back(Pair("coinbase_payload", HexStr(pblock->vtx[0]->vExtraPayload)));
 
-
+    std::string curarg = result.write(2);
+    LogPrintf("Mining: getblocktemplate: result=%s.\n", curarg); // UniValue::stringify(result, 4)
     return result;
 }
 
@@ -808,6 +816,9 @@ UniValue submitblock(const JSONRPCRequest& request)
         );
     }
 
+    // LogPrintf("Mining: submitblock: addressStr=%s, address=%s.\n", request.params[1].get_str(), address.ToString());
+    LogPrintf("Mining: submitblock: request=%s.\n", request.params[0].get_str().c_str());
+
     std::shared_ptr<CBlock> blockptr = std::make_shared<CBlock>();
     CBlock& block = *blockptr;
     if (!DecodeHexBlk(block, request.params[0].get_str())) {
@@ -819,6 +830,8 @@ UniValue submitblock(const JSONRPCRequest& request)
     }
 
     uint256 hash = block.GetHash();
+    LogPrintf("Mining: submitblock: algo=%s, block-hash=%s, block-pow-hash=%s.\n", block.GetAlgo(), hash.ToString(), block.GetPOWHash(block.GetAlgo(), false).ToString());
+
     bool fBlockPresent = false;
     {
         LOCK(cs_main);

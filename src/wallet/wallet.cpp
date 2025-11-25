@@ -6697,7 +6697,7 @@ bool CWallet::ParameterInteraction()
     else
         nMiningAlgo = ALGO_GHOSTRIDER;
 
-    LogPrintf("Use mining algorithm: %s\n", strAlgo);
+    LogPrintf("Wallet use mining algorithm: %d - %s.\n", nMiningAlgo, strAlgo);
 
     if (gArgs.GetBoolArg("-salvagewallet", false)) {
         if (is_multiwallet) {

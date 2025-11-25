@@ -404,7 +404,7 @@ UniValue getdifficulty(const JSONRPCRequest& request)
         );
 
     LOCK(cs_main);
-    return GetDifficulty();
+    return GetDifficulty(nMiningAlgo);
 }
 
 std::string EntryDescriptionString()
@@ -1472,7 +1472,7 @@ UniValue getblockchaininfo(const JSONRPCRequest& request)
     obj.push_back(Pair("blocks",                (int)chainActive.Height()));
     obj.push_back(Pair("headers",               pindexBestHeader ? pindexBestHeader->nHeight : -1));
     obj.push_back(Pair("bestblockhash",         chainActive.Tip()->GetBlockHash().GetHex()));
-    obj.push_back(Pair("difficulty",            GetDifficulty()));
+    obj.push_back(Pair("difficulty",            GetDifficulty(nMiningAlgo)));
     obj.push_back(Pair("difficulty_ghostrider", (double) GetDifficulty(ALGO_GHOSTRIDER)));
     obj.push_back(Pair("difficulty_scrypt",     (double) GetDifficulty(ALGO_SCRYPT)));
     obj.push_back(Pair("difficulty_sha256d",    (double) GetDifficulty(ALGO_SHA256D)));
@@ -1619,7 +1619,7 @@ UniValue getchaintips(const JSONRPCRequest& request)
         UniValue obj(UniValue::VOBJ);
         obj.push_back(Pair("height",                block->nHeight));
         obj.push_back(Pair("hash",                  block->phashBlock->GetHex()));
-        obj.push_back(Pair("difficulty",            GetDifficulty()));
+        obj.push_back(Pair("difficulty",            GetDifficulty(nMiningAlgo)));
         obj.push_back(Pair("difficulty_ghostrider", (double) GetDifficulty(ALGO_GHOSTRIDER)));
         obj.push_back(Pair("difficulty_scrypt",     (double) GetDifficulty(ALGO_SCRYPT)));
         obj.push_back(Pair("difficulty_sha256d",    (double) GetDifficulty(ALGO_SHA256D)));

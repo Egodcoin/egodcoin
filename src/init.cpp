@@ -1780,7 +1780,7 @@ bool AppInitMain(boost::thread_group& threadGroup, CScheduler& scheduler)
     else
         nMiningAlgo = ALGO_GHOSTRIDER;
 
-    LogPrintf("Use mining algorithm: %s\n", strAlgo);
+    LogPrintf("Use mining algorithm: %d - %s\n", nMiningAlgo, strAlgo);
 
     // see Step 2: parameter interactions for more information about these
     fListen = gArgs.GetBoolArg("-listen", DEFAULT_LISTEN);
