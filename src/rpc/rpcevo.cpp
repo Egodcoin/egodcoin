@@ -574,7 +574,7 @@ void protx_register_submit_help(CWallet* const pwallet)
 bool isValidCollateral(CAmount collateralAmount) {
 	SmartnodeCollaterals collaterals = Params().GetConsensus().nCollaterals;
 	if (!collaterals.isValidCollateral(collateralAmount)) {
-		throw JSONRPCError(RPC_INVALID_COLLATERAL_AMOUNT, strprintf("invalid collateral amount: amount=%d\n", collateralAmount/COIN));
+		throw JSONRPCError(RPC_INVALID_COLLATERAL_AMOUNT, strprintf("invalid collateral amount: amount=%d, actual=%d\n", collateralAmount/COIN, collaterals.getCollateral(chainActive.Height())/COIN));
 	}
 	int nHeight = chainActive.Height();
 	if(!collaterals.isPayableCollateral(nHeight, collateralAmount)) {
