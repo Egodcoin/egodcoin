@@ -260,20 +260,26 @@ UniValue getmininginfo(const JSONRPCRequest& request)
 
     LOCK(cs_main);
 
+    auto lookup = !request.params[0].isNull() ? request.params[0].get_int() : 120;
+    auto height = !request.params[1].isNull() ? request.params[1].get_int() : -1;
+
     UniValue obj(UniValue::VOBJ);
-    obj.push_back(Pair("blocks",                (int)chainActive.Height()));
-    obj.push_back(Pair("currentblocksize",      (uint64_t)nLastBlockSize));
-    obj.push_back(Pair("currentblocktx",        (uint64_t)nLastBlockTx));
-    obj.push_back(Pair("difficulty",            GetDifficulty(nMiningAlgo)));
-    obj.push_back(Pair("difficulty_ghostrider", (double) GetDifficulty(ALGO_GHOSTRIDER)));
-    obj.push_back(Pair("difficulty_scrypt",     (double) GetDifficulty(ALGO_SCRYPT)));
-    obj.push_back(Pair("difficulty_sha256d",    (double) GetDifficulty(ALGO_SHA256D)));
-    obj.push_back(Pair("errors",                GetWarnings("statusbar")));
-    obj.push_back(Pair("networkhashps",         getnetworkhashps(request)));
-    obj.push_back(Pair("hashespersec",          (double)nHashesPerSec));
-	obj.push_back(Pair("algos",                 (std::string) alsoHashString));
-	obj.push_back(Pair("pooledtx",              (uint64_t)mempool.size()));
-	obj.push_back(Pair("chain",                 Params().NetworkIDString()));
+    obj.push_back(Pair("blocks",                    (int)chainActive.Height()));
+    obj.push_back(Pair("currentblocksize",          (uint64_t)nLastBlockSize));
+    obj.push_back(Pair("currentblocktx",            (uint64_t)nLastBlockTx));
+    obj.push_back(Pair("difficulty",                GetDifficulty(nMiningAlgo)));
+    obj.push_back(Pair("difficulty_scrypt",         (double) GetDifficulty(ALGO_SCRYPT)));
+    obj.push_back(Pair("difficulty_sha256d",        (double) GetDifficulty(ALGO_SHA256D)));
+    obj.push_back(Pair("difficulty_ghostrider",     (double) GetDifficulty(ALGO_GHOSTRIDER)));
+    obj.push_back(Pair("errors",                    GetWarnings("statusbar")));
+    obj.push_back(Pair("networkhashps",             getnetworkhashps(request)));
+    obj.push_back(Pair("networkhashps_scrypt",      GetNetworkHashPS(lookup, height, ALGO_SCRYPT)));
+    obj.push_back(Pair("networkhashps_sha256d",     GetNetworkHashPS(lookup, height, ALGO_SHA256D)));
+    obj.push_back(Pair("networkhashps_ghostrider",  GetNetworkHashPS(lookup, height, ALGO_GHOSTRIDER)));
+    obj.push_back(Pair("hashespersec",              (double)nHashesPerSec));
+	obj.push_back(Pair("algos",                     (std::string) alsoHashString));
+	obj.push_back(Pair("pooledtx",                  (uint64_t)mempool.size()));
+	obj.push_back(Pair("chain",                     Params().NetworkIDString()));
 
     return obj;
 }
@@ -775,7 +781,6 @@ UniValue getblocktemplate(const JSONRPCRequest& request)
     result.push_back(Pair("coinbase_payload", HexStr(pblock->vtx[0]->vExtraPayload)));
 
     std::string curarg = result.write(2);
-    LogPrintf("Mining: getblocktemplate: result=%s.\n", curarg); // UniValue::stringify(result, 4)
     return result;
 }
 
