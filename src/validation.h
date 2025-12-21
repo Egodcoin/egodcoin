@@ -307,6 +307,9 @@ bool ActivateBestChain(CValidationState& state, const CChainParams& chainparams,
 
 double ConvertBitsToDouble(unsigned int nBits);
 CAmount GetBlockSubsidy(int nBits, int nHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly = false);
+CAmount GetBlockSubsidyTestnet(int nBits, int nHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly = false);
+CAmount GetBlockSubsidyMainnet(int nBits, int nHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly = false);
+
 CAmount GetSmartnodePayment(int nHeight, CAmount blockValue, CAmount specialTxFees);
 
 /** Guess verification progress (as a fraction between 0.0=genesis and 1.0=current tip). */

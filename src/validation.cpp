@@ -1095,6 +1095,33 @@ NOTE:   unlike bitcoin we are using PREVIOUS block height here,
 */
 CAmount GetBlockSubsidy(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
 {
+    if (Params().NetworkIDString() == CBaseChainParams::TESTNET) {
+        return GetBlockSubsidyTestnet(nPrevBits, nPrevHeight, consensusParams, fSuperblockPartOnly);
+    } else if (Params().NetworkIDString() == CBaseChainParams::MAIN) {
+        return GetBlockSubsidyMainnet(nPrevBits, nPrevHeight, consensusParams, fSuperblockPartOnly);
+    } else {
+        return 5 * COIN; 
+    }
+}
+
+CAmount GetBlockSubsidyTestnet(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
+{
+    const int blocksPerYear = 262.800;
+    if (nPrevHeight <= 21) {
+        return 2500000 * COIN; 
+    } else if (nPrevHeight <= 10 * blocksPerYear) {
+        const CAmount s = (200 - nPrevHeight / blocksPerYear * 10) * COIN;
+        return s; 
+    } else if (nPrevHeight <= 20 * blocksPerYear) {
+        const CAmount s = (100 - nPrevHeight / blocksPerYear * 5) * COIN;
+        return s;
+    } else {
+        return 10 * COIN; 
+    }
+}
+
+CAmount GetBlockSubsidyMainnet(int nPrevBits, int nPrevHeight, const Consensus::Params& consensusParams, bool fSuperblockPartOnly)
+{
 	double nSubsidy = 100;      // (declaring the reward variable and its original/default amount)
     const short owlings = 21262; // amount of blocks between 2 owlings
     int multiplier;              // integer number of owlings
@@ -1141,7 +1168,7 @@ CAmount GetSmartnodePayment(int nHeight, CAmount blockValue, CAmount specialTxFe
 { 
 	size_t mnCount = 0;
     if (chainActive.Tip() != nullptr){ //fix empty list when -checklevel = 4
-          mnCount = deterministicMNManager->GetListForBlock(chainActive[nHeight - 1]).GetAllMNsCount();      
+          mnCount = deterministicMNManager->GetListForBlock(chainActive[nHeight - 1]).GetAllMNsCount();
     }
 	if(mnCount >= Params().GetConsensus().nSmartnodeMinimumCount) {
 		int percentage = Params().GetConsensus().nCollaterals.getRewardPercentage(nHeight);
