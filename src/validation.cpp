@@ -1143,7 +1143,7 @@ CAmount GetSmartnodePayment(int nHeight, CAmount blockValue, CAmount specialTxFe
     if (chainActive.Tip() != nullptr){ //fix empty list when -checklevel = 4
           mnCount = deterministicMNManager->GetListForBlock(chainActive[nHeight - 1]).GetAllMNsCount();      
     }
-	if(mnCount >= 10) {
+	if(mnCount >= Params().GetConsensus().nSmartnodeMinimumCount) {
 		int percentage = Params().GetConsensus().nCollaterals.getRewardPercentage(nHeight);
 		CAmount specialFeeReward = specialTxFees * Params().GetConsensus().nAssetsRewardShare.smartnode; 
         return blockValue * percentage / 100 + specialFeeReward;

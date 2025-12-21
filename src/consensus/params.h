@@ -130,6 +130,7 @@ struct Params {
     uint256 hashGenesisBlock;
     uint256 hashDevnetGenesisBlock;
     int nSubsidyHalvingInterval;
+    int nSmartnodeMinimumCount;
     int nSmartnodePaymentsStartBlock;
     int nInstantSendConfirmationsRequired; // in blocks
     int nInstantSendKeepLock; // in blocks

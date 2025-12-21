@@ -407,6 +407,7 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.nSubsidyHalvingInterval = 210240; // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
+        consensus.nSmartnodeMinimumCount = 5;
         consensus.nSmartnodePaymentsStartBlock = 4200;
         consensus.nInstantSendConfirmationsRequired = 6;
         consensus.nInstantSendKeepLock = 24;
@@ -557,6 +558,7 @@ public:
     CTestNetParams() {
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 210240;
+        consensus.nSmartnodeMinimumCount = 2;
         consensus.nSmartnodePaymentsStartBlock = 50; // only for miner
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
@@ -702,6 +704,7 @@ public:
     CDevNetParams() {
         strNetworkID = "dev";
         consensus.nSubsidyHalvingInterval = 210240;
+        consensus.nSmartnodeMinimumCount = 2;
         consensus.nSmartnodePaymentsStartBlock = 4010; // not true.
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
@@ -824,6 +827,7 @@ public:
     CRegTestParams() {
         strNetworkID = "regtest";
         consensus.nSubsidyHalvingInterval = 150;
+        consensus.nSmartnodeMinimumCount = 2;
         consensus.nSmartnodePaymentsStartBlock = 240;
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;

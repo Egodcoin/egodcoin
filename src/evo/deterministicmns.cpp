@@ -228,7 +228,7 @@ CDeterministicMNCPtr CDeterministicMNList::GetMNPayee() const
 //    if ((nHeight < 900 &&  mnMap.size() == 0)||(nHeight >= 900 && mnMap.size() <= 10)) {
 //        return nullptr;
 //    }
-	if(mnMap.size() <= 10) {
+	if(mnMap.size() < Params().GetConsensus().nSmartnodeMinimumCount) {
 		return nullptr;
 	}
 
@@ -245,7 +245,7 @@ CDeterministicMNCPtr CDeterministicMNList::GetMNPayee() const
 std::vector<CDeterministicMNCPtr> CDeterministicMNList::GetProjectedMNPayees(int nCount) const
 {
 	int validMnCount =  GetValidMNsCount();
-	if(validMnCount < 10) {
+	if(validMnCount < Params().GetConsensus().nSmartnodeMinimumCount) {
 		nCount = 0;
 	} else if (nCount > validMnCount) {
         nCount = validMnCount;
