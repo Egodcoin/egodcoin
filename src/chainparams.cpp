@@ -407,9 +407,7 @@ public:
     CMainParams() {
         strNetworkID = "main";
         consensus.nSubsidyHalvingInterval = 210240; // Note: actual number of blocks per calendar year with DGW v3 is ~200700 (for example 449750 - 249050)
-        consensus.nSmartnodePaymentsStartBlock = 4200; // 
-        consensus.nSmartnodePaymentsIncreaseBlock = 158000; // actual historical value
-        consensus.nSmartnodePaymentsIncreasePeriod = 576*30; // 17280 - actual historical value
+        consensus.nSmartnodePaymentsStartBlock = 4200;
         consensus.nInstantSendConfirmationsRequired = 6;
         consensus.nInstantSendKeepLock = 24;
         consensus.nBudgetPaymentsStartBlock = INT_MAX; // actual historical value
@@ -559,9 +557,7 @@ public:
     CTestNetParams() {
         strNetworkID = "test";
         consensus.nSubsidyHalvingInterval = 210240;
-        consensus.nSmartnodePaymentsStartBlock = 4010; // not true, but it's ok as long as it's less then nSmartnodePaymentsIncreaseBlock
-        consensus.nSmartnodePaymentsIncreaseBlock = 4030;
-        consensus.nSmartnodePaymentsIncreasePeriod = 10;
+        consensus.nSmartnodePaymentsStartBlock = 50; // only for miner
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = INT_MAX;
@@ -706,9 +702,7 @@ public:
     CDevNetParams() {
         strNetworkID = "dev";
         consensus.nSubsidyHalvingInterval = 210240;
-        consensus.nSmartnodePaymentsStartBlock = 4010; // not true, but it's ok as long as it's less then nSmartnodePaymentsIncreaseBlock
-        consensus.nSmartnodePaymentsIncreaseBlock = 4030;
-        consensus.nSmartnodePaymentsIncreasePeriod = 10;
+        consensus.nSmartnodePaymentsStartBlock = 4010; // not true.
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = 4100;
@@ -831,8 +825,6 @@ public:
         strNetworkID = "regtest";
         consensus.nSubsidyHalvingInterval = 150;
         consensus.nSmartnodePaymentsStartBlock = 240;
-        consensus.nSmartnodePaymentsIncreaseBlock = 350;
-        consensus.nSmartnodePaymentsIncreasePeriod = 10;
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
         consensus.nBudgetPaymentsStartBlock = INT_MAX;
