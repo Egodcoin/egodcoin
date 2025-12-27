@@ -84,11 +84,11 @@ static CBlock CreateDevNetGenesisBlock(const uint256 &prevBlockHash, const std::
  */
 static CBlock CreateGenesisBlock(uint32_t nTime, uint32_t nNonce, uint32_t nBits, int32_t nVersion, const CAmount& genesisReward)
 {
-    const char* pszTimestamp = "09/May/2022 Yerbas. The 'Good Shit' coin!";
+    /* Efficiency of Governments Department (EGOD) */
+    const char* pszTimestamp = "10:40 PM · Mar 5, 2021 - Doge spelled backwards is egod.";
     const CScript genesisOutputScript = CScript() << ParseHex("04678afdb0fe5548271967f1a67130b7105cd6a828e03909a67962e0ea1f61deb649f6bc3f4cef38c4f35504e51ec112de5c384df7ba0b8d578a4c702b6bf11d5f") << OP_CHECKSIG;
     return CreateGenesisBlock(pszTimestamp, genesisOutputScript, nTime, nNonce, nBits, nVersion, genesisReward);
 }
-
 
 void CChainParams::UpdateVersionBitsParameters(Consensus::DeploymentPos d, int64_t nStartTime, int64_t nTimeout, int64_t nWindowSize, int64_t nThreshold)
 {
@@ -463,10 +463,11 @@ public:
         nPruneAfterHeight = 100000;
 
         // FindMainNetGenesisBlock(1652138420, 0x20001fff, "main");
-        genesis = CreateGenesisBlock(1652138420, 808, 0x20001fff, 4, 5000 * COIN);
+        genesis = CreateGenesisBlock(1652138420, 918, 0x20001fff, 4, 5000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
-        assert(consensus.hashGenesisBlock == uint256S("0x8806f51ed8311d5e3534d060922eda54e33b2d9ded1cf50fa8ee1b85666a0613"));
-        assert(genesis.hashMerkleRoot == uint256S("0xea5437e7cac2fd312c99427f6001763a2beae90db0894a90d31271f9240e08f4"));
+
+        assert(consensus.hashGenesisBlock == uint256S("0xbcb8be929e1d5a8ef6e7ca07f9630741eb287a0a3d411ec9a180da24ab408c2f"));
+        assert(genesis.hashMerkleRoot == uint256S("0x27f5fd5e3035c0e790fec1bc7dabeaa2bad3f1c82c8d992c6d26359a8aa22376"));
 
         // vSeeds.emplace_back("seed0.egodcoin.org", true);
         // vSeeds.emplace_back("seed1.egodcoin.org", true);
@@ -562,7 +563,7 @@ public:
         consensus.nSmartnodePaymentsStartBlock = 50; // only for miner
         consensus.nInstantSendConfirmationsRequired = 2;
         consensus.nInstantSendKeepLock = 6;
-        consensus.nBudgetPaymentsStartBlock = INT_MAX;
+        consensus.nBudgetPaymentsStartBlock = INT_MAX; // actual historical value
         consensus.nBudgetPaymentsCycleBlocks = 50;
         consensus.nBudgetPaymentsWindowBlocks = 10;
         consensus.nSuperblockStartBlock = INT_MAX; // NOTE: Should satisfy nSuperblockStartBlock > nBudgetPeymentsStartBlock
@@ -607,20 +608,13 @@ public:
         pchMessageStart[3] = 0x72;//r
         nDefaultPort = 15620;
         nPruneAfterHeight = 1000;
-        // FindMainNetGenesisBlock(1675905317, 0x20001fff, "test");
-        genesis = CreateGenesisBlock(1675905317, 2443, 0x20001fff, 4, 5000 * COIN); // nonce 669
+
+        // FindMainNetGenesisBlock(1737207386, 0x20001fff, "test");
+        genesis = CreateGenesisBlock(1737207386, 4996, 0x20001fff, 4, 5000 * COIN);
         consensus.hashGenesisBlock = genesis.GetHash();
 
-        // printf("--- Genesis block hash: %s.\n", consensus.hashGenesisBlock.ToString());
-        LogPrintf("--- Genesis block hash: %s.\n", consensus.hashGenesisBlock.ToString());
-
-        // ECDSA last
-        // assert(consensus.hashGenesisBlock == uint256S("0xe3a4fabed29dfc45e9aebe696453545ee2e198bae150e4c115fcc80ef3298554")); // 
-        // assert(genesis.hashMerkleRoot == uint256S("0xbfe15871764bf35d6391308fc2dab8846f177ba563d256b1764271987ec99bc0")); // 
-
-        // PQC new
-        assert(consensus.hashGenesisBlock == uint256S("0xf6050f617957e49e32b28aa4409a18cf8237a69ec3b985a52691bf4e4eb6931e"));
-        assert(genesis.hashMerkleRoot == uint256S("0xea5437e7cac2fd312c99427f6001763a2beae90db0894a90d31271f9240e08f4"));
+        assert(consensus.hashGenesisBlock == uint256S("0x0259d1c959f2da7a87a48590c5ebd1b9f60f2e09e59e7b81adfe58405176ab6e"));
+        assert(genesis.hashMerkleRoot == uint256S("0x27f5fd5e3035c0e790fec1bc7dabeaa2bad3f1c82c8d992c6d26359a8aa22376"));
 
         vFixedSeeds.clear();
         vFixedSeeds = std::vector<SeedSpec6>(pnSeed6_test, pnSeed6_test + ARRAYLEN(pnSeed6_test));
@@ -630,7 +624,6 @@ public:
         // vSeeds.emplace_back("seed1.test.egodcoin.org", true);
         // vSeeds.emplace_back("seed2.test.egodcoin.org", true);
 
-        // Testnet Egodcoin addresses start with 'r'
         base58Prefixes[PUBKEY_ADDRESS] = std::vector<unsigned char>(1,123);
         // Testnet Egodcoin script addresses start with '8' or '9'
         base58Prefixes[SCRIPT_ADDRESS] = std::vector<unsigned char>(1,19);
@@ -661,8 +654,7 @@ public:
 		);
 
         vector<FounderRewardStructure> rewardStructures = { {INT_MAX, 5} }; // 5% founder/dev fee forever
-        // LAST rovn6zwptpYhzz9dCSz1DhjZgkPJyVxpDG
-		consensus.nFounderPayment = FounderPayment(rewardStructures, 200, "ro6FDY1rf1sc7N6WSTVZBUp4paR6umDcVy"); // LAST ECC rW8LdNwngcJfnxdhYKqyt9GtpXatoanX1h
+		consensus.nFounderPayment = FounderPayment(rewardStructures, 200, "rns3bnDMPTe5Kkm845ms91e1Vm1rqwkrro");
         consensus.nAssetsRewardShare = Consensus::AssetsRewardShare(0.8,0.2,0.0);
 
         fDefaultConsistencyChecks = false;
@@ -677,7 +669,7 @@ public:
         nPoolMaxParticipants = 5;
         nFulfilledRequestExpireTime = 5*60; // fulfilled requests expire in 5 minutes
 
-        vSporkAddresses = {"rjuLrk99JHQaodfSVXwdGd5NtxedHNxTFi"};
+        vSporkAddresses = {"rniVVdNHokW7n8Yz5Lv2n44vuiBKawckEw"};
         nMinSporkKeys = 1;
         fBIP9CheckSmartnodesUpgraded = true;
 

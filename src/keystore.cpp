@@ -4,7 +4,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "keystore.h"
-
+#include "base58.h"
 #include "key.h"
 #include "pubkey.h"
 #include "util.h"
@@ -17,12 +17,12 @@ bool CBasicKeyStore::GetPubKey(const CKeyID &address, CPubKey &vchPubKeyOut) con
 {
     CKey key;
     if (!GetKey(address, key)) {
-        LogPrintf("CBasicKeyStore::GetPubKey: Failed to get key (key-id-hex=%s).\n", address.GetHex());
+        LogPrintf("CBasicKeyStore::GetPubKey: Failed to get key (btcAddress=%s, key-id-hex=%s).\n", CBitcoinAddress(address).ToString(), address.GetHex());
         LOCK(cs_KeyStore);
         WatchKeyMap::const_iterator it = mapWatchKeys.find(address);
         if (it != mapWatchKeys.end()) {
             vchPubKeyOut = it->second;
-            LogPrintf("CBasicKeyStore::GetPubKey: Next key frmo watchlist (key-id-hex=%s, pub-key-hash-hex=%s).\n", vchPubKeyOut.GetID().GetHex(), vchPubKeyOut.GetHash().GetHex());
+            LogPrintf("CBasicKeyStore::GetPubKey: Next key from watchlist (key-id-hex=%s, pub-key-hash-hex=%s).\n", vchPubKeyOut.GetID().GetHex(), vchPubKeyOut.GetHash().GetHex());
             return true;
         }
         return false;

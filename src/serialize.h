@@ -26,6 +26,12 @@
 
 #include "prevector.h"
 
+// TODO EGOD PQC
+// static const unsigned int MAX_SIZE = 0x10000000; // Ariel: Increase max serialized size to 256mb
+
+// /** Maximum amount of memory (in bytes) to allocate at once when deserializing vectors. */
+// static const unsigned int MAX_VECTOR_ALLOCATE = 5000000;
+
 static const unsigned int MAX_SIZE = 0x02000000;
 
 /**

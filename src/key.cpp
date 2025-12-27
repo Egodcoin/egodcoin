@@ -3,6 +3,7 @@
 // file COPYING or http://www.opensource.org/licenses/mit-license.php.
 
 #include "key.h"
+#include "base58.h"
 
 #include "arith_uint256.h"
 #include "crypto/common.h"
@@ -249,9 +250,6 @@ CPubKey CKey::GetPubKey() const {
 }
 
 CPubKey CKey::GetPubKeySecp256k1() const {
-    if (fLogKeysAndSign)
-        LogPrintf("Key: Get secp256k1 public key.\n");
-
     assert(nKeyType == KEY_TYPE_SECP_256_K1);
     assert(fValid);
     secp256k1_pubkey pubkey;
@@ -262,6 +260,9 @@ CPubKey CKey::GetPubKeySecp256k1() const {
     secp256k1_ec_pubkey_serialize(secp256k1_context_sign, (unsigned char*)result.begin(), &clen, &pubkey, fCompressed ? SECP256K1_EC_COMPRESSED : SECP256K1_EC_UNCOMPRESSED);
     assert(result.size() == clen);
     assert(result.IsValid());
+    if (fLogKeysAndSign) {
+        LogPrintf("Key: Get secp256k1 public key: address=%s, pub-key-hex=%s.\n", CBitcoinAddress(result.GetID()).ToString(), result.GetHash().ToString());
+    }
     return result;
 }
 
@@ -518,6 +519,7 @@ bool CExtKey::Derive(CExtKey &out, unsigned int _nChild) const {
     return key.Derive(out.key, out.chaincode, _nChild, chaincode);
 }
 
+// TODO EGOD: PQC Master key.
 void CExtKey::SetMaster(const unsigned char *seed, unsigned int nSeedLen) {
     static const unsigned char hashkey[] = {'B','i','t','c','o','i','n',' ','s','e','e','d'};
     std::vector<unsigned char, secure_allocator<unsigned char>> vout(64);

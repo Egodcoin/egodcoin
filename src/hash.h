@@ -221,7 +221,8 @@ public:
     uint256 GetHash() {
         uint256 result;
         ctx.Finalize(result.begin());
-        ctx.Reset().Write(result.begin(), CSHA256::OUTPUT_SIZE).Finalize(result.begin());
+        // TODO EGOD PQC Check.
+        // ctx.Reset().Write(result.begin(), CSHA256::OUTPUT_SIZE).Finalize(result.begin());
         return result;
     }
 
