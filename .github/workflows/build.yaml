@@ -279,9 +279,9 @@ jobs:
 
       - name: Install Required Packages
         run: |
-          brew install automake libtool pkg-config miniupnpc librsvg libnatpmp zeromq python
-          pip3 install ds_store mac_alias
-          pip3 install -U pip setuptools
+          brew install automake libtool pkg-config miniupnpc librsvg libnatpmp zeromq
+          brew install --quiet python@3 || brew link --overwrite python@3
+          brew install --quiet coreutils ninja pkgconf gnu-getopt ccache boost libevent qt@6 qrencode capnp
 
       - name: Build Depends
         run: |
