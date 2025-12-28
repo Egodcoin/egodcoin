@@ -282,6 +282,8 @@ jobs:
           brew install automake libtool pkg-config miniupnpc librsvg libnatpmp zeromq
           brew install --quiet python@3 || brew link --overwrite python@3
           brew install --quiet coreutils ninja pkgconf gnu-getopt ccache boost libevent qt@6 qrencode capnp
+          brew install brew install python-setuptools
+          brew install brew install python-requests
 
       - name: Build Depends
         run: |
