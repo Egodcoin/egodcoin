@@ -283,7 +283,6 @@ jobs:
           brew install --quiet python@3 || brew link --overwrite python@3
           brew install --quiet coreutils ninja pkgconf gnu-getopt ccache boost libevent qt@6 qrencode capnp
           brew install python-setuptools
-          brew install python-yq
 
       - name: Build Depends
         run: |
