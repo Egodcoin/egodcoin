@@ -268,10 +268,10 @@ jobs:
           name: ${{ env.COIN_NAME }}-ubuntu22-test-${{ needs.get-version.outputs.version }}
           path: ${{ env.TEST_DIR }}
 
-  build-macos-12:
-    name: macOS 12 Build
+  build-macos-13:
+    name: macOS 13 Build
     needs: get-version
-    runs-on: macos-12
+    runs-on: macos-13
 
     steps:
       - name: Checkout
@@ -281,7 +281,7 @@ jobs:
         run: |
           brew install automake libtool pkg-config miniupnpc librsvg libnatpmp zeromq python
           pip3 install ds_store mac_alias
-          pip3 install -U pip setuptools 
+          pip3 install -U pip setuptools
 
       - name: Build Depends
         run: |

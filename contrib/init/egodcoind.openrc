@@ -18,7 +18,7 @@ BITCOIND_BIN=${BITCOIND_BIN:-/usr/bin/egodcoind}
 BITCOIND_NICE=${BITCOIND_NICE:-${NICELEVEL:-0}}
 BITCOIND_OPTS="${BITCOIND_OPTS:-${BITCOIN_OPTS}}"
 
-name="Egodcoin Core Daemon"
+name="Efficiency of Governments Department (EGOD) Daemon"
 description="Egodcoin cryptocurrency P2P network daemon"
 
 command="/usr/bin/egodcoind"
