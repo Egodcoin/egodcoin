@@ -48,6 +48,10 @@ EditAddressDialog::EditAddressDialog(Mode _mode, QWidget *parent) :
         break;
     }
 
+    ui->keyTypeSelector->addItem(QString("SECG - secp256k1"), QString("0"));
+    ui->keyTypeSelector->addItem(QString("NIST - ML-DSA-65 (Dilithium 3)"), QString("1"));
+    ui->keyTypeSelector->setCurrentIndex(nDefaultKeyType);
+
     mapper = new QDataWidgetMapper(this);
     mapper->setSubmitPolicy(QDataWidgetMapper::ManualSubmit);
 }
